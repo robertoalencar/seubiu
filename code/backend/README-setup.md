@@ -1,5 +1,3 @@
-#Thank You to get involved!
-
 ## What do you need?
 
     ### Virtual box (Just download and install as described here https://www.virtualbox.org/wiki/Downloads, you don't need any configuration)
@@ -9,22 +7,10 @@
 
     $ cd vagrant/
     $ vagrant up
-    $ vagrant ssh
 
-## How to build, test and start the backend at once :)
-
-    ### Inside the vm:
-
-    $ grunt server
 
 ## Now you can access the backend application using your browser
 
-    Open your browser and go to the url http://localhost:8080
+    Open your browser and go to the url http://localhost:3000
 
-#For more info please contact Giba <gilbertomatos@gmail.com>
-
-
-
-
-
-
+## For more info please contact Giba <gilbertomatos@gmail.com>
