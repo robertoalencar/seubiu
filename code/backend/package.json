@@ -12,6 +12,13 @@
     "express": "~4.13.4",
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
+    "orm": "^3.1.0",
+    "orm-timestamps": "^0.5.2",
+    "orm-transaction": "0.0.2",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
+    "passport-google-oauth": "^1.0.0",
+    "passport-http-bearer": "^1.0.1",
     "serve-favicon": "~2.3.0"
   }
 }
