@@ -113,14 +113,20 @@ apt-get install -y nodejs
 # Install Grunt
 npm install -g grunt-cli
 
+# Install grunt-jasmine-node
+npm install -g grunt-jasmine-node
+
 # Install db-migrate
 npm install -g db-migrate
 
-# Install Jasmine
-npm install -g grunt-jasmine-node
+# Install db-migrate-pg
+npm install -g db-migrate-pg
 
 # Install the NPM dependencies
 cd /seubiu && npm install
+
+# Run db-migrate
+cd /seubiu && NODE_ENV=development db-migrate up
 
 echo ""
 echo "The development environment was created successfully."
