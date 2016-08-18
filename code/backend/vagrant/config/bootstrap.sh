@@ -113,6 +113,12 @@ apt-get install -y nodejs
 # Install Grunt
 npm install -g grunt-cli
 
+# Install db-migrate
+npm install -g db-migrate
+
+# Install Jasmine
+npm install -g grunt-jasmine-node
+
 # Install the NPM dependencies
 cd /seubiu && npm install
 
