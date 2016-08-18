@@ -8,6 +8,10 @@
     $ cd vagrant/
     $ vagrant up
 
+## Run the server
+
+    $ vagrant ssh
+    $ cd /seubiu && DEBUG=:* npm start
 
 ## Now you can access the backend application using your browser
 

@@ -42,7 +42,10 @@ then
   echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > "$PG_REPO_APT_SOURCE"
 
   # Add PGDG repo key:
-  wget --quiet -O - https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
+  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+  apt-get update
+
 fi
 
 # Update package list and upgrade all packages
@@ -112,9 +115,6 @@ npm install -g grunt-cli
 
 # Install the NPM dependencies
 cd /seubiu && npm install
-
-#Run the server
-cd /seubiu && DEBUG=:* npm start
 
 echo ""
 echo "The development environment was created successfully."
