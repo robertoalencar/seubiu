@@ -6,15 +6,6 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get -y upgrade
 
-PROVISIONED_ON=/etc/vm_provision_on_timestamp
-if [ -f "$PROVISIONED_ON" ]
-then
-  echo "VM was already provisioned at: $(cat $PROVISIONED_ON)"
-  echo "To run system updates manually login via 'vagrant ssh' and run 'apt-get update && apt-get upgrade'"
-  echo ""
-  exit
-fi
-
 # Install Curl
 apt-get install -y curl
 
@@ -69,6 +60,9 @@ echo "client_encoding = utf8" >> "$PG_CONF"
 service postgresql restart
 
 cat << EOF | su - postgres -c psql
+-- Drop the database:
+DROP DATABASE IF EXISTS $APP_DB_NAME;
+
 -- Create the database user:
 CREATE USER $APP_DB_USER WITH PASSWORD '$APP_DB_PASS';
 
@@ -130,6 +124,3 @@ cd /seubiu && NODE_ENV=development db-migrate up
 
 echo ""
 echo "The development environment was created successfully."
-
-# Tag the provision time:
-date > "$PROVISIONED_ON"

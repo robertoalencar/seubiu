@@ -3,7 +3,7 @@
   "development": {
     "driver": "pg",
     "user": "seubiu",
-    "password": "seubiu123@",
+    "password": "pass123@",
     "host": "localhost",
     "database": "seubiu",
     "schema": "seubiu"
