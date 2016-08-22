@@ -116,11 +116,24 @@ npm install -g db-migrate
 # Install db-migrate-pg
 npm install -g db-migrate-pg
 
+# App dir
+APP_DIR=/seubiu
+
+# Create .env
+ENV_FILE=$APP_DIR/.env
+if [ ! -f $ENV_FILE ]
+then
+    touch ENV_FILE
+    cd $APP_DIR && echo "DB_USERNAME=$APP_DB_USER" >> $ENV_FILE
+    cd $APP_DIR && echo "DB_PASSWORD=$APP_DB_PASS" >> $ENV_FILE
+    cd $APP_DIR && echo "DB_HOST=localhost" >> $ENV_FILE
+fi
+
 # Install the NPM dependencies
-cd /seubiu && npm install
+cd $APP_DIR && npm install
 
 # Run db-migrate
-cd /seubiu && NODE_ENV=development db-migrate up
+cd $APP_DIR && NODE_ENV=development db-migrate up
 
 echo ""
 echo "The development environment was created successfully."
