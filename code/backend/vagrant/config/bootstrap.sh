@@ -116,6 +116,9 @@ npm install -g db-migrate
 # Install db-migrate-pg
 npm install -g db-migrate-pg
 
+# Install supervisor
+npm install -g supervisor
+
 # App dir
 APP_DIR=/seubiu
 
@@ -124,9 +127,12 @@ ENV_FILE=$APP_DIR/.env
 if [ ! -f $ENV_FILE ]
 then
     touch ENV_FILE
+    cd $APP_DIR && echo "DB_NAME=$APP_DB_NAME" >> $ENV_FILE
+    cd $APP_DIR && echo "DB_PROTOCOL=postgres" >> $ENV_FILE
     cd $APP_DIR && echo "DB_USERNAME=$APP_DB_USER" >> $ENV_FILE
     cd $APP_DIR && echo "DB_PASSWORD=$APP_DB_PASS" >> $ENV_FILE
     cd $APP_DIR && echo "DB_HOST=localhost" >> $ENV_FILE
+    cd $APP_DIR && echo "DB_PORT=5432" >> $ENV_FILE
 fi
 
 # Install the NPM dependencies

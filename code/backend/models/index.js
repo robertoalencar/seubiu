@@ -1,5 +1,6 @@
-var dotenv = require('dotenv').config({path: '../../../../'});
-var orm = require('../../../../');
+var dotenv = require('dotenv').config();
+var orm = require('orm');
+var transaction = require('orm-transaction');
 
 var connection = null;
 
@@ -25,11 +26,20 @@ function setup(db, cb) {
 module.exports = function (cb) {
   if (connection) return cb(null, connection);
 
-  var url = 'postgres://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST  + '/seubiu';
+  var opts = {
+    host:     process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    protocol: process.env.DB_PROTOCOL,
+    user:     process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    port:     process.env.DB_PORT,
+    query:    {pool: false, debug: true}
+  };
 
-  orm.connect(url, function (err, db) {
+  orm.connect(opts, function (err, db) {
     if (err) return cb(err);
 
+    db.use(transaction);
     connection = db;
     db.settings.set('instance.returnAllErrors', true);
     setup(db, cb);

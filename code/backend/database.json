@@ -5,16 +5,18 @@
     "user": {"ENV": "DB_USERNAME"},
     "password": {"ENV": "DB_PASSWORD"},
     "host": {"ENV": "DB_HOST"},
-    "database": "seubiu",
-    "schema": "seubiu"
+    "port": {"ENV": "DB_PORT"},
+    "database": {"ENV": "DB_NAME"},
+    "schema": {"ENV": "DB_NAME"}
   },
   "production": {
     "driver": "pg",
     "user": {"ENV": "DB_USERNAME"},
     "password": {"ENV": "DB_PASSWORD"},
     "host": {"ENV": "DB_HOST"},
-    "database": "seubiu",
-    "schema": "seubiu"
+    "port": {"ENV": "DB_PORT"},
+    "database": {"ENV": "DB_NAME"},
+    "schema": {"ENV": "DB_NAME"}
   },
   "sql-file" : true
 }
