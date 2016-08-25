@@ -119,6 +119,9 @@ npm install -g db-migrate-pg
 # Install supervisor
 npm install -g supervisor
 
+# Install eslint
+npm install -g eslint
+
 # App dir
 APP_DIR=/seubiu
 
