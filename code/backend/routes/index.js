@@ -4,20 +4,24 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-
 //TODO: Remove this test ==================================================================
-    var pool = require('../utils/orm-db-pool');
-    console.log('pool.availableObjectsCount() A: ' + pool.availableObjectsCount());
+    var transaction = require('../utils/orm-db-transaction');
 
-    pool.acquire(function(err, db) {
-        console.log('pool.availableObjectsCount() B: ' + pool.availableObjectsCount());
-        db.models.UserType.get(1, function(err, type) {
-            console.log(type.description);
-        });
-        pool.release(db);
-    });
+    transaction.doReadWrite([
+        function(db, t, done) {
+            db.models.UserType.get(1, function(err, type) {
+                console.log(type.description);
+                done(err, db, t, type);
+            });
+        },
+        function(db, t, type, done) {
+            type.description = new Date();
+            type.save(function (err) {
+                done(err, db, t, type);
+            });
+        }
+    ]);
 
-    console.log('pool.availableObjectsCount() C: ' + pool.availableObjectsCount());
 //===========================================================================================
 
     res.render('index', { title: 'Express' });
