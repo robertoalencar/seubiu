@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 //TODO: Remove this test ==================================================================
     var transaction = require('../utils/orm-db-transaction');
 
-    transaction.doReadWrite([
+    transaction.doReadOnly([
         function(db, t, done) {
             db.models.UserType.get(1, function(err, type) {
                 console.log(type.description);
