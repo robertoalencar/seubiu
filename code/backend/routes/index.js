@@ -10,12 +10,14 @@ router.get('/', function(req, res, next) {
     transaction.doReadOnly([
         function(db, t, done) {
             db.models.UserType.get(1, function(err, type) {
-                console.log(type.description);
+
+                console.log('Description: ' + type.description);
+                type.description = new Date();
+
                 done(err, db, t, type);
             });
         },
         function(db, t, type, done) {
-            type.description = new Date();
             type.save(function (err) {
                 done(err, db, t, type);
             });
