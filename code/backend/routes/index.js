@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 
     transaction.doReadOnly([
         function(db, t, done) {
-            db.models.UserType.get(11, function(err, type) {
+            db.models.UserType.get(1, function(err, type) {
 
                 if (err) {
                     done(err, db, t);
