@@ -9,17 +9,23 @@ router.get('/', function(req, res, next) {
 
     transaction.doReadOnly([
         function(db, t, done) {
-            db.models.UserType.get(1, function(err, type) {
+            db.models.UserType.get(11, function(err, type) {
+
+                if (err) {
+                    done(err, db, t);
+                    return
+                }
 
                 console.log('Description: ' + type.description);
                 type.description = new Date();
 
                 done(err, db, t, type);
+
             });
         },
         function(db, t, type, done) {
             type.save(function (err) {
-                done(err, db, t, type);
+                done(err, db, t);
             });
         }
     ]);

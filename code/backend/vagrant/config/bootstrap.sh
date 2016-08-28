@@ -13,6 +13,20 @@ apt-get install -y curl
 apt-get install -y git
 
 ################################################
+############## Redis section ##############
+################################################
+
+apt-get install -y redis-server
+
+REDIS_CONF="/etc/redis/redis.conf"
+
+# Edit redis.conf to change daemonize to 'yes':
+sed -i "s/daemonize no/daemonize yes/" "$REDIS_CONF"
+
+# Restart so that all new config is loaded:
+service redis-server restart
+
+################################################
 ############## PostgreSQL section ##############
 ################################################
 
