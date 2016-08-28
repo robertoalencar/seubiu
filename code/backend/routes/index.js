@@ -12,14 +12,19 @@ router.get('/', function(req, res, next) {
             db.models.UserType.get(1, function(err, type) {
 
                 if (err) {
-                    done(err, db, t);
-                    return
+                    return done(err, db, t);
                 }
 
-                console.log('Description: ' + type.description);
-                type.description = new Date();
+                try {
 
-                done(err, db, t, type);
+                    console.log('Description: ' + type.description);
+                    type.description = new Date();
+
+                    done(err, db, t, type);
+
+                } catch(err) {
+                    done(err, db, t);
+                }
 
             });
         },
