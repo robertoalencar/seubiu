@@ -150,6 +150,9 @@ then
     cd $APP_DIR && echo "DB_PASSWORD=$APP_DB_PASS" >> $ENV_FILE
     cd $APP_DIR && echo "DB_HOST=localhost" >> $ENV_FILE
     cd $APP_DIR && echo "DB_PORT=5432" >> $ENV_FILE
+    cd $APP_DIR && echo "REDIS_HOST=localhost" >> $ENV_FILE
+    cd $APP_DIR && echo "REDIS_PORT=6379" >> $ENV_FILE
+    cd $APP_DIR && echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE
 fi
 
 # Install the NPM dependencies
