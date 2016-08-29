@@ -58,7 +58,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use(session({
+    maxAge: (60000 * 60 * 24 * 30),
     secret: process.env.SESSION_SECRET,
     store: new RedisStore({ host: process.env.REDIS_HOST, port: process.env.REDIS_PORT}),
     rolling: true,
@@ -72,8 +74,19 @@ app.use(passport.session());
 app.use('/', routes);
 app.use('/users', users);
 
-app.get('/me',
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(null); }
+  res.redirect('/login')
+}
+
+app.get('/login',
   passport.authenticate('basic', { session: true }),
+  function(req, res) {
+    res.redirect('/me')
+  });
+
+app.get('/me', ensureAuthenticated,
   function(req, res) {
     res.json({ username: req.user.name, email: req.user.email });
   });
