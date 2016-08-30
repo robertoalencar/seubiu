@@ -1,16 +1,15 @@
 var Promise = require('promise');
-var md5 = require('md5');
 var _ = require('lodash');
 var transaction = require('../utils/orm-db-transaction');
 
-var getByEmailAndPassword = function(email, password) {
+var getByEmail = function(email) {
 
     return new Promise(function (resolve, reject) {
 
         transaction.doReadOnly([
             function(db, t, done) {
 
-                db.models.User.find({ email: email, password: md5(password), emailVerified: true }, 1, function (err, users) {
+                db.models.User.find({ email: email, emailVerified: true }, 1, function (err, users) {
 
                     if (err) {
                         reject(err);
@@ -55,7 +54,7 @@ var getById = function(id) {
 
 module.exports = {
 
-    getByEmailAndPassword: getByEmailAndPassword,
+    getByEmail: getByEmail,
     getById: getById
 
 };
