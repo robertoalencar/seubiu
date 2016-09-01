@@ -1,24 +1,11 @@
 var dotenv = require('dotenv').config();
 var orm = require('orm');
+var modts = require('orm-timestamps');
 var transaction = require('orm-transaction');
 var Pool = require('generic-pool').Pool;
 
 function defineModels(db) {
-
-  require('../models/auth-provider')(orm, db);
-  require('../models/device-type')(orm, db);
-  require('../models/installation')(orm, db);
-  require('../models/service')(orm, db);
-  require('../models/profession')(orm, db);
-  require('../models/user-type')(orm, db);
-  require('../models/user-status')(orm, db);
-  require('../models/user')(orm, db);
-  require('../models/user-rating')(orm, db);
-  require('../models/session')(orm, db);
-  require('../models/comment')(orm, db);
-  require('../models/request-status')(orm, db);
-  require('../models/request')(orm, db);
-
+  require('../models/')(orm, db);
 };
 
 var pool = new Pool({
@@ -38,8 +25,20 @@ var pool = new Pool({
       orm.connect(opts, function (err, db) {
         if (err) return callback(err);
 
+        db.use(modts, {
+          createdProperty: 'created_at',
+          modifiedProperty: 'modified_at',
+          expireProperty: false,
+          dbtype: { type: 'date', time: true },
+          now: function() { return new Date(); },
+          expire: function() { var d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
+          persist: true
+        });
+
         db.use(transaction);
+
         db.settings.set('instance.returnAllErrors', true);
+
         defineModels(db);
 
         callback(null, db);
