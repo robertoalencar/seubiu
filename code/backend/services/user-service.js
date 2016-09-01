@@ -2,14 +2,14 @@ var Promise = require('promise');
 var _ = require('lodash');
 var transaction = require('../utils/orm-db-transaction');
 
-var getByEmail = function(email) {
+var getByUsernameOrEmail = function(usernameOrEmail) {
 
     return new Promise(function (resolve, reject) {
 
         transaction.doReadOnly([
             function(db, t, done) {
 
-                db.models.User.find({ email: email, emailVerified: true }, 1, function (err, users) {
+                db.models.User.find({emailVerified: true, or:[{username: usernameOrEmail}, {email: usernameOrEmail}]}, 1, function (err, users) {
 
                     if (err) {
                         reject(err);
@@ -54,7 +54,7 @@ var getById = function(id) {
 
 module.exports = {
 
-    getByEmail: getByEmail,
+    getByUsernameOrEmail: getByUsernameOrEmail,
     getById: getById
 
 };

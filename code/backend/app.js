@@ -11,14 +11,11 @@ var passport = require('passport');
 var Strategy = require('passport-http').DigestStrategy;
 var cryptoUtil = require('./utils/crypto-util');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
 var userService = require('./services/user-service');
 
 passport.use(new Strategy({ qop: 'auth' },
   function(username, done) {
-    userService.getByEmail(username).then(function(user){
+    userService.getByUsernameOrEmail(username).then(function(user){
       if (!user) {
         done(null, false);
       } else {
@@ -58,7 +55,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use(session({
     cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
     secret: process.env.SESSION_SECRET,
@@ -71,16 +67,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/api', require('./routes/'));
 
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-  res.sendStatus(401);
-}
-
-app.get('/login',
+app.get('/logon',
   passport.authenticate('digest', { session: true }),
   function(req, res) {
     res.sendStatus(200);
@@ -92,11 +81,6 @@ app.get('/logout', function (req, res){
     res.sendStatus(200);
   })
 });
-
-app.get('/me', ensureAuthenticated,
-  function(req, res) {
-    res.json({ username: req.user.name, email: req.user.email });
-  });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
