@@ -9,7 +9,7 @@ var getByUsernameOrEmail = function(usernameOrEmail) {
         transaction.doReadOnly([
             function(db, t, done) {
 
-                db.models.User.find({emailVerified: true, or:[{username: usernameOrEmail}, {email: usernameOrEmail}]}, 1, function (err, users) {
+                db.models.User.find({'emailVerified': true, or:[{'username': usernameOrEmail}, {'email': usernameOrEmail}]}, 1, function (err, users) {
 
                     if (err) {
                         reject(err);

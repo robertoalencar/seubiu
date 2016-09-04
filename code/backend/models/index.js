@@ -1,8 +1,8 @@
 module.exports = function (orm, db) {
 
   //require('./auth-provider')(orm, db);
-  //require('./models/device-type')(orm, db);
-  //require('./models/installation')(orm, db);
+  require('./device-type')(orm, db);
+  require('./installation')(orm, db);
   require('./service')(orm, db);
   require('./profession')(orm, db);
   require('./user-type')(orm, db);

@@ -4,8 +4,7 @@ module.exports = function (orm, db) {
         id         : { type: 'serial', key: true, mapsTo: 'id' },
         description: { type: 'text', size: 50, unique: true, required: true, mapsTo: 'description' }
     }, {
-        collection: 'device_type',
-        timestamp: true
+        collection: 'device_type'
     });
 
 };

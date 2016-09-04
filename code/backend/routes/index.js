@@ -7,5 +7,7 @@ function isAuthenticated(req, res, next) {
 }
 
 require('./user')(router, isAuthenticated);
+require('./installation')(router, isAuthenticated);
+require('./profession')(router, isAuthenticated);
 
 module.exports = router;
