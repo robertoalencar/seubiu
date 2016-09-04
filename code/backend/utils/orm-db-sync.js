@@ -31,9 +31,13 @@ orm.connect(opts, function (err, db) {
 
   defineModels(db);
 
-  db.sync(function(err) {
-    if (err) throw err;
-    process.exit();
+  db.drop(function(err) {
+      if (err) throw err;
+
+      db.sync(function(err) {
+        if (err) throw err;
+        process.exit();
+      });
   });
 
 });

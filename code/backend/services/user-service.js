@@ -89,10 +89,36 @@ var create = function(name, email, displayName, username, password) {
 
 };
 
+var remove = function(id) {
+
+    return new Promise(function (resolve, reject) {
+
+        transaction.doReadWrite([
+            function(db, t, done){
+
+                db.models.User.find({ 'id': id }).remove(function (err) {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+
+                    done(err, db, t);
+
+                });
+
+            }
+        ]);
+    });
+
+};
+
 module.exports = {
 
     getByUsernameOrEmail: getByUsernameOrEmail,
     getById: getById,
-    create: create
+    create: create,
+    remove: remove
 
 };

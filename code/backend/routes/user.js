@@ -5,6 +5,11 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     var MINIMUM_PASSWORD_SIZE = 8;
 
+    function userHasAccess(req, res, next) {
+        if (req.isAuthenticated() && (req.user.id == req.params.id || req.user.admin)) { return next(null); }
+        res.sendStatus(403);
+    }
+
     router.route('/users')
         .post(function(req, res) {
             var errors = [];
@@ -29,7 +34,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             if (_.isEmpty(password)) {
                 errors.push("Password is required");
             } else if (password.length < MINIMUM_PASSWORD_SIZE) {
-                errors.push("Password is too short: < 8");
+                errors.push("Password is too short: < " + MINIMUM_PASSWORD_SIZE);
             }
 
             if (errors.length == 0) {
@@ -48,7 +53,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:id')
 
-        .get(isAdmin, function(req, res) {
+        .get(userHasAccess, function(req, res) {
 
             var errors = [];
             var id = req.params.id;
@@ -72,9 +77,30 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         });
 
-    router.route('/users/me')
-        .get(isAuthenticated, function(req, res) {
-            res.json(req.user);
+
+    router.route('/users/:id')
+
+        .delete(isAuthenticated, isAdmin, function(req, res) {
+
+            var errors = [];
+            var id = req.params.id;
+
+            if (_.isEmpty(id)) {
+                errors.push("ID is required");
+            }
+
+            if (errors.length == 0) {
+
+                userService.remove(id).then(function(success){
+                    res.status(200).send(success);
+                }, function(err) {
+                    res.status(400).send(err);
+                });
+
+            } else {
+                res.status(400).send(errors.join(", "));
+            }
+
         });
 
 };
