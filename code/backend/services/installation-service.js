@@ -34,21 +34,9 @@ var create = function(deviceToken, deviceTypeId, appVersion) {
         transaction.doReadWrite([
             function(db, t, done){
 
-                db.models.DeviceType.get(deviceTypeId, function(err, deviceType) {
-
-                    done(err, db, t, deviceType);
-
-                });
-
-            },
-            function(db, t, deviceType, done) {
-
-                var installation = new db.models.Installation();
-
-                installation.deviceToken = deviceToken;
-                installation.appVersion = appVersion;
-
-                installation.setDeviceType(deviceType, function(err, newInstallation) {
+                db.models.Installation.create(
+                    {'deviceToken': deviceToken, 'appVersion': appVersion, 'devicetype_id': deviceTypeId},
+                    function(err, newInstallation) {
 
                     if (err) {
                         reject(err);
