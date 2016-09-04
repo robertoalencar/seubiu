@@ -7,14 +7,14 @@ module.exports = function (orm, db) {
         email           : { type: 'text', size: 255, required: true, unique: true,  mapsTo: 'email' },
         emailVerified   : { type: 'boolean', defaultValue: false, mapsTo: 'emailVerified' },
         username        : { type: 'text', size: 50, required: true, unique: true, mapsTo: 'username' },
-        password        : { type: 'text', size: 50, required: true, mapsTo: 'password' }
+        password        : { type: 'text', size: 50, required: true, mapsTo: 'password' },
+        admin           : { type: 'boolean', defaultValue: false, mapsTo: 'admin' }
     }, {
         collection: 'user',
         timestamp: true
     });
 
     User.hasOne('status', db.models.UserStatus, { required: true });
-    User.hasOne('type', db.models.UserType, { required: true });
     User.hasMany('professions', db.models.Profession, {}, { key: true });
     User.hasMany('services', db.models.Service, {}, { key: true });
 

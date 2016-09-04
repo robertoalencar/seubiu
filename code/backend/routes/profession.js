@@ -1,6 +1,7 @@
+var _ = require('lodash');
 var professionService = require('../services/profession-service');
 
-module.exports = function(router, isAuthenticated) {
+module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/professions/')
 
@@ -21,14 +22,14 @@ module.exports = function(router, isAuthenticated) {
             var errors = [];
             var id = req.params.id;
 
-            if (!id) {
+            if (_.isEmpty(id)) {
                 errors.push("ID is required");
             }
 
             if (errors.length == 0) {
 
                 professionService.getById(id).then(function(profession){
-                    if (!profession) res.status(404);
+                    if (_.isEmpty(profession)) res.status(404);
                     res.json(profession);
                 }, function(err) {
                     res.status(400).send(err);
@@ -54,7 +55,7 @@ module.exports = function(router, isAuthenticated) {
             if (errors.length == 0) {
 
                 professionService.getServicesByProfession(id).then(function(services){
-                    if (!services) res.status(404);
+                    if (_.isEmpty(services)) res.status(404);
                     res.json(services);
                 }, function(err) {
                     res.status(400).send(err);
