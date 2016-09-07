@@ -7,9 +7,9 @@ module.exports = function(router, isAuthenticated, isAdmin) {
         .get(function(req, res) {
 
             countryService.getAll().then(function(countries){
-                    res.json(countries);
-                }, function(err) {
-                    res.status(500).send(err);
+                res.json(countries);
+            }, function(err) {
+                res.status(500).send(err);
             });
 
         });

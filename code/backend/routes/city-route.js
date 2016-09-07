@@ -7,9 +7,9 @@ module.exports = function(router, isAuthenticated, isAdmin) {
         .get(function(req, res) {
 
             cityService.getAll().then(function(cities){
-                    res.json(cities);
-                }, function(err) {
-                    res.status(500).send(err);
+                res.json(cities);
+            }, function(err) {
+                res.status(500).send(err);
             });
 
         });
