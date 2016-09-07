@@ -67,7 +67,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api', require('./routes/'));
+app.get('/', function(req, res, next) {
+  res.render('index', { title: 'Seu Biu' });
+});
 
 app.get('/login',
   passport.authenticate('digest', { session: true }),
@@ -81,6 +83,8 @@ app.get('/logout', function (req, res){
     res.sendStatus(200);
   })
 });
+
+app.use('/api', require('./routes/'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

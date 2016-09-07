@@ -7,9 +7,9 @@ module.exports = function(router, isAuthenticated, isAdmin) {
         .get(function(req, res) {
 
             stateService.getAll().then(function(states){
-                    res.json(states);
-                }, function(err) {
-                    res.status(500).send(err);
+                res.json(states);
+            }, function(err) {
+                res.status(500).send(err);
             });
 
         });

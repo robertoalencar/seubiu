@@ -11,12 +11,12 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users')
 
-        .get(isAuthenticated, isAdmin, function(req, res) {
+        .get(isAdmin, function(req, res) {
 
             userService.getAll().then(function(users){
                 res.json(users);
             }, function(err) {
-                res.status(500).send(err.join(", "));
+                res.status(500).send(err);
             });
 
         })
@@ -31,7 +31,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.create(name, email, displayName, username, password).then(function(newUser){
                 res.json(newUser);
             }, function(err) {
-                res.status(400).send(err.join(", "));
+                res.status(400).send(err);
             });
 
         });
@@ -46,19 +46,19 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(user)) res.status(404);
                 res.json(user);
             }, function(err) {
-                res.status(400).send(err.join(", "));
+                res.status(400).send(err);
             });
 
         })
 
-        .delete(isAuthenticated, isAdmin, function(req, res) {
+        .delete(isAdmin, function(req, res) {
 
             var userId = req.params.userId;
 
             userService.remove(userId).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err.join(", "));
+                res.status(400).send(err);
             });
 
         });
@@ -66,7 +66,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId/addresses')
 
-        .post(function(req, res) {
+        .post(userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var description = req.body.description;
@@ -81,10 +81,11 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var stateId = req.body.stateId;
             var countryId = req.body.countryId;
 
-            userService.createAddress(userId, description, main, zipCode, address, number, district, cityId, stateId, countryId).then(function(newAddress){
+            userService.createAddress(userId, description, main, zipCode, address, number, complement,
+                district, reference, cityId, stateId, countryId).then(function(newAddress){
                 res.json(newAddress);
             }, function(err) {
-                res.status(400).send(err.join(", "));
+                res.status(400).send(err);
             });
 
         })
@@ -96,7 +97,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.getAddresses(userId).then(function(addresses){
                 res.json(addresses);
             }, function(err) {
-                res.status(400).send(err.join(", "));
+                res.status(400).send(err);
             });
 
         });
@@ -112,7 +113,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(address)) res.status(404);
                 res.json(address);
             }, function(err) {
-                res.status(400).send(err.join(", "));
+                res.status(400).send(err);
             });
 
         })
@@ -125,7 +126,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.removeAddress(userId, addressId).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err.join(", "));
+                res.status(400).send(err);
             });
 
         });

@@ -6,23 +6,38 @@ var getServicesByProfession = function(id) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        var errors = [];
 
-                db.models.Service.find({'profession_id': id}, [ 'description', 'A' ], function (err, services) {
+        if (!id) {
+            errors.push('Profession ID is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(services);
-                    }
+        if (errors.length != 0) {
 
-                    done(err, db, t);
+            reject(errors);
 
-                });
+        } else {
 
-            }
-        ]);
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.Service.find({'profession_id': id}, [ 'description', 'A' ], function (err, services) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(services);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };
@@ -56,23 +71,38 @@ var getById = function(id) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        var errors = [];
 
-                db.models.Profession.get(id, function(err, profession) {
+        if (!id) {
+            errors.push('Profession ID is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(profession);
-                    }
+        if (errors.length != 0) {
 
-                    done(err, db, t);
+            reject(errors);
 
-                });
+        } else {
 
-            }
-        ]);
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.Profession.get(id, function(err, profession) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(profession);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };

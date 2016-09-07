@@ -6,6 +6,7 @@ var cryptoUtil = require('../utils/crypto-util');
 var STATUS_NEW = 1;
 var MINIMUM_PASSWORD_SIZE = 8;
 
+
 var getByUsernameOrEmail = function(usernameOrEmail) {
 
     return new Promise(function (resolve, reject) {
@@ -129,18 +130,33 @@ var create = function(name, email, displayName, username, password) {
             transaction.doReadWrite([
                 function(db, t, done){
 
-                    getByUsernameOrEmail(username, email).then(function(existentUser){
-                        var err = null;
+                    db.models.User.exists({ 'username': username }, function (err, exists) {
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else if (exists) {
+                            err = ['Username already in use'];
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t);
+                        }
+                    });
 
-                        if (!_.isEmpty(existentUser)) {
-                            err = 'Username or email are in use';
-                            reject([err]);
-                        };
+                },
+                function(db, t, done){
 
-                        done(err, db, t);
-
-                    }, function(err) {
-                        done(err, db, t);
+                    db.models.User.exists({ 'email': email }, function (err, exists) {
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else if (exists) {
+                            err = ['Email already in use'];
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t);
+                        }
                     });
 
                 },
@@ -342,7 +358,8 @@ var removeAddress = function(userId, addressId) {
 
 };
 
-var createAddress = function(userId, description, main, zipCode, address, number, district, cityId, stateId, countryId) {
+var createAddress = function(userId, description, main, zipCode, address, number, complement,
+                district, reference, cityId, stateId, countryId) {
 
     return new Promise(function (resolve, reject) {
 
@@ -404,7 +421,9 @@ var createAddress = function(userId, description, main, zipCode, address, number
                             'zipCode': zipCode,
                             'address': address,
                             'number': number,
+                            'complement': complement,
                             'district': district,
+                            'reference': reference,
                             'user_id': userId,
                             'city_id': cityId,
                             'state_id': stateId,
