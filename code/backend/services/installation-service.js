@@ -6,23 +6,38 @@ var getByDeviceToken = function(deviceToken) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        var errors = [];
 
-                db.models.Installation.find({'deviceToken': deviceToken}, 1, function (err, installations) {
+        if (_.isEmpty(deviceToken)) {
+            errors.push("Device token is required");
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(_.first(installations));
-                    }
+        if (errors.length != 0) {
 
-                    done(err, db, t);
+            reject(errors);
 
-                });
+        } else {
 
-            }
-        ]);
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.Installation.find({'deviceToken': deviceToken}, 1, function (err, installations) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(_.first(installations));
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };
@@ -31,25 +46,48 @@ var create = function(deviceToken, deviceTypeId, appVersion) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadWrite([
-            function(db, t, done){
+        var errors = [];
 
-                db.models.Installation.create(
-                    {'deviceToken': deviceToken, 'appVersion': appVersion, 'devicetype_id': deviceTypeId},
-                    function(err, newInstallation) {
+        if (_.isEmpty(deviceToken)) {
+            errors.push("Device token is required");
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(newInstallation);
-                    }
+        if (_.isEmpty(appVersion)) {
+            errors.push("App version is required");
+        }
 
-                    done(err, db, t);
+        if (_.isEmpty(deviceTypeId)) {
+            errors.push("Device type is required");
+        }
 
-                });
+        if (errors.length != 0) {
 
-            }
-        ]);
+            reject(errors);
+
+        } else {
+
+            transaction.doReadWrite([
+                function(db, t, done){
+
+                    db.models.Installation.create(
+                        {'deviceToken': deviceToken, 'appVersion': appVersion, 'devicetype_id': deviceTypeId},
+                        function(err, newInstallation) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(newInstallation);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };

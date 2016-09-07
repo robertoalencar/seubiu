@@ -4,6 +4,7 @@ var transaction = require('../utils/orm-db-transaction');
 var cryptoUtil = require('../utils/crypto-util');
 
 var STATUS_NEW = 1;
+var MINIMUM_PASSWORD_SIZE = 8;
 
 var getByUsernameOrEmail = function(usernameOrEmail) {
 
@@ -12,7 +13,7 @@ var getByUsernameOrEmail = function(usernameOrEmail) {
         transaction.doReadOnly([
             function(db, t, done) {
 
-                db.models.User.find({'emailVerified': true, or:[{'username': usernameOrEmail}, {'email': usernameOrEmail}]}, 1, function (err, users) {
+                db.models.User.find({or:[{'username': usernameOrEmail}, {'email': usernameOrEmail}]}, 1, function (err, users) {
 
                     if (err) {
                         reject(err);
@@ -34,23 +35,38 @@ var getById = function(id) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        var errors = [];
 
-                db.models.User.get(id, function(err, user) {
+        if (!id) {
+            errors.push('User ID is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(user);
-                    }
+        if (errors.length != 0) {
 
-                    done(err, db, t);
+            reject(errors);
 
-                });
+        } else {
 
-            }
-        ]);
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.User.get(id, function(err, user) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(user);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };
@@ -84,32 +100,80 @@ var create = function(name, email, displayName, username, password) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadWrite([
-            function(db, t, done){
+        var errors = [];
 
-                db.models.User.create(
-                    {
-                        'name': name,
-                        'displayName': displayName,
-                        'email': email,
-                        'username': username,
-                        'password': cryptoUtil.encrypt(password),
-                        'status_id': STATUS_NEW
-                    },
-                    function(err, newUser) {
+        if (_.isEmpty(name)) {
+            errors.push('Name is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(newUser);
-                    }
+        if (_.isEmpty(email)) {
+            errors.push('Email is required');
+        }
 
-                    done(err, db, t);
+        if (_.isEmpty(username)) {
+            errors.push('Username is required');
+        }
 
-                });
+        if (_.isEmpty(password)) {
+            errors.push('Password is required');
+        } else if (password.length < MINIMUM_PASSWORD_SIZE) {
+            errors.push('Password is too short: < ' + MINIMUM_PASSWORD_SIZE);
+        }
 
-            }
-        ]);
+        if (errors.length != 0) {
+
+            reject(errors);
+
+        } else {
+
+            transaction.doReadWrite([
+                function(db, t, done){
+
+                    getByUsernameOrEmail(username, email).then(function(existentUser){
+                        var err = null;
+
+                        if (!_.isEmpty(existentUser)) {
+                            err = 'Username or email are in use';
+                            reject([err]);
+                        };
+
+                        done(err, db, t);
+
+                    }, function(err) {
+                        done(err, db, t);
+                    });
+
+                },
+                function(db, t, done){
+
+                    db.models.User.create(
+                        {
+                            'name': name,
+                            'displayName': displayName,
+                            'email': email,
+                            'username': username,
+                            'password': cryptoUtil.encrypt(password),
+                            'status_id': STATUS_NEW,
+                            'admin': false,
+                            'emailVerified': true
+                        },
+                        function(err, newUser) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(newUser);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };
@@ -118,23 +182,36 @@ var remove = function(id) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadWrite([
-            function(db, t, done){
+        var errors = [];
 
-                db.models.User.find({ 'id': id }).remove(function (err) {
+        if (!id) {
+            errors.push('User ID is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(true);
-                    }
+        if (errors.length != 0) {
 
-                    done(err, db, t);
+            reject(errors);
 
-                });
+        } else {
+            transaction.doReadWrite([
+                function(db, t, done){
 
-            }
-        ]);
+                    db.models.User.find({ 'id': id }).remove(function (err) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(true);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+        }
+
     });
 
 };
@@ -143,23 +220,38 @@ var getAddresses = function(id) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        var errors = [];
 
-                db.models.UserAddress.find({'user_id': id}, [ 'description', 'A' ], function (err, addresses) {
+        if (!id) {
+            errors.push('User ID is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(addresses);
-                    }
+        if (errors.length != 0) {
 
-                    done(err, db, t);
+            reject(errors);
 
-                });
+        } else {
 
-            }
-        ]);
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.UserAddress.find({'user_id': id}, [ 'description', 'A' ], function (err, addresses) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(addresses);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };
@@ -168,23 +260,41 @@ var getAddress = function(userId, addressId) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        var errors = [];
 
-                db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
+        if (!userId) {
+            errors.push('User ID is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(_.first(addresses));
-                    }
+        if (!addressId) {
+            errors.push('Address ID is required');
+        }
 
-                    done(err, db, t);
+        if (errors.length != 0) {
 
-                });
+            reject(errors);
 
-            }
-        ]);
+        } else {
+
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(_.first(addresses));
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+        }
+
     });
 
 };
@@ -193,23 +303,41 @@ var removeAddress = function(userId, addressId) {
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadWrite([
-            function(db, t, done){
+        var errors = [];
 
-                db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
+        if (!userId) {
+            errors.push('User ID is required');
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(true);
-                    }
+        if (!addressId) {
+            errors.push('Address ID is required');
+        }
 
-                    done(err, db, t);
+        if (errors.length != 0) {
 
-                });
+            reject(errors);
 
-            }
-        ]);
+        } else {
+
+            transaction.doReadWrite([
+                function(db, t, done){
+
+                    db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(true);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+        }
+
     });
 
 };
@@ -218,36 +346,87 @@ var createAddress = function(userId, description, main, zipCode, address, number
 
     return new Promise(function (resolve, reject) {
 
-        transaction.doReadWrite([
-            function(db, t, done){
+        var errors = [];
 
-                db.models.UserAddress.create(
-                    {
-                        'description': description,
-                        'main': Boolean(main),
-                        'zipCode': zipCode,
-                        'address': address,
-                        'number': number,
-                        'district': district,
-                        'user_id': userId,
-                        'city_id': cityId,
-                        'state_id': stateId,
-                        'country_id': countryId
-                    },
-                    function(err, newAddress) {
+        if (!userId) {
+            errors.push("User ID is required");
+        }
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(newAddress);
-                    }
+        if (_.isEmpty(description)) {
+            errors.push("Description is required");
+        }
 
-                    done(err, db, t);
+        if (_.isEmpty(main)) {
+            errors.push("Main is required");
+        }
 
-                });
+        if (!zipCode) {
+            errors.push("ZipCode is required");
+        }
 
-            }
-        ]);
+        if (_.isEmpty(address)) {
+            errors.push("Address is required");
+        }
+
+        if (!number) {
+            errors.push("Number is required");
+        }
+
+        if (_.isEmpty(district)) {
+            errors.push("District is required");
+        }
+
+        if (!cityId) {
+            errors.push("City ID is required");
+        }
+
+        if (!stateId) {
+            errors.push("State Id is required");
+        }
+
+        if (!countryId) {
+            errors.push("Country ID is required");
+        }
+
+        if (errors.length != 0) {
+
+            reject(errors);
+
+        } else {
+
+            transaction.doReadWrite([
+                function(db, t, done){
+
+                    db.models.UserAddress.create(
+                        {
+                            'description': description,
+                            'main': Boolean(main),
+                            'zipCode': zipCode,
+                            'address': address,
+                            'number': number,
+                            'district': district,
+                            'user_id': userId,
+                            'city_id': cityId,
+                            'state_id': stateId,
+                            'country_id': countryId
+                        },
+                        function(err, newAddress) {
+
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(newAddress);
+                        }
+
+                        done(err, db, t);
+
+                    });
+
+                }
+            ]);
+
+        }
+
     });
 
 };
