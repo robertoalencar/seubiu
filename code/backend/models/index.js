@@ -1,20 +1,20 @@
 module.exports = function (orm, db) {
 
-  //require('./auth-provider')(orm, db);
-  require('./device-type')(orm, db);
-  require('./installation')(orm, db);
-  require('./service')(orm, db);
-  require('./profession')(orm, db);
-  require('./user-status')(orm, db);
-  require('./user')(orm, db);
-  require('./user-address')(orm, db);
-  require('./city')(orm, db);
-  require('./state')(orm, db);
-  require('./country')(orm, db);
-  //require('./user-rating')(orm, db);
-  //require('./session')(orm, db);
-  //require('./comment')(orm, db);
-  //require('./request-status')(orm, db);
-  //require('./request')(orm, db);
+  //require('./auth-provider-model')(orm, db);
+  require('./device-type-model')(orm, db);
+  require('./installation-model')(orm, db);
+  require('./service-model')(orm, db);
+  require('./profession-model')(orm, db);
+  require('./user-status-model')(orm, db);
+  require('./user-model')(orm, db);
+  require('./user-address-model')(orm, db);
+  require('./city-model')(orm, db);
+  require('./state-model')(orm, db);
+  require('./country-model')(orm, db);
+  //require('./user-rating-model')(orm, db);
+  //require('./session-model')(orm, db);
+  //require('./comment-model')(orm, db);
+  //require('./request-status-model')(orm, db);
+  //require('./request-model')(orm, db);
 
 };

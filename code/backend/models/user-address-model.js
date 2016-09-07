@@ -6,9 +6,9 @@ module.exports = function (orm, db) {
         main       : { type: 'boolean', defaultValue: false, mapsTo: 'main' },
         zipCode    : { type: 'text', size: 50, required: true, mapsTo: 'zipcode' },
         address    : { type: 'text', size: 200, required: true, mapsTo: 'address' },
-        district   : { type: 'text', size: 100, required: true, mapsTo: 'district' },
         number     : { type: 'number', required: true, mapsTo: 'number' },
         complement : { type: 'text', size: 255, mapsTo: 'complement' },
+        district   : { type: 'text', size: 100, required: true, mapsTo: 'district' },
         reference  : { type: 'text', size: 255, mapsTo: 'reference' }
     }, {
         collection: 'user_address'

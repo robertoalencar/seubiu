@@ -3,7 +3,7 @@ var professionService = require('../services/profession-service');
 
 module.exports = function(router, isAuthenticated, isAdmin) {
 
-    router.route('/professions/')
+    router.route('/professions')
 
         .get(function(req, res) {
 

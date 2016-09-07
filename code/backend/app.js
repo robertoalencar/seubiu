@@ -13,6 +13,9 @@ var cryptoUtil = require('./utils/crypto-util');
 
 var userService = require('./services/user-service');
 
+var unauthorizedError = new Error();
+unauthorizedError.stays = 401;
+
 passport.use(new Strategy({ qop: 'auth' },
   function(username, done) {
     userService.getByUsernameOrEmail(username).then(function(user){
@@ -22,7 +25,7 @@ passport.use(new Strategy({ qop: 'auth' },
         done(null, user, cryptoUtil.decrypt(user.password));
       }
     }, function(err) {
-      done(err);
+      done(unauthorizedError);
     });
 
   }));
@@ -36,7 +39,7 @@ passport.deserializeUser(function(id, done) {
   userService.getById(id).then(function(user){
       done(null, user);
     }, function(err) {
-      done(err);
+      done(unauthorizedError);
     });
 
 });

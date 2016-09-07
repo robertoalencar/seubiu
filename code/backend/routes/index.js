@@ -11,8 +11,11 @@ function isAdmin(req, res, next) {
   res.sendStatus(403);
 }
 
-require('./user')(router, isAuthenticated, isAdmin);
-require('./installation')(router, isAuthenticated, isAdmin);
-require('./profession')(router, isAuthenticated, isAdmin);
+require('./user-route')(router, isAuthenticated, isAdmin);
+require('./installation-route')(router, isAuthenticated, isAdmin);
+require('./profession-route')(router, isAuthenticated, isAdmin);
+require('./state-route')(router, isAuthenticated, isAdmin);
+require('./city-route')(router, isAuthenticated, isAdmin);
+require('./country-route')(router, isAuthenticated, isAdmin);
 
 module.exports = router;

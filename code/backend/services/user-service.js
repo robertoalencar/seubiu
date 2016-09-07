@@ -114,11 +114,128 @@ var remove = function(id) {
 
 };
 
+var getAddresses = function(id) {
+
+    return new Promise(function (resolve, reject) {
+
+        transaction.doReadOnly([
+            function(db, t, done) {
+
+                db.models.UserAddress.find({'user_id': id}, [ 'description', 'A' ], function (err, addresses) {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(addresses);
+                    }
+
+                    done(err, db, t);
+
+                });
+
+            }
+        ]);
+    });
+
+};
+
+var getAddress = function(userId, addressId) {
+
+    return new Promise(function (resolve, reject) {
+
+        transaction.doReadOnly([
+            function(db, t, done) {
+
+                db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(_.first(addresses));
+                    }
+
+                    done(err, db, t);
+
+                });
+
+            }
+        ]);
+    });
+
+};
+
+var removeAddress = function(userId, addressId) {
+
+    return new Promise(function (resolve, reject) {
+
+        transaction.doReadWrite([
+            function(db, t, done){
+
+                db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+
+                    done(err, db, t);
+
+                });
+
+            }
+        ]);
+    });
+
+};
+
+var createAddress = function(userId, description, main, zipCode, address, number, district, cityId, stateId, countryId) {
+
+    return new Promise(function (resolve, reject) {
+
+        transaction.doReadWrite([
+            function(db, t, done){
+
+                db.models.UserAddress.create(
+                    {
+                        'description': description,
+                        'main': Boolean(main),
+                        'zipCode': zipCode,
+                        'address': address,
+                        'number': number,
+                        'district': district,
+                        'user_id': userId,
+                        'city_id': cityId,
+                        'state_id': stateId,
+                        'country_id': countryId
+                    },
+                    function(err, newAddress) {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(newAddress);
+                    }
+
+                    done(err, db, t);
+
+                });
+
+            }
+        ]);
+    });
+
+};
+
 module.exports = {
 
     getByUsernameOrEmail: getByUsernameOrEmail,
     getById: getById,
     create: create,
-    remove: remove
+    remove: remove,
+    createAddress: createAddress,
+    getAddresses: getAddresses,
+    getAddress: getAddress,
+    removeAddress: removeAddress
 
 };
