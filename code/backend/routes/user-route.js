@@ -11,6 +11,17 @@ module.exports = function(router, isAuthenticated, isAdmin) {
     }
 
     router.route('/users')
+
+        .get(isAuthenticated, isAdmin, function(req, res) {
+
+            userService.getAll().then(function(users){
+                    res.json(users);
+                }, function(err) {
+                    res.status(500).send(err);
+            });
+
+        })
+
         .post(function(req, res) {
             var errors = [];
             var name = req.body.name;
@@ -75,10 +86,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 res.status(400).send(errors.join(", "));
             }
 
-        });
-
-
-    router.route('/users/:userId')
+        })
 
         .delete(isAuthenticated, isAdmin, function(req, res) {
 
@@ -229,9 +237,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 res.status(400).send(errors.join(", "));
             }
 
-        });
-
-    router.route('/users/:userId/addresses/:addressId')
+        })
 
         .delete(userHasAccess, function(req, res) {
 

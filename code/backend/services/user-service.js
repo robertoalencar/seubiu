@@ -55,6 +55,31 @@ var getById = function(id) {
 
 };
 
+var getAll = function() {
+
+    return new Promise(function (resolve, reject) {
+
+        transaction.doReadOnly([
+            function(db, t, done) {
+
+                db.models.User.find({}, [ 'name', 'A' ], function (err, users) {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(users);
+                    }
+
+                    done(err, db, t);
+
+                });
+
+            }
+        ]);
+    });
+
+};
+
 var create = function(name, email, displayName, username, password) {
 
     return new Promise(function (resolve, reject) {
@@ -231,6 +256,7 @@ module.exports = {
 
     getByUsernameOrEmail: getByUsernameOrEmail,
     getById: getById,
+    getAll: getAll,
     create: create,
     remove: remove,
     createAddress: createAddress,
