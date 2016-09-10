@@ -13,7 +13,7 @@ module.exports = function (orm, db) {
   require('./country-model')(orm, db);
   //require('./user-rating-model')(orm, db);
   //require('./session-model')(orm, db);
-  //require('./comment-model')(orm, db);
+  //require('./request-comment-model')(orm, db);
   //require('./request-status-model')(orm, db);
   //require('./request-model')(orm, db);
 

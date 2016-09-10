@@ -8,12 +8,11 @@ module.exports = function (orm, db) {
         timestamp: true
     });
 
-    Request.hasOne('status', db.models.RequestStatus, { required: true });
     Request.hasOne('owner', db.models.User, { required: true, reverse: 'requests' });
     Request.hasOne('profession', db.models.Profession, { required: true });
-    Request.hasOne('professional', db.models.User, { required: false, alwaysValidate: true, reverse: 'matchedRequests' });
+    Request.hasOne('status', db.models.RequestStatus, { required: true });
     Request.hasMany('services', db.models.Service, {}, { key: true });
     Request.hasMany('candidates', db.models.User, {}, { key: true });
-    Request.hasMany('comments', db.models.Comment, {}, { key: true });
+    Request.hasOne('professional', db.models.User, { required: false, alwaysValidate: true, reverse: 'matchedRequests' });
 
 };
