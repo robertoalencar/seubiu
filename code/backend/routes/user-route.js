@@ -131,4 +131,60 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         });
 
+    router.route('/users/:userId/professions')
+
+        .post(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+            var professionIds = req.body.professionIds;
+
+            userService.setProfessions(userId, professionIds).then(function(success){
+                res.status(200).send(success);
+            }, function(err) {
+                res.status(400).send(err);
+            });
+
+
+        })
+
+        .get(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+
+            userService.getProfessions(userId).then(function(professions){
+                res.json(professions);
+            }, function(err) {
+                res.status(400).send(err);
+            });
+
+        });
+
+    router.route('/users/:userId/services')
+
+        .post(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+            var servicesIds = req.body.servicesIds;
+
+            userService.setServices(userId, servicesIds).then(function(success){
+                res.status(200).send(success);
+            }, function(err) {
+                res.status(400).send(err);
+            });
+
+
+        })
+
+        .get(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+
+            userService.getServices(userId).then(function(services){
+                res.json(services);
+            }, function(err) {
+                res.status(400).send(err);
+            });
+
+        });
+
 };

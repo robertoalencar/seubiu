@@ -450,6 +450,241 @@ var createAddress = function(userId, description, main, zipCode, address, number
 
 };
 
+var setProfessions = function(userId, professionIds) {
+
+    return new Promise(function (resolve, reject) {
+
+        var errors = [];
+
+        if (!userId) {
+            errors.push('User ID is required');
+        }
+
+        if (_.isEmpty(professionIds)) {
+            errors.push('Profession IDs are required');
+        }
+
+        if (errors.length != 0) {
+
+            reject(errors);
+
+        } else {
+
+            transaction.doReadWrite([
+                function(db, t, done) {
+
+                    db.models.User.get(userId, function(err, user) {
+
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t, user);
+                        }
+
+                    });
+
+                },
+                function(db, t, user, done) {
+
+                    db.models.Profession.find({'id': professionIds}, function(err, professions) {
+
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t, user, professions);
+                        }
+
+                    });
+
+                },
+                function(db, t, user, professions, done) {
+
+                    user.setProfessions(professions, function(err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(true);
+                        }
+
+                        done(err, db, t);
+                    });
+
+                }
+            ]);
+        }
+
+    });
+};
+
+var getProfessions = function(userId) {
+    return new Promise(function (resolve, reject) {
+
+        var errors = [];
+
+        if (!userId) {
+            errors.push('User ID is required');
+        }
+
+        if (errors.length != 0) {
+
+            reject(errors);
+
+        } else {
+
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.User.get(userId, function(err, user) {
+
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t, user);
+                        }
+
+                    });
+
+                },
+                function(db, t, user, done) {
+
+                    user.getProfessions(function(err, professions) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(professions);
+                        }
+
+                        done(err, db, t);
+                    });
+
+                }
+            ]);
+        }
+
+    });
+};
+
+var setServices = function(userId, servicesIds) {
+
+    return new Promise(function (resolve, reject) {
+
+        var errors = [];
+
+        if (!userId) {
+            errors.push('User ID is required');
+        }
+
+        if (_.isEmpty(servicesIds)) {
+            errors.push('Service IDs are required');
+        }
+
+        if (errors.length != 0) {
+
+            reject(errors);
+
+        } else {
+
+            transaction.doReadWrite([
+                function(db, t, done) {
+
+                    db.models.User.get(userId, function(err, user) {
+
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t, user);
+                        }
+
+                    });
+
+                },
+                function(db, t, user, done) {
+
+                    db.models.Service.find({'id': servicesIds}, function(err, services) {
+
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t, user, services);
+                        }
+
+                    });
+
+                },
+                function(db, t, user, services, done) {
+
+                    user.setServices(services, function(err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(true);
+                        }
+
+                        done(err, db, t);
+                    });
+
+                }
+            ]);
+        }
+
+    });
+};
+
+var getServices = function(userId) {
+    return new Promise(function (resolve, reject) {
+
+        var errors = [];
+
+        if (!userId) {
+            errors.push('User ID is required');
+        }
+
+        if (errors.length != 0) {
+
+            reject(errors);
+
+        } else {
+
+            transaction.doReadOnly([
+                function(db, t, done) {
+
+                    db.models.User.get(userId, function(err, user) {
+
+                        if (err) {
+                            reject(err);
+                            done(err, db, t);
+                        } else {
+                            done(err, db, t, user);
+                        }
+
+                    });
+
+                },
+                function(db, t, user, done) {
+
+                    user.getServices(function(err, services) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(services);
+                        }
+
+                        done(err, db, t);
+                    });
+
+                }
+            ]);
+        }
+
+    });
+};
+
+
 module.exports = {
 
     getByUsernameOrEmail: getByUsernameOrEmail,
@@ -460,6 +695,10 @@ module.exports = {
     createAddress: createAddress,
     getAddresses: getAddresses,
     getAddress: getAddress,
-    removeAddress: removeAddress
+    removeAddress: removeAddress,
+    setProfessions: setProfessions,
+    getProfessions: getProfessions,
+    setServices: setServices,
+    getServices: getServices
 
 };
