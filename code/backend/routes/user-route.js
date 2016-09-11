@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var userService = require('../services/user-service');
+var userAddressService = require('../services/user-address-service');
 
 module.exports = function(router, isAuthenticated, isAdmin) {
 
@@ -104,7 +105,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var stateId = req.body.stateId;
             var countryId = req.body.countryId;
 
-            userService.createAddress(userId, description, main, zipCode, address, number, complement,
+            userAddressService.createAddress(userId, description, main, zipCode, address, number, complement,
                 district, reference, cityId, stateId, countryId).then(function(newAddress){
                 res.json(newAddress);
             }, function(err) {
@@ -117,7 +118,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userService.getAddresses(userId).then(function(addresses){
+            userAddressService.getAddresses(userId).then(function(addresses){
                 res.json(addresses);
             }, function(err) {
                 res.status(400).send(err);
@@ -132,8 +133,32 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var userId = req.params.userId;
             var addressId = req.params.addressId;
 
-            userService.getAddress(userId, addressId).then(function(address){
+            userAddressService.getAddress(userId, addressId).then(function(address){
                 if (_.isEmpty(address)) res.status(404);
+                res.json(address);
+            }, function(err) {
+                res.status(400).send(err);
+            });
+
+        })
+
+        .put(userHasAccess, function(req, res) {
+
+            /*
+            //http://tools.ietf.org/html/rfc6902
+
+            {
+              "patches": [
+               { "op": "replace", "path": "/description", "value": "New value" }
+              ]
+            }
+
+            */
+
+            var userId = req.params.userId;
+            var addressId = req.params.addressId;
+
+            userAddressService.updateAddress(userId, addressId, req.body.patches).then(function(address){
                 res.json(address);
             }, function(err) {
                 res.status(400).send(err);
@@ -146,7 +171,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var userId = req.params.userId;
             var addressId = req.params.addressId;
 
-            userService.removeAddress(userId, addressId).then(function(success){
+            userAddressService.removeAddress(userId, addressId).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
                 res.status(400).send(err);
