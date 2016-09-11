@@ -684,6 +684,159 @@ var getServices = function(userId) {
     });
 };
 
+var checkSecurityForPatches = function(patches, isAdmin){
+    var errors = [];
+    var hasPathAllowedOnlyForAdmin = false;
+
+    _(patches).forEach(function(patchOp) {
+
+        if (patchOp.path == '/admin' || patchOp.path == '/emailVerified' || patchOp.path == '/status') {
+            hasPathAllowedOnlyForAdmin = true;
+        }
+
+    });
+
+    if (hasPathAllowedOnlyForAdmin && !isAdmin) {
+        errors.push('Path allowed only for administrators');
+    }
+
+    return errors;
+
+};
+
+var applyPatchesForUser = function(user, patches) {
+
+    _(patches).forEach(function(patchOp) {
+
+        switch (patchOp.path) {
+
+            case  '/name':
+
+                if (patchOp.op == 'replace') {
+                    user.name = patchOp.value;
+                }
+
+            break;
+
+            case  '/displayName':
+
+                if (patchOp.op == 'replace') {
+                    user.displayName = patchOp.value;
+                } else if (patchOp.op == 'remove') {
+                    user.displayName = '';
+                }
+
+            break;
+
+            case  '/emailVerified':
+
+                if (patchOp.op == 'replace') {
+                    user.emailVerified = patchOp.value;
+                } else if (patchOp.op == 'remove') {
+                    user.emailVerified = false;
+                }
+
+            break;
+
+            case  '/password':
+
+                if (patchOp.op == 'replace') {
+                    user.password = cryptoUtil.encrypt(patchOp.value);
+                }
+
+            break;
+
+            case  '/admin':
+
+                if (patchOp.op == 'replace') {
+                    user.admin = patchOp.value;
+                } else if (patchOp.op == 'remove') {
+                    user.admin = false;
+                }
+
+            break;
+
+            case  '/status':
+
+                if (patchOp.op == 'replace') {
+                    user.status_id = patchOp.value;
+                }
+
+            break;
+        }
+
+    });
+
+};
+
+var update = function(userId, patches, isAdmin) {
+
+    return new Promise(function (resolve, reject) {
+
+        var errors = [];
+
+        if (!userId) {
+            errors.push('User ID is required');
+        }
+
+        if (_.isEmpty(patches)) {
+            errors.push('Patches are required');
+        }
+
+        if (!_.isEmpty(errors)) {
+
+            reject(errors);
+
+        } else {
+
+            transaction.doReadWrite([
+                function(db, t, done) {
+
+                    db.models.User.get(userId, function(err, user) {
+
+                        if (err) {
+                            reject(err);
+                        }
+
+                        done(err, db, t, user);
+
+                    });
+
+                },
+                function(db, t, user, done) {
+
+                    var err = checkSecurityForPatches(patches, isAdmin);
+
+                    if (!_.isEmpty(err)) {
+                        reject(err);
+                        done(err, db, t);
+                    } else {
+
+                        applyPatchesForUser(user, patches);
+
+                        user.save(function(err) {
+
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve(user);
+                            }
+
+                            done(err, db, t);
+
+                        });
+
+                    }
+
+                }
+            ]);
+
+        }
+
+    });
+
+};
+
 
 module.exports = {
 
@@ -699,6 +852,7 @@ module.exports = {
     setProfessions: setProfessions,
     getProfessions: getProfessions,
     setServices: setServices,
-    getServices: getServices
+    getServices: getServices,
+    update: update
 
 };

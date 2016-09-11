@@ -51,6 +51,29 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
+         .put(userHasAccess, function(req, res) {
+
+            /*
+            //http://tools.ietf.org/html/rfc6902
+
+            {
+              "patches": [
+               { "op": "replace", "path": "/displayName", "value": "New value" }
+              ]
+            }
+
+            */
+
+            var userId = req.params.userId;
+
+            userService.update(userId, req.body.patches, req.user.admin).then(function(user){
+                res.json(user);
+            }, function(err) {
+                res.status(400).send(err);
+            });
+
+        })
+
         .delete(isAdmin, function(req, res) {
 
             var userId = req.params.userId;
