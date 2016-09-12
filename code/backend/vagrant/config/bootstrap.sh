@@ -114,7 +114,7 @@ echo "  PGUSER=$APP_DB_USER PGPASSWORD=$APP_DB_PASS psql -h localhost -p 15432 $
 echo ""
 
 # Install Node.js and NPM
-apt-get remove nodejs
+apt-get remove -y nodejs
 curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 apt-get install -y nodejs
 
