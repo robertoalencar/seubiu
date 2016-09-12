@@ -1,42 +1,34 @@
-var Promise = require('promise');
 var _ = require('lodash');
+var await = require('asyncawait/await');
+var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
 var getServicesByProfession = function(id) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!id) {
-            errors.push('Profession ID is required');
-        }
+            var errors = [];
 
-        if (errors.length != 0) {
+            if (!id) {
+                errors.push('Profession ID is required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+            } else {
 
-                    db.models.Service.find({'profession_id': id}, [ 'description', 'A' ], function (err, services) {
+                db.models.Service.find({'profession_id': id}, [ 'description', 'A' ], function (err, services) {
+                    if (err) reject(err);
+                    resolve(services);
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(services);
-                        }
+            }
 
-                        done(err, db, t);
-
-                    });
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 
@@ -44,64 +36,47 @@ var getServicesByProfession = function(id) {
 
 var getAll = function() {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        return await (new Promise(function (resolve, reject) {
 
-                db.models.Profession.find({}, [ 'description', 'A' ], function (err, professions) {
+            db.models.Profession.find({}, [ 'description', 'A' ], function (err, professions) {
+                if (err) reject(err);
+                resolve(professions);
+            });
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(professions);
-                    }
+        }));
 
-                    done(err, db, t);
-
-                });
-
-            }
-        ]);
     });
 
 };
 
 var getById = function(id) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!id) {
-            errors.push('Profession ID is required');
-        }
+            var errors = [];
 
-        if (errors.length != 0) {
+            if (!id) {
+                errors.push('Profession ID is required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+            } else {
 
-                    db.models.Profession.get(id, function(err, profession) {
+                db.models.Profession.get(id, function(err, profession) {
+                    if (err) reject(err);
+                    resolve(profession);
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(profession);
-                        }
+            }
 
-                        done(err, db, t);
-
-                    });
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 

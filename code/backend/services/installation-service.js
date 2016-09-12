@@ -1,42 +1,34 @@
-var Promise = require('promise');
 var _ = require('lodash');
+var await = require('asyncawait/await');
+var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
 var getByDeviceToken = function(deviceToken) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (_.isEmpty(deviceToken)) {
-            errors.push("Device token is required");
-        }
+            var errors = [];
 
-        if (errors.length != 0) {
+            if (_.isEmpty(deviceToken)) {
+                errors.push("Device token is required");
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+            } else {
 
-                    db.models.Installation.find({'deviceToken': deviceToken}, 1, function (err, installations) {
+                db.models.Installation.find({'deviceToken': deviceToken}, 1, function (err, installations) {
+                    if (err) reject(err);
+                    resolve(_.first(installations));
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(_.first(installations));
-                        }
+            }
 
-                        done(err, db, t);
-
-                    });
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 
@@ -44,49 +36,39 @@ var getByDeviceToken = function(deviceToken) {
 
 var create = function(deviceToken, deviceTypeId, appVersion) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (_.isEmpty(deviceToken)) {
-            errors.push("Device token is required");
-        }
+            var errors = [];
 
-        if (_.isEmpty(appVersion)) {
-            errors.push("App version is required");
-        }
+            if (_.isEmpty(deviceToken)) {
+                errors.push("Device token is required");
+            }
 
-        if (_.isEmpty(deviceTypeId)) {
-            errors.push("Device type is required");
-        }
+            if (_.isEmpty(appVersion)) {
+                errors.push("App version is required");
+            }
 
-        if (errors.length != 0) {
+            if (_.isEmpty(deviceTypeId)) {
+                errors.push("Device type is required");
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadWrite([
-                function(db, t, done){
+            } else {
 
-                    db.models.Installation.create(
-                        {'deviceToken': deviceToken, 'appVersion': appVersion, 'devicetype_id': deviceTypeId},
-                        function(err, newInstallation) {
+                db.models.Installation.create({'deviceToken': deviceToken, 'appVersion': appVersion, 'devicetype_id': deviceTypeId}, function(err, newInstallation) {
+                    if (err) reject(err);
+                    resolve(newInstallation);
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(newInstallation);
-                        }
+            }
 
-                        done(err, db, t);
 
-                    });
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 

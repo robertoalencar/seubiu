@@ -114,8 +114,8 @@ echo "  PGUSER=$APP_DB_USER PGPASSWORD=$APP_DB_PASS psql -h localhost -p 15432 $
 echo ""
 
 # Install Node.js and NPM
-add-apt-repository ppa:chris-lea/node.js
-apt-get update
+apt-get remove nodejs
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 apt-get install -y nodejs
 
 # Install Grunt

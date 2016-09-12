@@ -1,72 +1,69 @@
-var Promise = require('promise');
 var _ = require('lodash');
+var await = require('asyncawait/await');
+var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var cryptoUtil = require('../utils/crypto-util');
 
 var STATUS_NEW = 1;
 var MINIMUM_PASSWORD_SIZE = 8;
 
-
 var getByUsernameOrEmail = function(usernameOrEmail) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!_.isEmpty(usernameOrEmail)) {
+                errors.push('Username or email is required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(errors);
+
+            } else {
 
                 db.models.User.find({or:[{'username': usernameOrEmail}, {'email': usernameOrEmail}]}, 1, function (err, users) {
-
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(_.first(users));
-                    }
-
-                    done(err, db, t);
-
+                    if (err) reject(err);
+                    resolve(_.first(users));
                 });
 
             }
-        ]);
+
+        }));
+
     });
 
 };
 
 var getById = function(id) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!id) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (errors.length != 0) {
+            if (!id) {
+                errors.push('User ID is required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+            } else {
 
-                    db.models.User.get(id, function(err, user) {
+                db.models.User.get(id, function(err, user) {
+                    if (err) reject(err);
+                    resolve(user);
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(user);
-                        }
+            }
 
-                        done(err, db, t);
-
-                    });
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 
@@ -74,95 +71,62 @@ var getById = function(id) {
 
 var getAll = function() {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        return await (new Promise(function (resolve, reject) {
 
-                db.models.User.find({}, [ 'name', 'A' ], function (err, users) {
+            db.models.User.find({}, [ 'name', 'A' ], function (err, users) {
+                if (err) reject(err);
+                resolve(users);
+            });
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(users);
-                    }
+        }));
 
-                    done(err, db, t);
-
-                });
-
-            }
-        ]);
     });
 
 };
 
 var create = function(name, email, displayName, username, password) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (_.isEmpty(name)) {
-            errors.push('Name is required');
-        }
+            var errors = [];
 
-        if (_.isEmpty(email)) {
-            errors.push('Email is required');
-        }
+            if (_.isEmpty(name)) {
+                errors.push('Name is required');
+            }
 
-        if (_.isEmpty(username)) {
-            errors.push('Username is required');
-        }
+            if (_.isEmpty(email)) {
+                errors.push('Email is required');
+            }
 
-        if (_.isEmpty(password)) {
-            errors.push('Password is required');
-        } else if (password.length < MINIMUM_PASSWORD_SIZE) {
-            errors.push('Password is too short: < ' + MINIMUM_PASSWORD_SIZE);
-        }
+            if (_.isEmpty(username)) {
+                errors.push('Username is required');
+            }
 
-        if (errors.length != 0) {
+            if (_.isEmpty(password)) {
+                errors.push('Password is required');
+            } else if (password.length < MINIMUM_PASSWORD_SIZE) {
+                errors.push('Password is too short: < ' + MINIMUM_PASSWORD_SIZE);
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadWrite([
-                function(db, t, done){
+            } else {
 
-                    db.models.User.exists({ 'username': username }, function (err, exists) {
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else if (exists) {
-                            err = ['Username already in use'];
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t);
-                        }
-                    });
+                db.models.User.exists({ 'username': username }, function (err, exists) {
+                    if (err) reject(err);
+                    if (exists) reject(['Username already in use']);
 
-                },
-                function(db, t, done){
+                     db.models.User.exists({ 'email': email }, function (err, exists) {
+                        if (err) reject(err);
+                        if (exists) reject(['Email already in use']);
 
-                    db.models.User.exists({ 'email': email }, function (err, exists) {
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else if (exists) {
-                            err = ['Email already in use'];
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t);
-                        }
-                    });
-
-                },
-                function(db, t, done){
-
-                    db.models.User.create(
+                        db.models.User.create(
                         {
                             'name': name,
                             'displayName': displayName,
@@ -172,23 +136,18 @@ var create = function(name, email, displayName, username, password) {
                             'status_id': STATUS_NEW,
                             'admin': false,
                             'emailVerified': true
-                        },
-                        function(err, newUser) {
-
-                        if (err) {
-                            reject(err);
-                        } else {
+                        }, function(err, newUser) {
+                            if (err) reject(err);
                             resolve(newUser);
-                        }
-
-                        done(err, db, t);
+                        });
 
                     });
 
-                }
-            ]);
+                });
 
-        }
+            }
+
+        }));
 
     });
 
@@ -196,37 +155,30 @@ var create = function(name, email, displayName, username, password) {
 
 var remove = function(id) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!id) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (errors.length != 0) {
+            if (!id) {
+                errors.push('User ID is required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
-            transaction.doReadWrite([
-                function(db, t, done){
+                reject(errors);
 
-                    db.models.User.find({ 'id': id }).remove(function (err) {
+            } else {
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(true);
-                        }
+                db.models.User.find({ 'id': id }).remove(function (err) {
+                    if (err) reject(err);
+                    resolve(true);
+                });
 
-                        done(err, db, t);
+            }
 
-                    });
-
-                }
-            ]);
-        }
+        }));
 
     });
 
@@ -234,234 +186,158 @@ var remove = function(id) {
 
 var setProfessions = function(userId, professionIds) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (_.isEmpty(professionIds)) {
-            errors.push('Profession IDs are required');
-        }
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        if (errors.length != 0) {
+            if (_.isEmpty(professionIds)) {
+                errors.push('Profession IDs are required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadWrite([
-                function(db, t, done) {
+            } else {
 
-                    db.models.User.get(userId, function(err, user) {
-
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t, user);
-                        }
-
-                    });
-
-                },
-                function(db, t, user, done) {
+                db.models.User.get(userId, function(err, user) {
+                    if (err) reject(err);
 
                     db.models.Profession.find({'id': professionIds}, function(err, professions) {
+                        if (err) reject(err);
 
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t, user, professions);
-                        }
-
-                    });
-
-                },
-                function(db, t, user, professions, done) {
-
-                    user.setProfessions(professions, function(err) {
-                        if (err) {
-                            reject(err);
-                        } else {
+                        user.setProfessions(professions, function(err) {
+                            if (err) reject(err);
                             resolve(true);
-                        }
+                        });
 
-                        done(err, db, t);
                     });
 
-                }
-            ]);
-        }
+                });
+
+            }
+
+        }));
 
     });
 };
 
 var getProfessions = function(userId) {
-    return new Promise(function (resolve, reject) {
 
-        var errors = [];
+    return transaction.doReadOnly(function(db) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+        return await (new Promise(function (resolve, reject) {
 
-        if (errors.length != 0) {
+            var errors = [];
 
-            reject(errors);
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        } else {
+            if (!_.isEmpty(errors)) {
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+                reject(errors);
 
-                    db.models.User.get(userId, function(err, user) {
+            } else {
 
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t, user);
-                        }
-
-                    });
-
-                },
-                function(db, t, user, done) {
+                db.models.User.get(userId, function(err, user) {
+                    if (err) reject(err);
 
                     user.getProfessions(function(err, professions) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(professions);
-                        }
-
-                        done(err, db, t);
+                        if (err) reject(err);
+                        resolve(professions);
                     });
 
-                }
-            ]);
-        }
+                });
+
+            }
+
+        }));
 
     });
 };
 
 var setServices = function(userId, servicesIds) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (_.isEmpty(servicesIds)) {
-            errors.push('Service IDs are required');
-        }
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        if (errors.length != 0) {
+            if (_.isEmpty(servicesIds)) {
+                errors.push('Service IDs are required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadWrite([
-                function(db, t, done) {
+            } else {
 
-                    db.models.User.get(userId, function(err, user) {
-
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t, user);
-                        }
-
-                    });
-
-                },
-                function(db, t, user, done) {
+                db.models.User.get(userId, function(err, user) {
+                    if (err) reject(err);
 
                     db.models.Service.find({'id': servicesIds}, function(err, services) {
+                        if (err) reject(err);
 
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t, user, services);
-                        }
-
-                    });
-
-                },
-                function(db, t, user, services, done) {
-
-                    user.setServices(services, function(err) {
-                        if (err) {
-                            reject(err);
-                        } else {
+                        user.setServices(services, function(err) {
+                            if (err) reject(err);
                             resolve(true);
-                        }
+                        });
 
-                        done(err, db, t);
                     });
 
-                }
-            ]);
-        }
+                });
+
+            }
+
+        }));
 
     });
 };
 
 var getServices = function(userId) {
-    return new Promise(function (resolve, reject) {
 
-        var errors = [];
+    return transaction.doReadOnly(function(db) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+        return await (new Promise(function (resolve, reject) {
 
-        if (errors.length != 0) {
+            var errors = [];
 
-            reject(errors);
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        } else {
+            if (!_.isEmpty(errors)) {
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+                reject(errors);
 
-                    db.models.User.get(userId, function(err, user) {
+            } else {
 
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            done(err, db, t, user);
-                        }
-
-                    });
-
-                },
-                function(db, t, user, done) {
+                db.models.User.get(userId, function(err, user) {
+                    if (err) reject(err);
 
                     user.getServices(function(err, services) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(services);
-                        }
-
-                        done(err, db, t);
+                        if (err) reject(err);
+                        resolve(services);
                     });
 
-                }
-            ]);
-        }
+                });
+
+            }
+
+        }));
 
     });
 };
@@ -553,67 +429,43 @@ var applyPatchesForUser = function(user, patches) {
 
 var update = function(userId, patches, isAdmin) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (_.isEmpty(patches)) {
-            errors.push('Patches are required');
-        }
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        if (!_.isEmpty(errors)) {
+            if (_.isEmpty(patches)) {
+                errors.push('Patches are required');
+            }
 
-            reject(errors);
+            errors = _.concat(errors, checkSecurityForPatches(patches, Boolean(isAdmin)));
 
-        } else {
+            if (!_.isEmpty(errors)) {
 
-            transaction.doReadWrite([
-                function(db, t, done) {
+                reject(errors);
 
-                    db.models.User.get(userId, function(err, user) {
+            } else {
 
-                        if (err) {
-                            reject(err);
-                        }
+                db.models.User.get(userId, function(err, user) {
+                    if (err) reject(err);
 
-                        done(err, db, t, user);
+                    applyPatchesForUser(user, patches);
 
+                    user.save(function(err) {
+                        if (err) reject(err);
+                        resolve(user);
                     });
 
-                },
-                function(db, t, user, done) {
+                });
 
-                    var err = checkSecurityForPatches(patches, isAdmin);
+            }
 
-                    if (!_.isEmpty(err)) {
-                        reject(err);
-                        done(err, db, t);
-                    } else {
-
-                        applyPatchesForUser(user, patches);
-
-                        user.save(function(err) {
-
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(user);
-                            }
-
-                            done(err, db, t);
-
-                        });
-
-                    }
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 

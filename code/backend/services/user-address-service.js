@@ -1,42 +1,34 @@
-var Promise = require('promise');
 var _ = require('lodash');
+var await = require('asyncawait/await');
+var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
 var getAddresses = function(id) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!id) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (errors.length != 0) {
+            if (!id) {
+                errors.push('User ID is required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+            } else {
 
-                    db.models.UserAddress.find({'user_id': id}, [ 'description', 'A' ], function (err, addresses) {
+                db.models.UserAddress.find({'user_id': id}, [ 'description', 'A' ], function (err, addresses) {
+                    if (err) reject(err);
+                    resolve(addresses);
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(addresses);
-                        }
+            }
 
-                        done(err, db, t);
-
-                    });
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 
@@ -44,42 +36,34 @@ var getAddresses = function(id) {
 
 var getAddress = function(userId, addressId) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (!addressId) {
-            errors.push('Address ID is required');
-        }
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        if (errors.length != 0) {
+            if (!addressId) {
+                errors.push('Address ID is required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadOnly([
-                function(db, t, done) {
+            } else {
 
-                    db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
+                db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
+                    if (err) reject(err);
+                    resolve(_.first(addresses));
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(_.first(addresses));
-                        }
+            }
 
-                        done(err, db, t);
-
-                    });
-
-                }
-            ]);
-        }
+        }));
 
     });
 
@@ -87,42 +71,34 @@ var getAddress = function(userId, addressId) {
 
 var removeAddress = function(userId, addressId) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (!addressId) {
-            errors.push('Address ID is required');
-        }
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        if (errors.length != 0) {
+            if (!addressId) {
+                errors.push('Address ID is required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadWrite([
-                function(db, t, done){
+            } else {
 
-                    db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
+                db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
+                    if (err) reject(err);
+                    resolve(true);
+                });
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(true);
-                        }
+            }
 
-                        done(err, db, t);
-
-                    });
-
-                }
-            ]);
-        }
+        }));
 
     });
 
@@ -131,90 +107,81 @@ var removeAddress = function(userId, addressId) {
 var createAddress = function(userId, description, main, zipCode, address, number, complement,
                 district, reference, cityId, stateId, countryId) {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!userId) {
-            errors.push("User ID is required");
-        }
+            var errors = [];
 
-        if (_.isEmpty(description)) {
-            errors.push("Description is required");
-        }
+            if (!userId) {
+                errors.push("User ID is required");
+            }
 
-        if (_.isEmpty(main)) {
-            errors.push("Main is required");
-        }
+            if (_.isEmpty(description)) {
+                errors.push("Description is required");
+            }
 
-        if (!zipCode) {
-            errors.push("ZipCode is required");
-        }
+            if (_.isEmpty(main)) {
+                errors.push("Main is required");
+            }
 
-        if (_.isEmpty(address)) {
-            errors.push("Address is required");
-        }
+            if (!zipCode) {
+                errors.push("ZipCode is required");
+            }
 
-        if (!number) {
-            errors.push("Number is required");
-        }
+            if (_.isEmpty(address)) {
+                errors.push("Address is required");
+            }
 
-        if (_.isEmpty(district)) {
-            errors.push("District is required");
-        }
+            if (!number) {
+                errors.push("Number is required");
+            }
 
-        if (!cityId) {
-            errors.push("City ID is required");
-        }
+            if (_.isEmpty(district)) {
+                errors.push("District is required");
+            }
 
-        if (!stateId) {
-            errors.push("State Id is required");
-        }
+            if (!cityId) {
+                errors.push("City ID is required");
+            }
 
-        if (!countryId) {
-            errors.push("Country ID is required");
-        }
+            if (!stateId) {
+                errors.push("State Id is required");
+            }
 
-        if (errors.length != 0) {
+            if (!countryId) {
+                errors.push("Country ID is required");
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadWrite([
-                function(db, t, done){
+            } else {
 
-                    db.models.UserAddress.create(
-                        {
-                            'description': description,
-                            'main': Boolean(main),
-                            'zipCode': zipCode,
-                            'address': address,
-                            'number': number,
-                            'complement': complement,
-                            'district': district,
-                            'reference': reference,
-                            'user_id': userId,
-                            'city_id': cityId,
-                            'state_id': stateId,
-                            'country_id': countryId
-                        },
-                        function(err, newAddress) {
+                db.models.UserAddress.create(
+                {
+                    'description': description,
+                    'main': Boolean(main),
+                    'zipCode': zipCode,
+                    'address': address,
+                    'number': number,
+                    'complement': complement,
+                    'district': district,
+                    'reference': reference,
+                    'user_id': userId,
+                    'city_id': cityId,
+                    'state_id': stateId,
+                    'country_id': countryId
 
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(newAddress);
-                        }
+                }, function(err, newAddress) {
+                    if (err) reject(err);
+                    resolve(newAddress);
+                });
 
-                        done(err, db, t);
+            }
 
-                    });
-
-                }
-            ]);
-
-        }
+        }));
 
     });
 
@@ -328,65 +295,47 @@ var applyPatchesForAddress = function(address, patches) {
 
 var updateAddress = function(userId, addressId, patches) {
 
-     return new Promise(function (resolve, reject) {
+    return transaction.doReadWrite(function(db) {
 
-        var errors = [];
+        return await (new Promise(function (resolve, reject) {
 
-        if (!userId) {
-            errors.push('User ID is required');
-        }
+            var errors = [];
 
-        if (!addressId) {
-            errors.push('Address ID is required');
-        }
+            if (!userId) {
+                errors.push('User ID is required');
+            }
 
-        if (_.isEmpty(patches)) {
-            errors.push('Patches are required');
-        }
+            if (!addressId) {
+                errors.push('Address ID is required');
+            }
 
-        if (!_.isEmpty(errors)) {
+            if (_.isEmpty(patches)) {
+                errors.push('Patches are required');
+            }
 
-            reject(errors);
+            if (!_.isEmpty(errors)) {
 
-        } else {
+                reject(errors);
 
-            transaction.doReadWrite([
-                function(db, t, done) {
+            } else {
 
-                    db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
+                db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
+                    if (err) reject(err);
 
-                        if (err) {
-                            reject(err);
-                            done(err, db, t);
-                        } else {
-                            var address = _.first(addresses);
-                            resolve(address);
-                            done(err, db, t, address);
-                        }
-
-                    });
-
-                },
-                function(db, t, address, done) {
+                    var address = _.first(addresses);
 
                     applyPatchesForAddress(address, patches);
 
                     address.save(function(err) {
-
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(address);
-                        }
-
-                        done(err, db, t);
-
+                        if (err) reject(err);
+                        resolve(address);
                     });
 
-                }
-            ]);
+                });
 
-        }
+            }
+
+        }));
 
     });
 

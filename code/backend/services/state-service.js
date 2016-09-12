@@ -1,28 +1,21 @@
-var Promise = require('promise');
 var _ = require('lodash');
+var await = require('asyncawait/await');
+var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
 var getAll = function() {
 
-    return new Promise(function (resolve, reject) {
+    return transaction.doReadOnly(function(db) {
 
-        transaction.doReadOnly([
-            function(db, t, done) {
+        return await (new Promise(function (resolve, reject) {
 
-                db.models.State.find({}, [ 'description', 'A' ], function (err, states) {
+            db.models.State.find({}, [ 'description', 'A' ], function (err, states) {
+                if (err) reject(err);
+                resolve(states);
+            });
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(states);
-                    }
+        }));
 
-                    done(err, db, t);
-
-                });
-
-            }
-        ]);
     });
 
 };
