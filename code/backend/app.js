@@ -8,24 +8,26 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var passport = require('passport');
-var Strategy = require('passport-http').DigestStrategy;
+var Strategy = require('passport-local').Strategy;
 var cryptoUtil = require('./utils/crypto-util');
-
 var userService = require('./services/user-service');
-//TODO: Use local strategy, username, password, imei, device type
-passport.use(new Strategy({ qop: 'auth' },
-  function(username, done) {
-    userService.getByUsernameOrEmail(username).then(function(user){
+
+passport.use(new Strategy({
+    passReqToCallback: true
+  },
+  function(req, username, password, done) {
+    console.log('IMEI: ' + req.body.imei);
+    userService.getByUsernameOrEmail(username, password).then(function(user){
       if (!user) {
         done(null, false);
       } else {
-        done(null, user, cryptoUtil.decrypt(user.password));
+        done(null, user);
       }
     }, function(err) {
       done(err);
     });
-
-  }));
+  }
+));
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -71,16 +73,18 @@ app.get('/', function(req, res, next) {
   res.render('index', { title: 'Seu Biu' });
 });
 
-app.get('/login',
-  passport.authenticate('digest', { session: true }),
+app.post('/login',
+  passport.authenticate('local', { session: true }),
   function(req, res) {
     res.sendStatus(200);
   });
 
-app.get('/logout', function (req, res){
-  req.session.destroy(function(err) {
-    res.clearCookie('connect.sid');
-    res.sendStatus(200);
+app.get('/logout',
+  function(req, res){
+    req.logout();
+    req.session.destroy(function(err) {
+      res.clearCookie('connect.sid');
+      res.sendStatus(200);
   })
 });
 

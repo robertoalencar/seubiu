@@ -1,13 +1,13 @@
 var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
+var md5 = require('md5');
 var transaction = require('../utils/orm-db-transaction');
-var cryptoUtil = require('../utils/crypto-util');
 
 var STATUS_NEW = 1;
 var MINIMUM_PASSWORD_SIZE = 8;
 
-var getByUsernameOrEmail = function(usernameOrEmail) {
+var getByUsernameOrEmail = function(usernameOrEmail, password) {
 
     return transaction.doReadOnly(function(db) {
 
@@ -19,12 +19,15 @@ var getByUsernameOrEmail = function(usernameOrEmail) {
                 errors.push('Username or email is required');
             }
 
+            if (_.isEmpty(password)) {
+                errors.push('Password is required');
+            }
+
             if (!_.isEmpty(errors)) {
                 reject(_.join(errors, ', '));
-
             } else {
 
-                db.models.User.find({or:[{'username': usernameOrEmail}, {'email': usernameOrEmail}]}, 1, function (err, users) {
+                db.models.User.find({'password': md5(password), or:[{'username': usernameOrEmail}, {'email': usernameOrEmail}]}, 1, function (err, users) {
                     if (err) reject(err);
                     resolve(_.first(users));
                 });
@@ -139,7 +142,7 @@ var create = function(name, email, displayName, username, password) {
                     'displayName': displayName,
                     'email': email,
                     'username': username,
-                    'password': cryptoUtil.encrypt(password),
+                    'password': md5(password),
                     'status_id': STATUS_NEW,
                     'admin': false,
                     'emailVerified': true
