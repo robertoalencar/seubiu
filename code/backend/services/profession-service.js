@@ -17,7 +17,7 @@ var getServicesByProfession = function(id) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -65,7 +65,7 @@ var getById = function(id) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 

@@ -15,13 +15,12 @@ var getByUsernameOrEmail = function(usernameOrEmail) {
 
             var errors = [];
 
-            if (!_.isEmpty(usernameOrEmail)) {
+            if (_.isEmpty(usernameOrEmail)) {
                 errors.push('Username or email is required');
             }
 
             if (!_.isEmpty(errors)) {
-
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -52,7 +51,7 @@ var getById = function(id) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -86,70 +85,76 @@ var getAll = function() {
 
 };
 
+var emailAlreadyInUse = function(email, db) {
+    return await (new Promise(function (resolve, reject) {
+        db.models.User.exists({ 'email': email }, function (err, exists) {
+            if (err) reject(err);
+            resolve(exists);
+        });
+    }));
+};
+
+var usernameAlreadyInUse = function(username, db) {
+    return await (new Promise(function (resolve, reject) {
+        db.models.User.exists({ 'username': username }, function (err, exists) {
+            if (err) reject(err);
+            resolve(exists);
+        });
+    }));
+};
+
 var create = function(name, email, displayName, username, password) {
 
-    return transaction.doReadWrite(function(db) {
+    var task = function(db) {
 
-        return await (new Promise(function (resolve, reject) {
+        var errors = [];
 
-            var errors = [];
+        if (_.isEmpty(name)) {
+            errors.push('Name is required');
+        }
 
-            if (_.isEmpty(name)) {
-                errors.push('Name is required');
-            }
+        if (_.isEmpty(email)) {
+            errors.push('Email is required');
+        } else if (emailAlreadyInUse(email, db)) {
+            errors.push('Email already in use');
+        }
 
-            if (_.isEmpty(email)) {
-                errors.push('Email is required');
-            }
+        if (!_.isEmpty(username) && usernameAlreadyInUse(username, db)) {
+            errors.push('Username already in use');
+        }
 
-            if (_.isEmpty(username)) {
-                errors.push('Username is required');
-            }
+        if (_.isEmpty(password)) {
+            errors.push('Password is required');
+        } else if (password.length < MINIMUM_PASSWORD_SIZE) {
+            errors.push('Password is too short: < ' + MINIMUM_PASSWORD_SIZE);
+        }
 
-            if (_.isEmpty(password)) {
-                errors.push('Password is required');
-            } else if (password.length < MINIMUM_PASSWORD_SIZE) {
-                errors.push('Password is too short: < ' + MINIMUM_PASSWORD_SIZE);
-            }
+        if (!_.isEmpty(errors)) {
+            throw new Error(_.join(errors, ', '));
+        } else {
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.User.exists({ 'username': username }, function (err, exists) {
+            var newUser = await (new Promise(function (resolve, reject) {
+                db.models.User.create({
+                    'name': name,
+                    'displayName': displayName,
+                    'email': email,
+                    'username': username,
+                    'password': cryptoUtil.encrypt(password),
+                    'status_id': STATUS_NEW,
+                    'admin': false,
+                    'emailVerified': true
+                }, function(err, newUser) {
                     if (err) reject(err);
-                    if (exists) reject(['Username already in use']);
-
-                     db.models.User.exists({ 'email': email }, function (err, exists) {
-                        if (err) reject(err);
-                        if (exists) reject(['Email already in use']);
-
-                        db.models.User.create(
-                        {
-                            'name': name,
-                            'displayName': displayName,
-                            'email': email,
-                            'username': username,
-                            'password': cryptoUtil.encrypt(password),
-                            'status_id': STATUS_NEW,
-                            'admin': false,
-                            'emailVerified': true
-                        }, function(err, newUser) {
-                            if (err) reject(err);
-                            resolve(newUser);
-                        });
-
-                    });
-
+                    resolve(newUser);
                 });
+            }));
 
-            }
+            return newUser;
+        }
 
-        }));
+    };
 
-    });
+    return transaction.doReadWrite(task);
 
 };
 
@@ -167,7 +172,7 @@ var remove = function(id) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -202,7 +207,7 @@ var setProfessions = function(userId, professionIds) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -242,7 +247,7 @@ var getProfessions = function(userId) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -281,7 +286,7 @@ var setServices = function(userId, servicesIds) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -321,7 +326,7 @@ var getServices = function(userId) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -447,7 +452,7 @@ var update = function(userId, patches, isAdmin) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 

@@ -9,7 +9,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             stateService.getAll().then(function(states){
                 res.json(states);
             }, function(err) {
-                res.status(500).send(err);
+                res.status(500).send(err.message);
             });
 
         });

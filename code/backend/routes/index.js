@@ -7,7 +7,7 @@ function isAuthenticated(req, res, next) {
 }
 
 function isAdmin(req, res, next) {
-  if (req.user.admin) { return next(null); }
+  if (req.isAuthenticated() && req.user.admin) { return next(null); }
   res.sendStatus(403);
 }
 

@@ -14,7 +14,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             installationService.create(deviceToken, appVersion, deviceTypeId).then(function(newInstallation){
                 res.json(newInstallation);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });
@@ -29,7 +29,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(installation)) res.status(404);
                 res.json(installation);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });

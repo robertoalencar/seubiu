@@ -17,7 +17,7 @@ var getByDeviceToken = function(deviceToken) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -56,7 +56,7 @@ var create = function(deviceToken, deviceTypeId, appVersion) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 

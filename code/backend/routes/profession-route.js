@@ -10,7 +10,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             professionService.getAll().then(function(professions){
                 res.json(professions);
             }, function(err) {
-                res.status(500).send(err);
+                res.status(500).send(err.message);
             });
 
         });
@@ -25,7 +25,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(profession)) res.status(404);
                 res.json(profession);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });
@@ -40,7 +40,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(services)) res.status(404);
                 res.json(services);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });

@@ -12,7 +12,7 @@ var Strategy = require('passport-http').DigestStrategy;
 var cryptoUtil = require('./utils/crypto-util');
 
 var userService = require('./services/user-service');
-
+//TODO: Use local strategy, username, password, imei, device type
 passport.use(new Strategy({ qop: 'auth' },
   function(username, done) {
     userService.getByUsernameOrEmail(username).then(function(user){

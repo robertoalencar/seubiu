@@ -17,7 +17,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.getAll().then(function(users){
                 res.json(users);
             }, function(err) {
-                res.status(500).send(err);
+                res.status(500).send(err.message);
             });
 
         })
@@ -32,7 +32,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.create(name, email, displayName, username, password).then(function(newUser){
                 res.json(newUser);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });
@@ -47,7 +47,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(user)) res.status(404);
                 res.json(user);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         })
@@ -70,7 +70,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.update(userId, req.body.patches, req.user.admin).then(function(user){
                 res.json(user);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         })
@@ -82,7 +82,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.remove(userId).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });
@@ -109,7 +109,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 district, reference, cityId, stateId, countryId).then(function(newAddress){
                 res.json(newAddress);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         })
@@ -121,7 +121,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userAddressService.getAddresses(userId).then(function(addresses){
                 res.json(addresses);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });
@@ -137,7 +137,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(address)) res.status(404);
                 res.json(address);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         })
@@ -161,7 +161,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userAddressService.updateAddress(userId, addressId, req.body.patches).then(function(address){
                 res.json(address);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         })
@@ -174,7 +174,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userAddressService.removeAddress(userId, addressId).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });
@@ -189,7 +189,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.setProfessions(userId, professionIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
 
@@ -202,7 +202,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.getProfessions(userId).then(function(professions){
                 res.json(professions);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });
@@ -217,7 +217,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.setServices(userId, servicesIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
 
@@ -230,7 +230,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.getServices(userId).then(function(services){
                 res.json(services);
             }, function(err) {
-                res.status(400).send(err);
+                res.status(400).send(err.message);
             });
 
         });

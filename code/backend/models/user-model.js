@@ -6,7 +6,7 @@ module.exports = function (orm, db) {
         displayName     : { type: 'text', size: 255, mapsTo: 'displayName' },
         email           : { type: 'text', size: 255, required: true, unique: true,  mapsTo: 'email' },
         emailVerified   : { type: 'boolean', defaultValue: false, mapsTo: 'emailVerified' },
-        username        : { type: 'text', size: 50, required: true, unique: true, mapsTo: 'username' },
+        username        : { type: 'text', size: 50, required: false, unique: true, mapsTo: 'username' },
         password        : { type: 'text', size: 50, required: true, mapsTo: 'password' },
         admin           : { type: 'boolean', defaultValue: false, mapsTo: 'admin' }
     }, {

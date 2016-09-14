@@ -17,7 +17,7 @@ var getAddresses = function(id) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -52,7 +52,7 @@ var getAddress = function(userId, addressId) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -87,7 +87,7 @@ var removeAddress = function(userId, addressId) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -155,7 +155,7 @@ var createAddress = function(userId, description, main, zipCode, address, number
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 
@@ -315,7 +315,7 @@ var updateAddress = function(userId, addressId, patches) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(errors);
+                reject(_.join(errors, ', '));
 
             } else {
 

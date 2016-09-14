@@ -9,7 +9,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             cityService.getAll().then(function(cities){
                 res.json(cities);
             }, function(err) {
-                res.status(500).send(err);
+                res.status(500).send(err.message);
             });
 
         });
