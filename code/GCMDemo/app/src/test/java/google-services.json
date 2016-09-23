@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "851725705536",
+    "project_id": "gcmdemo-af738"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851725705536:android:f168c39a0cc1ff09",
+        "android_client_info": {
+          "package_name": "com.learn2crack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqPD1Nj_OyDtf03lTfoC-fR3ryWdQAhTU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

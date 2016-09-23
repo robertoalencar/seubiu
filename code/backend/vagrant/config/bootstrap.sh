@@ -114,8 +114,8 @@ echo "  PGUSER=$APP_DB_USER PGPASSWORD=$APP_DB_PASS psql -h localhost -p 15432 $
 echo ""
 
 # Install Node.js and NPM
-add-apt-repository ppa:chris-lea/node.js
-apt-get update
+apt-get remove -y nodejs
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 apt-get install -y nodejs
 
 # Install Grunt
@@ -159,7 +159,10 @@ fi
 cd $APP_DIR && npm install
 
 # Run db-migrate
-cd $APP_DIR && NODE_ENV=development db-migrate up
+#cd $APP_DIR && NODE_ENV=development db-migrate up
+
+# Sync database
+cd $APP_DIR/utils && NODE_ENV=development node orm-db-sync.js
 
 echo ""
 echo "The development environment was created successfully."
