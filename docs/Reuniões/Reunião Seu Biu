@@ -1,0 +1,16 @@
+- No cadastro do usuário (cliente) terá os campos login e e-mail;
+- Na tela que lista os profissionais, abaixo do nome do profissional, será exibir um numero com o total de serviços já efetuados pelo profissional;
+- Na tela que lista os profissionais, a ordem de exibição seguirá o seguinte critério: primeiro o número de serviços, depois a quantidade de estrelas;
+- Na tela de biografia do profissional, ao lado da foto, terá uma seta que se clicada será exibida uma biografia detalhada do profissional, as profissões e os serviços que o profissional escolheu no momento do cadastro dele, idade dele, endereço onde ele mora, locais que ele já efetuou o serviço e etc
+- No processo de avaliação do serviço já serão marcadas 3 estrelas, e o cliente poderá modificar isso para cima ou para baixo;
+- O profissional poderá responder o depoimento do cliente. Colocar tag no testemunho;
+- Na tela de biografia do profissional, também deverá ter um botão para Requisitar o Profissional;
+- A última tela do fluxo de solicitação de serviço deverá ser uma tela de confirmação da solicitação do serviço onde o usuário poderá ir para o Dashboard;
+- Ainda no fluxo de solicitação de serviço, deverá ser exibir um Dashoard do cliente;
+- O fluxo do profissional será diferente do fluxo do cliente, terá um dashboard diferente e terá uma fluxo diferente (ainda será discutido na próxima reunião (06/10))
+- Serão dois aplicativos: um para o cliente e outro para o profissional;
+- O cadastro do profissional será feito via um página web (que não faz parte do MVP);
+
+Meta: 
+ - Encerrar a definição e prototipação do fluxo do cliente até o dia 06/10.
+ 
