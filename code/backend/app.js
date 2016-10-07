@@ -16,7 +16,6 @@ passport.use(new Strategy({
     passReqToCallback: true
   },
   function(req, username, password, done) {
-    console.log('IMEI: ' + req.body.imei);
     userService.getByUsernameOrEmail(username, password).then(function(user){
       if (!user) {
         done(null, false);

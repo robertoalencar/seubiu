@@ -235,4 +235,47 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         });
 
+    router.route('/users/:userId/devices')
+
+        .post(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+            var deviceToken = req.body.deviceToken;
+            var deviceTypeId = req.body.deviceTypeId;
+
+            userService.addDevice(userId, deviceToken, deviceTypeId).then(function(addedDevice){
+                res.json(addedDevice);
+            }, function(err) {
+                res.status(400).send(err.message);
+            });
+
+        })
+
+        .get(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+
+            userService.getDevices(userId).then(function(devices){
+                res.json(devices);
+            }, function(err) {
+                res.status(400).send(err.message);
+            });
+
+        });
+
+    router.route('/users/:userId/devices/:deviceToken')
+
+        .get(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+            var deviceToken = req.params.deviceToken;
+
+            userService.getDeviceByToken(userId, deviceToken).then(function(device){
+                res.json(device);
+            }, function(err) {
+                res.status(400).send(err.message);
+            });
+
+        });
+
 };

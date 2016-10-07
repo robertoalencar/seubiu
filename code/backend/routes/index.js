@@ -12,7 +12,6 @@ function isAdmin(req, res, next) {
 }
 
 require('./user-route')(router, isAuthenticated, isAdmin);
-require('./installation-route')(router, isAuthenticated, isAdmin);
 require('./profession-route')(router, isAuthenticated, isAdmin);
 require('./state-route')(router, isAuthenticated, isAdmin);
 require('./city-route')(router, isAuthenticated, isAdmin);
