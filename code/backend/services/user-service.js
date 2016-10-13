@@ -1,11 +1,20 @@
 var _ = require('lodash');
+var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var md5 = require('md5');
 var transaction = require('../utils/orm-db-transaction');
 
-var STATUS_NEW = 1;
 var MINIMUM_PASSWORD_SIZE = 8;
+
+var getTotalUsers = function(db) {
+    return await (new Promise(function (resolve, reject) {
+        db.models.User.count({}, function (err, count) {
+            if (err) reject(err);
+            resolve(count);
+        });
+    }));
+};
 
 var getByUsernameOrEmail = function(usernameOrEmail, password) {
 
@@ -136,6 +145,8 @@ var create = function(name, email, displayName, username, password) {
             throw new Error(_.join(errors, ', '));
         } else {
 
+            var isBootStrap = (getTotalUsers(db) === 0);
+
             var newUser = await (new Promise(function (resolve, reject) {
                 db.models.User.create({
                     'name': name,
@@ -143,9 +154,9 @@ var create = function(name, email, displayName, username, password) {
                     'email': email,
                     'username': username,
                     'password': md5(password),
-                    'status_id': STATUS_NEW,
-                    'admin': false,
-                    'emailVerified': true
+                    'status_id': isBootStrap ? db.models.User.STATUS.ACTIVE : db.models.User.STATUS.NEW,
+                    'admin': isBootStrap,
+                    'emailVerified': isBootStrap
                 }, function(err, newUser) {
                     if (err) reject(err);
                     resolve(newUser);
@@ -488,15 +499,15 @@ var addDevice = function(userId, deviceToken, deviceTypeId) {
             var errors = [];
 
             if (!userId) {
-                errors.push("User ID is required");
+                errors.push('User ID is required');
             }
 
             if (_.isEmpty(deviceToken)) {
-                errors.push("Device token is required");
+                errors.push('Device token is required');
             }
 
             if (_.isEmpty(deviceTypeId)) {
-                errors.push("Device type is required");
+                errors.push('Device type is required');
             }
 
             if (!_.isEmpty(errors)) {
@@ -562,7 +573,7 @@ var getDeviceByToken = function(userId, deviceToken) {
             }
 
             if (_.isEmpty(deviceToken)) {
-                errors.push("Device token is required");
+                errors.push('Device token is required');
             }
 
             if (!_.isEmpty(errors)) {
@@ -583,6 +594,194 @@ var getDeviceByToken = function(userId, deviceToken) {
     });
 };
 
+var getPreference = function(userId) {
+
+    return transaction.doReadOnly(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!userId) {
+                errors.push('User ID is required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(_.join(errors, ', '));
+
+            } else {
+
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                    if (err) reject(err);
+                    resolve(_.first(preferences));
+                });
+
+            }
+
+        }));
+
+    });
+};
+
+var applyPatchesForUserPreference = function (preference, patches, db) {
+
+    _(patches).forEach(function(patchOp) {
+
+        switch (patchOp.path) {
+
+            case  '/otherServices':
+
+                if (patchOp.op == 'replace') {
+                    preference.otherServices = patchOp.value;
+                } else if (patchOp.op == 'remove') {
+                    preference.otherServices = false;
+                }
+
+            break;
+
+        }
+    });
+
+};
+
+var updatePreference = function(userId, patches) {
+
+    return transaction.doReadWrite(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!userId) {
+                errors.push('User ID is required');
+            }
+
+            if (_.isEmpty(patches)) {
+                errors.push('Patches are required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(_.join(errors, ', '));
+
+            } else {
+
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                    if (err) reject(err);
+
+                    var preference;
+
+                    if (!_.isEmpty(preferences)) {
+                        preference = _.first(preferences);
+                    } else {
+                        preference = new db.models.UserPreference({'user_id': userId});
+                    }
+
+                    applyPatchesForUserPreference(preference, patches, db);
+
+                    preference.save(function(err) {
+                        if (err) reject(err);
+                        resolve(preference);
+                    });
+
+                });
+
+            }
+
+        }));
+
+    });
+
+};
+
+var setUserPreferenceCities = function(userId, cityIds) {
+
+    return transaction.doReadWrite(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!userId) {
+                errors.push('User ID is required');
+            }
+
+            if (_.isEmpty(cityIds)) {
+                errors.push('City IDs are required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(_.join(errors, ', '));
+
+            } else {
+
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                    if (err) reject(err);
+                    if (_.isEmpty(preferences)) reject('User preference is required');
+
+                    var preference = _.first(preferences);
+
+                    db.models.City.find({'id': cityIds}, function(err, cities) {
+                        if (err) reject(err);
+
+                        preference.setCities(cities, function(err) {
+                            if (err) reject(err);
+                            resolve(true);
+                        });
+
+                    });
+
+                });
+
+            }
+
+        }));
+
+    });
+};
+
+var getUserPreferenceCities = function(userId) {
+
+    return transaction.doReadOnly(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!userId) {
+                errors.push('User ID is required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(_.join(errors, ', '));
+
+            } else {
+
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                    if (err) reject(err);
+                    if (_.isEmpty(preferences)) reject('User preference is required');
+
+                    var preference = _.first(preferences);
+
+                    preference.getCities(function(err, cities) {
+                        if (err) reject(err);
+                        resolve(cities);
+                    });
+
+
+                });
+
+            }
+
+        }));
+
+    });
+};
+
+
 module.exports = {
 
     getByUsernameOrEmail: getByUsernameOrEmail,
@@ -599,7 +798,12 @@ module.exports = {
 
     addDevice: addDevice,
     getDevices: getDevices,
-    getDeviceByToken: getDeviceByToken
+    getDeviceByToken: getDeviceByToken,
 
+    getPreference: getPreference,
+    updatePreference: updatePreference,
+    setUserPreferenceCities: setUserPreferenceCities,
+    getUserPreferenceCities: getUserPreferenceCities
 
 };
+

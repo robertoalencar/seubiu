@@ -7,4 +7,6 @@ module.exports = function (orm, db) {
         collection: 'city'
     });
 
+   City.hasOne('state', db.models.State, { reverse: 'cities', required: true } );
+
 };

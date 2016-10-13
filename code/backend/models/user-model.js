@@ -15,7 +15,9 @@ module.exports = function (orm, db) {
     });
 
     User.hasOne('status', db.models.UserStatus, { required: true });
-    User.hasMany('professions', db.models.Profession, {}, { key: true });
-    User.hasMany('services', db.models.Service, {}, { key: true });
+    User.hasMany('professions', db.models.Profession, {}, { key: true, mergeAssocId: 'profession_id' });
+    User.hasMany('services', db.models.Service, {}, { key: true, mergeAssocId: 'service_id' });
+
+    User.STATUS = { NEW: 1, ACTIVE: 2, BLOCKED: 3 };
 
 };

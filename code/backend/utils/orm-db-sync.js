@@ -9,7 +9,7 @@ var opts = {
   user:     process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   port:     process.env.DB_PORT,
-  query:    {debug: true}
+  query:    { debug: (process.env.DB_DEBUG ? Boolean(process.env.DB_DEBUG) : false) }
 };
 
 function defineModels(db) {

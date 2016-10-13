@@ -278,4 +278,70 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         });
 
+    router.route('/users/:userId/preference')
+
+        .get(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+
+            userService.getPreference(userId).then(function(preference){
+                if (_.isEmpty(preference)) res.status(404);
+                res.json(preference);
+            }, function(err) {
+                res.status(400).send(err.message);
+            });
+
+        })
+
+        .put(userHasAccess, function(req, res) {
+
+            /*
+            //http://tools.ietf.org/html/rfc6902
+
+            {
+              "patches": [
+               { "op": "replace", "path": "/displayName", "value": "New value" }
+              ]
+            }
+
+            */
+
+            var userId = req.params.userId;
+
+            userService.updatePreference(userId, req.body.patches).then(function(preference){
+                res.json(preference);
+            }, function(err) {
+                res.status(400).send(err.message);
+            });
+
+        });
+
+    router.route('/users/:userId/preference/cities')
+
+        .get(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+
+            userService.getUserPreferenceCities(userId).then(function(cities){
+                res.json(cities);
+            }, function(err) {
+                res.status(400).send(err.message);
+            });
+
+        })
+
+        .post(userHasAccess, function(req, res) {
+
+            var userId = req.params.userId;
+            var cityIds = req.body.cityIds;
+
+            userService.setUserPreferenceCities(userId, cityIds).then(function(success){
+                res.status(200).send(success);
+            }, function(err) {
+                res.status(400).send(err);
+            });
+
+        });
+
+
 };
