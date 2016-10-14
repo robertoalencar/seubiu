@@ -14,7 +14,7 @@ module.exports = function (orm, db) {
         timestamp: true
     });
 
-    User.hasOne('status', db.models.UserStatus, { key: true, required: true });
+    User.hasOne('status', db.models.UserStatus, { required: true });
     User.hasMany('professions', db.models.Profession, {}, { key: true, mergeAssocId: 'profession_id' });
     User.hasMany('services', db.models.Service, {}, { key: true, mergeAssocId: 'service_id' });
 

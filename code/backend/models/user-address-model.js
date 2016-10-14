@@ -14,9 +14,9 @@ module.exports = function (orm, db) {
         collection: 'user_address'
     });
 
-    UserAddress.hasOne('user', db.models.User, { key: true, reverse: 'addresses', required: true } );
-    UserAddress.hasOne('city', db.models.City, { key: true, required: true } );
-    UserAddress.hasOne('state', db.models.State, { key: true, required: true } );
-    UserAddress.hasOne('country', db.models.Country, { key: true, required: true } );
+    UserAddress.hasOne('user', db.models.User, { reverse: 'addresses', required: true } );
+    UserAddress.hasOne('city', db.models.City, { required: true } );
+    UserAddress.hasOne('state', db.models.State, { required: true } );
+    UserAddress.hasOne('country', db.models.Country, { required: true } );
 
 };

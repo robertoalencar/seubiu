@@ -154,7 +154,7 @@ var create = function(name, email, displayName, username, password) {
                     'email': email,
                     'username': username,
                     'password': md5(password),
-                    'status_id': isBootStrap ? db.models.UserStatus.STATUS.ACTIVE : db.models.UserStatus.STATUS.NEW,
+                    'status_id': isBootStrap ? db.models.UserStatus.ACTIVE : db.models.UserStatus.NEW,
                     'admin': isBootStrap,
                     'emailVerified': isBootStrap
                 }, function(err, newUser) {

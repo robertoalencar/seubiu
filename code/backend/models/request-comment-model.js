@@ -9,7 +9,7 @@ module.exports = function (orm, db) {
         timestamp: true
     });
 
-    Comment.hasOne('request', db.models.Request, { key: true, required: true, reverse: 'comments' });
-    Comment.hasOne('author', db.models.User, { key: true, required: true });
+    Comment.hasOne('request', db.models.Request, { required: true, reverse: 'comments' });
+    Comment.hasOne('author', db.models.User, { required: true });
 
 };

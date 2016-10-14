@@ -7,6 +7,8 @@ module.exports = function (orm, db) {
         collection: 'user_status'
     });
 
-   UserStatus.STATUS = { NEW: 1, ACTIVE: 2, BLOCKED: 3 };
+   UserStatus.NEW = 1;
+   UserStatus.ACTIVE = 2;
+   UserStatus.BLOCKED = 3;
 
 };

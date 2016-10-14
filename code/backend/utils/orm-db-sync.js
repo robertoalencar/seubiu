@@ -42,4 +42,6 @@ orm.connect(opts, function (err, db) {
 
 });
 
+// https://github.com/dresende/node-orm2/issues/353
+
 // cd /seubiu && NODE_ENV=development && node utils/orm-db-sync.js

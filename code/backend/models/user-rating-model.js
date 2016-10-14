@@ -9,6 +9,6 @@ module.exports = function (orm, db) {
         timestamp: true
     });
 
-    UserRating.hasOne('user', db.models.User, { key: true, required: true, reverse: 'ratings' });
+    UserRating.hasOne('user', db.models.User, { required: true, reverse: 'ratings' });
 
 };

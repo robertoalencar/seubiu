@@ -8,6 +8,6 @@ module.exports = function (orm, db) {
         collection: 'state'
     });
 
-   State.hasOne('country', db.models.Country, { key: true, reverse: 'states', required: true } );
+   State.hasOne('country', db.models.Country, { reverse: 'states', required: true } );
 
 }
