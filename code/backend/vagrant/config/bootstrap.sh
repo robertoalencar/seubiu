@@ -121,9 +121,6 @@ apt-get install -y nodejs
 # Install Grunt
 npm install -g grunt-cli
 
-# Install grunt-jasmine-node
-npm install -g grunt-jasmine-node
-
 # Install db-migrate
 npm install -g db-migrate
 
@@ -133,8 +130,8 @@ npm install -g db-migrate-pg
 # Install supervisor
 npm install -g supervisor
 
-# Install eslint
-npm install -g eslint
+# Install Jasmine
+npm install -g jasmine
 
 # App dir
 APP_DIR=/seubiu

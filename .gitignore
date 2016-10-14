@@ -37,3 +37,5 @@ Thumbs.db
 .vagrant
 node_modules
 .env
+_SpecRunner.html
+.grunt

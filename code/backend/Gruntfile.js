@@ -8,11 +8,29 @@ module.exports = function(grunt) {
           jQuery: true
         }
       }
+    },
+    shell: {
+      supervisor: {
+        command: 'supervisor ./bin/www'
+      },
+      jasmine: {
+        command: 'jasmine'
+      },
+      orm_db_sync: {
+        command: 'node utils/orm-db-sync.js'
+      },
+      bootstrap_db: {
+        command: 'node utils/bootstrap-db.js'
+      },
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-shell');
 
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('start', ['shell:supervisor']);
+  grunt.registerTask('test', ['shell:jasmine']);
+  grunt.registerTask('jshint', ['jshint']);
+  grunt.registerTask('initdb', ['shell:orm_db_sync', 'shell:bootstrap_db']);
 
 };
