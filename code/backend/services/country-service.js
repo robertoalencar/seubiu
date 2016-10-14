@@ -18,7 +18,7 @@ var getAll = function() {
 
         return countries;
 
-    }
+    };
 
     return transaction.doReadOnly(task);
 

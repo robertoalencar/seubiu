@@ -10,4 +10,4 @@ module.exports = function (orm, db) {
 
    State.hasOne('country', db.models.Country, { reverse: 'states', required: true } );
 
-}
+};

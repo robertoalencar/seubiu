@@ -12,7 +12,7 @@ module.exports = {
 
     decrypt: function(encrypted) {
         var decipher = crypto.createDecipher(algorithm, key);
-        return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8')
+        return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
     }
 
 };

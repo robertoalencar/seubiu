@@ -6,7 +6,7 @@ var Pool = require('generic-pool').Pool;
 
 function defineModels(db) {
   require('../models/')(orm, db);
-};
+}
 
 var pool = new Pool({
     name     : process.env.DB_PROTOCOL,

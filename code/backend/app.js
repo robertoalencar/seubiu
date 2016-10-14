@@ -84,7 +84,7 @@ app.get('/logout',
     req.session.destroy(function(err) {
       res.clearCookie('connect.sid');
       res.sendStatus(200);
-  })
+  });
 });
 
 app.use('/api', require('./routes/'));

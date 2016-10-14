@@ -14,7 +14,7 @@ var opts = {
 
 function defineModels(db) {
   require('../models/')(orm, db);
-};
+}
 
 orm.connect(opts, function (err, db) {
   if (err) throw err;
