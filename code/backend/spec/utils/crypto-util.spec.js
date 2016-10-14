@@ -9,6 +9,6 @@ describe('crypto-util', function() {
     });
 
     it('should decrypt', function() {
-        expect(cryptoUtil.decrypt(encrypted)).toEqual(text );
+        expect(cryptoUtil.decrypt(encrypted)).toEqual(text);
     });
 });

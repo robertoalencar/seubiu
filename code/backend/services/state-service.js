@@ -3,25 +3,56 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
-var getAll = function() {
+var getByFilter = function(filter, db, reject, resolve) {
 
-    return transaction.doReadOnly(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            db.models.State.find({}, [ 'description', 'A' ], function (err, states) {
-                if (err) reject(err);
-                resolve(states);
-            });
-
-        }));
-
+    db.models.State.find(filter, [ 'description', 'A' ], function (err, states) {
+        if (err) reject(err);
+        resolve(states);
     });
 
 };
 
+var getAll = function() {
+    return transaction.doReadOnly(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            getByFilter({}, db, reject, resolve);
+
+        }));
+
+    });
+};
+
+var getStatesByCountry = function(idCountry) {
+    return transaction.doReadOnly(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!idCountry) {
+                errors.push('Country ID is required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(_.join(errors, ', '));
+
+            } else {
+
+                getByFilter({'country_id':idCountry}, db, reject, resolve);
+
+            }
+
+        }));
+
+    });
+};
+
 module.exports = {
 
-    getAll: getAll
+    getAll: getAll,
+    getStatesByCountry
 
 };

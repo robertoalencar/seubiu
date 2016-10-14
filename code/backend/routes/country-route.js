@@ -1,4 +1,5 @@
 var countryService = require('../services/country-service');
+var stateService = require('../services/state-service');
 
 module.exports = function(router, isAuthenticated, isAdmin) {
 
@@ -8,6 +9,20 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             countryService.getAll().then(function(countries){
                 res.json(countries);
+            }, function(err) {
+                res.status(500).send(err.message);
+            });
+
+        });
+
+    router.route('/countries/:idCountry/states')
+
+        .get(function(req, res) {
+
+            var idCountry = req.params.idCountry;
+
+            stateService.getStatesByCountry(idCountry).then(function(states){
+                res.json(states);
             }, function(err) {
                 res.status(500).send(err.message);
             });
