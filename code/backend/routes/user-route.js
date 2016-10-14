@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var userService = require('../services/user-service');
 var userAddressService = require('../services/user-address-service');
+var userPreferenceService = require('../services/user-preference-service');
+var userDeviceService = require('../services/user-device-service');
 
 module.exports = function(router, isAuthenticated, isAdmin) {
 
@@ -243,7 +245,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var deviceToken = req.body.deviceToken;
             var deviceTypeId = req.body.deviceTypeId;
 
-            userService.addDevice(userId, deviceToken, deviceTypeId).then(function(addedDevice){
+            userDeviceService.addDevice(userId, deviceToken, deviceTypeId).then(function(addedDevice){
                 res.json(addedDevice);
             }, function(err) {
                 res.status(400).send(err.message);
@@ -255,7 +257,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userService.getDevices(userId).then(function(devices){
+            userDeviceService.getDevices(userId).then(function(devices){
                 res.json(devices);
             }, function(err) {
                 res.status(400).send(err.message);
@@ -270,7 +272,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var userId = req.params.userId;
             var deviceToken = req.params.deviceToken;
 
-            userService.getDeviceByToken(userId, deviceToken).then(function(device){
+            userDeviceService.getDeviceByToken(userId, deviceToken).then(function(device){
                 res.json(device);
             }, function(err) {
                 res.status(400).send(err.message);
@@ -284,7 +286,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userService.getPreference(userId).then(function(preference){
+            userPreferenceService.getPreference(userId).then(function(preference){
                 if (_.isEmpty(preference)) res.status(404);
                 res.json(preference);
             }, function(err) {
@@ -308,7 +310,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userService.updatePreference(userId, req.body.patches).then(function(preference){
+            userPreferenceService.updatePreference(userId, req.body.patches).then(function(preference){
                 res.json(preference);
             }, function(err) {
                 res.status(400).send(err.message);
@@ -322,7 +324,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userService.getUserPreferenceCities(userId).then(function(cities){
+            userPreferenceService.getUserPreferenceCities(userId).then(function(cities){
                 res.json(cities);
             }, function(err) {
                 res.status(400).send(err.message);
@@ -335,7 +337,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var userId = req.params.userId;
             var cityIds = req.body.cityIds;
 
-            userService.setUserPreferenceCities(userId, cityIds).then(function(success){
+            userPreferenceService.setUserPreferenceCities(userId, cityIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
                 res.status(400).send(err);
