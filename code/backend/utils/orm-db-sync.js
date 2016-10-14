@@ -1,4 +1,4 @@
-var dotenv = require('dotenv').config({path: '../.env'});
+var dotenv = require('dotenv').config();
 var orm = require('orm');
 var modts = require('orm-timestamps');
 
@@ -42,4 +42,4 @@ orm.connect(opts, function (err, db) {
 
 });
 
-//NODE_ENV=development node orm-db-sync.js
+// cd /seubiu && NODE_ENV=development && node utils/orm-db-sync.js

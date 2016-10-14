@@ -6,7 +6,6 @@
     "start": "supervisor ./bin/www"
   },
   "dependencies": {
-    "async": "^2.0.1",
     "asyncawait": "^1.0.6",
     "bluebird": "^3.4.6",
     "body-parser": "~1.15.1",

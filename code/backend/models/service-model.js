@@ -9,6 +9,6 @@ module.exports = function (orm, db) {
         collection: 'service'
     });
 
-    Service.hasOne('profession', db.models.Profession, { reverse: 'services', required: true } );
+    Service.hasOne('profession', db.models.Profession, { key: true, reverse: 'services', required: true } );
 
 };

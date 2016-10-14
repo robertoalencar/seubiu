@@ -7,4 +7,6 @@ module.exports = function (orm, db) {
         collection: 'user_status'
     });
 
+   UserStatus.STATUS = { NEW: 1, ACTIVE: 2, BLOCKED: 3 };
+
 };

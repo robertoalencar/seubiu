@@ -143,27 +143,31 @@ APP_DIR=/seubiu
 ENV_FILE=$APP_DIR/.env
 if [ ! -f $ENV_FILE ]
 then
-    touch ENV_FILE
-    cd $APP_DIR && echo "DB_NAME=$APP_DB_NAME" >> $ENV_FILE
-    cd $APP_DIR && echo "DB_PROTOCOL=postgres" >> $ENV_FILE
-    cd $APP_DIR && echo "DB_USERNAME=$APP_DB_USER" >> $ENV_FILE
-    cd $APP_DIR && echo "DB_PASSWORD=$APP_DB_PASS" >> $ENV_FILE
-    cd $APP_DIR && echo "DB_HOST=localhost" >> $ENV_FILE
-    cd $APP_DIR && echo "DB_PORT=5432" >> $ENV_FILE
-    cd $APP_DIR && echo "DB_DEBUG=true" >> $ENV_FILE
-    cd $APP_DIR && echo "REDIS_HOST=localhost" >> $ENV_FILE
-    cd $APP_DIR && echo "REDIS_PORT=6379" >> $ENV_FILE
-    cd $APP_DIR && echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE
+    echo "DB_NAME=$APP_DB_NAME" >> $ENV_FILE
+    echo "DB_PROTOCOL=postgres" >> $ENV_FILE
+    echo "DB_USERNAME=$APP_DB_USER" >> $ENV_FILE
+    echo "DB_PASSWORD=$APP_DB_PASS" >> $ENV_FILE
+    echo "DB_HOST=localhost" >> $ENV_FILE
+    echo "DB_PORT=5432" >> $ENV_FILE
+    echo "DB_DEBUG=true" >> $ENV_FILE
+    echo "REDIS_HOST=localhost" >> $ENV_FILE
+    echo "REDIS_PORT=6379" >> $ENV_FILE
+    echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE
 fi
 
+cd $APP_DIR
+
 # Install the NPM dependencies
-cd $APP_DIR && npm install
+npm install
 
 # Run db-migrate
-#cd $APP_DIR && NODE_ENV=development db-migrate up
+# NODE_ENV=development db-migrate up
 
 # Sync database
-cd $APP_DIR/utils && NODE_ENV=development node orm-db-sync.js
+NODE_ENV=development && node utils/orm-db-sync.js
+
+# Bootstrap database
+NODE_ENV=development && node utils/bootstrap-db.js
 
 echo ""
-echo "The development environment was created successfully."
+echo "The environment was created successfully."

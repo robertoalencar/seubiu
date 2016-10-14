@@ -7,6 +7,6 @@ module.exports = function (orm, db) {
         collection: 'user_preference'
     });
 
-    UserPreference.hasOne('user', db.models.User, { required: true } );
+    UserPreference.hasOne('user', db.models.User, { key: true, required: true } );
     UserPreference.hasMany('cities', db.models.City, {}, { autoFetch: true, key: true, mergeTable: 'user_preference_city', mergeAssocId: 'city_id' });
 };

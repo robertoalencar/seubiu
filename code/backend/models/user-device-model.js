@@ -10,7 +10,7 @@ module.exports = function (orm, db) {
         timestamp: true
     });
 
-    UserDevice.hasOne('user', db.models.User, { reverse: 'devices', required: true } );
-    UserDevice.hasOne('deviceType', db.models.DeviceType, { required: true });
+    UserDevice.hasOne('user', db.models.User, { key: true, reverse: 'devices', required: true } );
+    UserDevice.hasOne('deviceType', db.models.DeviceType, { key: true, required: true });
 
 };
