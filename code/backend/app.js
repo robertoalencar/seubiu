@@ -6,9 +6,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var redis = require("redis");
 var RedisStore = require('connect-redis')(session);
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
+var responseTime = require('response-time')
 var cryptoUtil = require('./utils/crypto-util');
 var userService = require('./services/user-service');
 
@@ -44,6 +46,9 @@ passport.deserializeUser(function(id, done) {
 
 var app = express();
 
+// response-time middleware
+app.use(responseTime());
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -59,7 +64,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
     secret: process.env.SESSION_SECRET,
-    store: new RedisStore({ host: process.env.REDIS_HOST, port: process.env.REDIS_PORT}),
+    store: new RedisStore(
+      {client: redis.createClient({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT})}
+    ),
+    db: 1,
     rolling: true,
     saveUninitialized: false,
     resave: false
