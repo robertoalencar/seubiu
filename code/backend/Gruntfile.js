@@ -33,7 +33,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('start', ['shell:supervisor']);
   grunt.registerTask('test', ['shell:jasmine']);
-  grunt.registerTask('jshint', ['jshint']);
   grunt.registerTask('initdb', ['shell:redis_flush_all', 'shell:orm_db_sync', 'shell:bootstrap_db']);
 
 };

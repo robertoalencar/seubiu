@@ -10,7 +10,7 @@ var redis = require("redis");
 var RedisStore = require('connect-redis')(session);
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-var responseTime = require('response-time')
+var responseTime = require('response-time');
 var cryptoUtil = require('./utils/crypto-util');
 var userService = require('./services/user-service');
 

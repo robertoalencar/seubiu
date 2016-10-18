@@ -10,5 +10,6 @@ module.exports = function (orm, db) {
     });
 
     UserRating.hasOne('user', db.models.User, { required: true, reverse: 'ratings' });
+    UserRating.hasOne('rater', db.models.User, { required: true });
 
 };

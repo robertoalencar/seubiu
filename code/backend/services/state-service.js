@@ -53,6 +53,6 @@ var getStatesByCountry = function(idCountry) {
 module.exports = {
 
     getAll: getAll,
-    getStatesByCountry
+    getStatesByCountry: getStatesByCountry
 
 };

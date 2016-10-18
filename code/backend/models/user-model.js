@@ -8,8 +8,23 @@ module.exports = function (orm, db) {
         emailVerified   : { type: 'boolean', defaultValue: false, mapsTo: 'emailVerified' },
         username        : { type: 'text', size: 50, required: true, unique: true, mapsTo: 'username' },
         password        : { type: 'text', size: 50, required: true, mapsTo: 'password' },
-        admin           : { type: 'boolean', defaultValue: false, mapsTo: 'admin' }
+        admin           : { type: 'boolean', defaultValue: false, mapsTo: 'admin' },
+        ratingCount     : { type: 'number', defaultValue: 0, mapsTo: 'ratingCount' },
+        ratingSum       : { type: 'number', defaultValue: 0, mapsTo: 'ratingSum' }
     }, {
+        methods: {
+            addRate: function (rate) {
+                 this.ratingCount++;
+                 this.ratingSum += rate;
+            },
+            getRating: function () {
+                var rating = 0;
+                if ((this.ratingSum && this.ratingSum > 0) && (this.ratingCount && this.ratingCount > 0)) {
+                    rating = (this.ratingSum / this.ratingCount);
+                }
+                return rating;
+            }
+        },
         collection: 'user',
         timestamp: true
     });
