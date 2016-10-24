@@ -162,6 +162,62 @@ var bootstrap = async (function() {
 
         console.log('User status Blocked: %s', userStatus3.id);
 
+
+        var requestStatus1 = await (new Promise(function (resolve, reject) {
+                db.models.RequestStatus.create({
+                    'description': 'New'
+                }, function(err, newStatus) {
+                    if (err) reject(err);
+                    resolve(newStatus);
+                });
+        }));
+
+        console.log('Request status New: %s', requestStatus1.id);
+
+        var requestStatus2 = await (new Promise(function (resolve, reject) {
+                db.models.RequestStatus.create({
+                    'description': 'Waiting'
+                }, function(err, newStatus) {
+                    if (err) reject(err);
+                    resolve(newStatus);
+                });
+        }));
+
+        console.log('Request status Waiting: %s', requestStatus2.id);
+
+        var requestStatus3 = await (new Promise(function (resolve, reject) {
+                db.models.RequestStatus.create({
+                    'description': 'Active'
+                }, function(err, newStatus) {
+                    if (err) reject(err);
+                    resolve(newStatus);
+                });
+        }));
+
+        console.log('Request status Active: %s', requestStatus3.id);
+
+        var requestStatus4 = await (new Promise(function (resolve, reject) {
+                db.models.RequestStatus.create({
+                    'description': 'Finished'
+                }, function(err, newStatus) {
+                    if (err) reject(err);
+                    resolve(newStatus);
+                });
+        }));
+
+        console.log('Request status Finished: %s', requestStatus4.id);
+
+        var requestStatus5 = await (new Promise(function (resolve, reject) {
+                db.models.RequestStatus.create({
+                    'description': 'Closed'
+                }, function(err, newStatus) {
+                    if (err) reject(err);
+                    resolve(newStatus);
+                });
+        }));
+
+        console.log('Request status Closed: %s', requestStatus5.id);
+
     });
 
 });
