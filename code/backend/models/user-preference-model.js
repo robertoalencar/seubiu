@@ -8,5 +8,7 @@ module.exports = function (orm, db) {
     });
 
     UserPreference.hasOne('user', db.models.User, { required: true } );
-    UserPreference.hasMany('cities', db.models.City, {}, { autoFetch: true, key: true, mergeTable: 'user_preference_city', mergeAssocId: 'city_id' });
+    UserPreference.hasMany('cities', db.models.City, {}, { key: true, mergeTable: 'user_preference_city', mergeAssocId: 'city_id' });
+    UserPreference.hasMany('professions', db.models.Profession, {}, { key: true, mergeTable: 'user_preference_profession', mergeAssocId: 'profession_id' });
+    UserPreference.hasMany('services', db.models.Service, {}, { key: true, mergeTable: 'user_preference_service', mergeAssocId: 'service_id' });
 };

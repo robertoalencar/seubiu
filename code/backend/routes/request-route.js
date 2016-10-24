@@ -8,12 +8,14 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         .get(function(req, res) {
 
-            requestService.getAll().then(function(requests){
+            requestService.getAll(req.query).then(function(requests){
                 res.json(requests);
             }, function(err) {
                 res.status(500).send(err.message);
             });
 
         });
+
+        //TODO: Implements this
 
 };

@@ -3,7 +3,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
-var getAddresses = function(id) {
+var getAllByUserId = function(id) {
 
     return transaction.doReadOnly(function(db) {
 
@@ -34,7 +34,7 @@ var getAddresses = function(id) {
 
 };
 
-var getAddress = function(userId, addressId) {
+var getById = function(userId, addressId) {
 
     return transaction.doReadOnly(function(db) {
 
@@ -69,7 +69,7 @@ var getAddress = function(userId, addressId) {
 
 };
 
-var removeAddress = function(userId, addressId) {
+var remove = function(userId, addressId) {
 
     return transaction.doReadWrite(function(db) {
 
@@ -104,8 +104,7 @@ var removeAddress = function(userId, addressId) {
 
 };
 
-var createAddress = function(userId, description, main, zipCode, address, number, complement,
-                district, reference, cityId, stateId, countryId) {
+var create = function(userId, addr) {
 
     return transaction.doReadWrite(function(db) {
 
@@ -117,39 +116,39 @@ var createAddress = function(userId, description, main, zipCode, address, number
                 errors.push("User ID is required");
             }
 
-            if (_.isEmpty(description)) {
+            if (_.isEmpty(addr.description)) {
                 errors.push("Description is required");
             }
 
-            if (_.isEmpty(main)) {
+            if (_.isEmpty(addr.main)) {
                 errors.push("Main is required");
             }
 
-            if (!zipCode) {
+            if (!addr.zipCode) {
                 errors.push("ZipCode is required");
             }
 
-            if (_.isEmpty(address)) {
+            if (_.isEmpty(addr.address)) {
                 errors.push("Address is required");
             }
 
-            if (!number) {
+            if (!addr.number) {
                 errors.push("Number is required");
             }
 
-            if (_.isEmpty(district)) {
+            if (_.isEmpty(addr.district)) {
                 errors.push("District is required");
             }
 
-            if (!cityId) {
+            if (!addr.cityId) {
                 errors.push("City ID is required");
             }
 
-            if (!stateId) {
+            if (!addr.stateId) {
                 errors.push("State Id is required");
             }
 
-            if (!countryId) {
+            if (!addr.countryId) {
                 errors.push("Country ID is required");
             }
 
@@ -161,18 +160,18 @@ var createAddress = function(userId, description, main, zipCode, address, number
 
                 db.models.UserAddress.create(
                 {
-                    'description': description,
-                    'main': Boolean(main),
-                    'zipCode': zipCode,
-                    'address': address,
-                    'number': number,
-                    'complement': complement,
-                    'district': district,
-                    'reference': reference,
-                    'user_id': userId,
-                    'city_id': cityId,
-                    'state_id': stateId,
-                    'country_id': countryId
+                    'description': addr.description,
+                    'main': Boolean(addr.main),
+                    'zipCode': addr.zipCode,
+                    'address': addr.address,
+                    'number': addr.number,
+                    'complement': addr.complement,
+                    'district': addr.district,
+                    'reference': addr.reference,
+                    'user_id': addr.userId,
+                    'city_id': addr.cityId,
+                    'state_id': addr.stateId,
+                    'country_id': addr.countryId
 
                 }, function(err, newAddress) {
                     if (err) reject(err);
@@ -293,7 +292,7 @@ var applyPatchesForAddress = function(address, patches) {
 
 };
 
-var updateAddress = function(userId, addressId, patches) {
+var update = function(userId, addressId, patches) {
 
     return transaction.doReadWrite(function(db) {
 
@@ -344,10 +343,10 @@ var updateAddress = function(userId, addressId, patches) {
 
 module.exports = {
 
-    createAddress: createAddress,
-    getAddresses: getAddresses,
-    getAddress: getAddress,
-    removeAddress: removeAddress,
-    updateAddress: updateAddress,
+    create: create,
+    getAllByUserId: getAllByUserId,
+    getById: getById,
+    remove: remove,
+    update: update
 
 };

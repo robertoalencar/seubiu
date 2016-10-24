@@ -115,29 +115,29 @@ var usernameAlreadyInUse = function(username, db) {
     }));
 };
 
-var create = function(name, email, displayName, username, password) {
+var create = function(user) {
 
     var task = function(db) {
 
         var errors = [];
 
-        if (_.isEmpty(name)) {
-            errors.push('Name is required');
+        if (_.isEmpty(user.displayName)) {
+            errors.push('Display Name is required');
         }
 
-        if (_.isEmpty(email)) {
+        if (_.isEmpty(user.email)) {
             errors.push('Email is required');
-        } else if (emailAlreadyInUse(email, db)) {
+        } else if (emailAlreadyInUse(user.email, db)) {
             errors.push('Email already in use');
         }
 
-        if (!_.isEmpty(username) && usernameAlreadyInUse(username, db)) {
+        if (!_.isEmpty(user.username) && usernameAlreadyInUse(user.username, db)) {
             errors.push('Username already in use');
         }
 
-        if (_.isEmpty(password)) {
+        if (_.isEmpty(user.password)) {
             errors.push('Password is required');
-        } else if (password.length < MINIMUM_PASSWORD_SIZE) {
+        } else if (user.password.length < MINIMUM_PASSWORD_SIZE) {
             errors.push('Password is too short: < ' + MINIMUM_PASSWORD_SIZE);
         }
 
@@ -149,11 +149,10 @@ var create = function(name, email, displayName, username, password) {
 
             var newUser = await (new Promise(function (resolve, reject) {
                 db.models.User.create({
-                    'name': name,
-                    'displayName': displayName,
-                    'email': email,
-                    'username': username,
-                    'password': md5(password),
+                    'displayName': user.displayName,
+                    'email': user.email,
+                    'username': user.username,
+                    'password': md5(user.password),
                     'status_id': isBootStrap ? db.models.UserStatus.ACTIVE : db.models.UserStatus.NEW,
                     'admin': isBootStrap,
                     'emailVerified': isBootStrap
@@ -203,171 +202,18 @@ var remove = function(id) {
 
 };
 
-var setProfessions = function(userId, professionIds) {
-
-    return transaction.doReadWrite(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            var errors = [];
-
-            if (!userId) {
-                errors.push('User ID is required');
-            }
-
-            if (_.isEmpty(professionIds)) {
-                errors.push('Profession IDs are required');
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(_.join(errors, ', '));
-
-            } else {
-
-                db.models.User.get(userId, function(err, user) {
-                    if (err) reject(err);
-
-                    db.models.Profession.find({'id': professionIds}, function(err, professions) {
-                        if (err) reject(err);
-
-                        user.setProfessions(professions, function(err) {
-                            if (err) reject(err);
-                            resolve(true);
-                        });
-
-                    });
-
-                });
-
-            }
-
-        }));
-
-    });
-};
-
-var getProfessions = function(userId) {
-
-    return transaction.doReadOnly(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            var errors = [];
-
-            if (!userId) {
-                errors.push('User ID is required');
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(_.join(errors, ', '));
-
-            } else {
-
-                db.models.User.get(userId, function(err, user) {
-                    if (err) reject(err);
-
-                    user.getProfessions(function(err, professions) {
-                        if (err) reject(err);
-                        resolve(professions);
-                    });
-
-                });
-
-            }
-
-        }));
-
-    });
-};
-
-var setServices = function(userId, servicesIds) {
-
-    return transaction.doReadWrite(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            var errors = [];
-
-            if (!userId) {
-                errors.push('User ID is required');
-            }
-
-            if (_.isEmpty(servicesIds)) {
-                errors.push('Service IDs are required');
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(_.join(errors, ', '));
-
-            } else {
-
-                db.models.User.get(userId, function(err, user) {
-                    if (err) reject(err);
-
-                    db.models.Service.find({'id': servicesIds}, function(err, services) {
-                        if (err) reject(err);
-
-                        user.setServices(services, function(err) {
-                            if (err) reject(err);
-                            resolve(true);
-                        });
-
-                    });
-
-                });
-
-            }
-
-        }));
-
-    });
-};
-
-var getServices = function(userId) {
-
-    return transaction.doReadOnly(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            var errors = [];
-
-            if (!userId) {
-                errors.push('User ID is required');
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(_.join(errors, ', '));
-
-            } else {
-
-                db.models.User.get(userId, function(err, user) {
-                    if (err) reject(err);
-
-                    user.getServices(function(err, services) {
-                        if (err) reject(err);
-                        resolve(services);
-                    });
-
-                });
-
-            }
-
-        }));
-
-    });
-};
-
 var checkSecurityForPatches = function(patches, isAdmin){
     var errors = [];
     var hasPathAllowedOnlyForAdmin = false;
 
+    var adminOnly = [
+        '/admin', '/emailVerified', '/status',
+        '/email', '/ratingCount'
+    ];
+
     _(patches).forEach(function(patchOp) {
 
-        if (patchOp.path == '/admin' || patchOp.path == '/emailVerified' || patchOp.path == '/status') {
+        if (adminOnly.indexOf(patchOp.path) > -1) {
             hasPathAllowedOnlyForAdmin = true;
         }
 
@@ -387,20 +233,10 @@ var applyPatchesForUser = function(user, patches) {
 
         switch (patchOp.path) {
 
-            case  '/name':
-
-                if (patchOp.op == 'replace') {
-                    user.name = patchOp.value;
-                }
-
-            break;
-
             case  '/displayName':
 
                 if (patchOp.op == 'replace') {
-                    user.displayName = patchOp.value;
-                } else if (patchOp.op == 'remove') {
-                    user.displayName = '';
+                    user.name = patchOp.value;
                 }
 
             break;
@@ -498,11 +334,6 @@ module.exports = {
     getAll: getAll,
     create: create,
     remove: remove,
-    update: update,
-
-    setProfessions: setProfessions,
-    getProfessions: getProfessions,
-    setServices: setServices,
-    getServices: getServices
+    update: update
 
 };

@@ -4,7 +4,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
-var addDevice = function(userId, deviceToken, deviceTypeId) {
+var add = function(userId, deviceToken, deviceTypeId) {
 
     return transaction.doReadWrite(function(db) {
 
@@ -44,7 +44,7 @@ var addDevice = function(userId, deviceToken, deviceTypeId) {
 
 };
 
-var getDevices = function(userId) {
+var getAllByUserId = function(userId) {
 
     return transaction.doReadOnly(function(db) {
 
@@ -74,7 +74,7 @@ var getDevices = function(userId) {
     });
 };
 
-var getDeviceByToken = function(userId, deviceToken) {
+var getByToken = function(userId, deviceToken) {
 
     return transaction.doReadOnly(function(db) {
 
@@ -110,8 +110,8 @@ var getDeviceByToken = function(userId, deviceToken) {
 
 module.exports = {
 
-    addDevice: addDevice,
-    getDevices: getDevices,
-    getDeviceByToken: getDeviceByToken,
+    add: add,
+    getAllByUserId: getAllByUserId,
+    getByToken: getByToken
 
 };
