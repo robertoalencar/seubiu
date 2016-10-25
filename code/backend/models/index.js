@@ -13,7 +13,7 @@ module.exports = function (orm, db) {
   require('./user-preference-model')(orm, db);
   require('./user-stats-model')(orm, db);
   //require('./user-profile-model')(orm, db);
-  //require('./user-personal-info-model')(orm, db);
+  require('./user-personal-info-model')(orm, db);
   //require('./user-rating-model')(orm, db);
   //require('./request-comment-model')(orm, db);
   require('./request-status-model')(orm, db);
