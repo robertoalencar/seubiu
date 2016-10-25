@@ -10,7 +10,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             stateService.getAll().then(function(states){
                 res.json(states);
             }, function(err) {
-                res.status(500).send(err.message);
+                res.status(500).send(err.message || err);
             });
 
         });
@@ -24,7 +24,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             cityService.getCitiesByState(idState).then(function(cities){
                 res.json(cities);
             }, function(err) {
-                res.status(500).send(err.message);
+                res.status(500).send(err.message || err);
             });
 
         });

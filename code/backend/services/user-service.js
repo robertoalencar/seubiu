@@ -16,7 +16,7 @@ var getTotalUsers = function(db) {
     }));
 };
 
-var getByUsernameOrEmail = function(usernameOrEmail, password) {
+var getByEmailAndPassword = function(email, password) {
 
     return transaction.doReadOnly(function(db) {
 
@@ -24,8 +24,8 @@ var getByUsernameOrEmail = function(usernameOrEmail, password) {
 
             var errors = [];
 
-            if (_.isEmpty(usernameOrEmail)) {
-                errors.push('Username or email is required');
+            if (_.isEmpty(email)) {
+                errors.push('Email is required');
             }
 
             if (_.isEmpty(password)) {
@@ -36,7 +36,7 @@ var getByUsernameOrEmail = function(usernameOrEmail, password) {
                 reject(_.join(errors, ', '));
             } else {
 
-                db.models.User.find({'password': md5(password), or:[{'username': usernameOrEmail}, {'email': usernameOrEmail}]}, 1, function (err, users) {
+                db.models.User.find({'password': md5(password), 'email': email}, 1, function (err, users) {
                     if (err) reject(err);
                     resolve(_.first(users));
                 });
@@ -97,18 +97,18 @@ var getAll = function() {
 
 };
 
-var emailAlreadyInUse = function(email, db) {
+var phoneAlreadyInUse = function(phone, db) {
     return await (new Promise(function (resolve, reject) {
-        db.models.User.exists({ 'email': email }, function (err, exists) {
+        db.models.User.exists({ 'phone': phone }, function (err, exists) {
             if (err) reject(err);
             resolve(exists);
         });
     }));
 };
 
-var usernameAlreadyInUse = function(username, db) {
+var emailAlreadyInUse = function(email, db) {
     return await (new Promise(function (resolve, reject) {
-        db.models.User.exists({ 'username': username }, function (err, exists) {
+        db.models.User.exists({ 'email': email }, function (err, exists) {
             if (err) reject(err);
             resolve(exists);
         });
@@ -121,18 +121,24 @@ var create = function(user) {
 
         var errors = [];
 
-        if (_.isEmpty(user.displayName)) {
-            errors.push('Display Name is required');
+        if (_.isEmpty(user.name)) {
+            errors.push('Name is required');
+        }
+
+        if (_.isEmpty(user.surname)) {
+            errors.push('Surname is required');
+        }
+
+        if (_.isEmpty(user.phone)) {
+            errors.push('Phone is required');
+        } else if (phoneAlreadyInUse(user.phone, db)) {
+            errors.push('Phone already in use');
         }
 
         if (_.isEmpty(user.email)) {
             errors.push('Email is required');
         } else if (emailAlreadyInUse(user.email, db)) {
             errors.push('Email already in use');
-        }
-
-        if (!_.isEmpty(user.username) && usernameAlreadyInUse(user.username, db)) {
-            errors.push('Username already in use');
         }
 
         if (_.isEmpty(user.password)) {
@@ -149,9 +155,10 @@ var create = function(user) {
 
             var newUser = await (new Promise(function (resolve, reject) {
                 db.models.User.create({
-                    'displayName': user.displayName,
+                    'name': user.name,
+                    'surname': user.surname,
+                    'phone': user.phone,
                     'email': user.email,
-                    'username': user.username,
                     'password': md5(user.password),
                     'status_id': isBootStrap ? db.models.UserStatus.ACTIVE : db.models.UserStatus.NEW,
                     'admin': isBootStrap,
@@ -208,7 +215,7 @@ var checkSecurityForPatches = function(patches, isAdmin){
 
     var adminOnly = [
         '/admin', '/emailVerified', '/status',
-        '/email', '/ratingCount'
+        '/email'
     ];
 
     _(patches).forEach(function(patchOp) {
@@ -233,10 +240,26 @@ var applyPatchesForUser = function(user, patches) {
 
         switch (patchOp.path) {
 
-            case  '/displayName':
+            case  '/name':
 
                 if (patchOp.op == 'replace') {
                     user.name = patchOp.value;
+                }
+
+            break;
+
+            case  '/surname':
+
+                if (patchOp.op == 'replace') {
+                    user.surname = patchOp.value;
+                }
+
+            break;
+
+            case  '/phone':
+
+                if (patchOp.op == 'replace') {
+                    user.phone = patchOp.value;
                 }
 
             break;
@@ -329,7 +352,7 @@ var update = function(userId, patches, isAdmin) {
 
 module.exports = {
 
-    getByUsernameOrEmail: getByUsernameOrEmail,
+    getByEmailAndPassword: getByEmailAndPassword,
     getById: getById,
     getAll: getAll,
     create: create,

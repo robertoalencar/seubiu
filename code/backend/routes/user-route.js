@@ -17,7 +17,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.getAll().then(function(users){
                 res.json(users);
             }, function(err) {
-                res.status(500).send(err.message);
+                res.status(500).send(err.message || err);
             });
 
         })
@@ -27,7 +27,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.create(req.body).then(function(newUser){
                 res.json(newUser);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });
@@ -42,7 +42,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(user)) res.status(404);
                 res.json(user);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -54,7 +54,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.update(userId, req.body.patches, req.user.admin).then(function(user){
                 res.json(user);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -66,7 +66,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userService.remove(userId).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });

@@ -17,7 +17,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userAddressService.create(userId, req.body).then(function(newAddress){
                 res.json(newAddress);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -29,7 +29,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userAddressService.getAllByUserId(userId).then(function(addresses){
                 res.json(addresses);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });
@@ -45,7 +45,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(address)) res.status(404);
                 res.json(address);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -58,7 +58,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userAddressService.update(userId, addressId, req.body.patches).then(function(address){
                 res.json(address);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -71,7 +71,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userAddressService.remove(userId, addressId).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });

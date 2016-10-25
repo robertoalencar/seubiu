@@ -19,7 +19,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userDeviceService.add(userId, deviceToken, deviceTypeId).then(function(addedDevice){
                 res.json(addedDevice);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -31,7 +31,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userDeviceService.getAllByUserId(userId).then(function(devices){
                 res.json(devices);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });
@@ -46,7 +46,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userDeviceService.getByToken(userId, deviceToken).then(function(device){
                 res.json(device);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });

@@ -18,7 +18,7 @@ passport.use(new Strategy({
     passReqToCallback: true
   },
   function(req, username, password, done) {
-    userService.getByUsernameOrEmail(username, password).then(function(user){
+    userService.getByEmailAndPassword(username, password).then(function(user){
       if (!user) {
         done(null, false);
       } else {

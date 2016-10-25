@@ -10,7 +10,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             countryService.getAll().then(function(countries){
                 res.json(countries);
             }, function(err) {
-                res.status(500).send(err.message);
+                res.status(500).send(err.message || err);
             });
 
         });
@@ -24,7 +24,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             stateService.getStatesByCountry(idCountry).then(function(states){
                 res.json(states);
             }, function(err) {
-                res.status(500).send(err.message);
+                res.status(500).send(err.message || err);
             });
 
         });

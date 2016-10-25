@@ -161,10 +161,12 @@ npm install
 # NODE_ENV=development db-migrate up
 
 # Sync database
-NODE_ENV=development && node utils/orm-db-sync.js
+#NODE_ENV=development && node utils/orm-db-sync.js
 
 # Bootstrap database
-NODE_ENV=development && node utils/bootstrap-db.js
+#NODE_ENV=development && node utils/bootstrap-db.js
+
+grunt initdb
 
 echo ""
 echo "The environment was created successfully."

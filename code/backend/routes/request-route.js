@@ -11,7 +11,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             requestService.getAll(req.query).then(function(requests){
                 res.json(requests);
             }, function(err) {
-                res.status(500).send(err.message);
+                res.status(500).send(err.message || err);
             });
 
         });

@@ -18,7 +18,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
                 if (_.isEmpty(preference)) res.status(404);
                 res.json(preference);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -30,7 +30,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userPreferenceService.update(userId, req.body.patches).then(function(preference){
                 res.json(preference);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });
@@ -44,7 +44,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userPreferenceService.getCities(userId).then(function(cities){
                 res.json(cities);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         })
@@ -73,7 +73,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userPreferenceService.setProfessions(userId, professionIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
 
@@ -86,7 +86,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userPreferenceService.getProfessions(userId).then(function(professions){
                 res.json(professions);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });
@@ -101,7 +101,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userPreferenceService.setServices(userId, servicesIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
 
@@ -114,7 +114,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             userPreferenceService.getServices(userId).then(function(services){
                 res.json(services);
             }, function(err) {
-                res.status(400).send(err.message);
+                res.status(400).send(err.message || err);
             });
 
         });
