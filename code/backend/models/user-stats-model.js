@@ -4,6 +4,7 @@ module.exports = function (orm, db) {
         id              : { type: 'serial', key: true, mapsTo: 'id' },
         ratingCount     : { type: 'number', defaultValue: 0, mapsTo: 'ratingCount' },
         ratingSum       : { type: 'number', defaultValue: 0, mapsTo: 'ratingSum' },
+        rating          : { type: 'number', defaultValue: 0, mapsTo: 'rating' },
         score           : { type: 'number', defaultValue: 0, mapsTo: 'score' }
     }, {
         methods: {
@@ -14,13 +15,16 @@ module.exports = function (orm, db) {
                  if (score) {
                     this.score += score;
                  }
-            },
-            getRating: function () {
-                var rating = 0;
+            }
+        },
+        hooks: {
+            beforeSave: function (next) {
+
                 if ((this.ratingSum && this.ratingSum > 0) && (this.ratingCount && this.ratingCount > 0)) {
-                    rating = (this.ratingSum / this.ratingCount);
+                    this.rating = (this.ratingSum / this.ratingCount);
                 }
-                return rating;
+
+                return next();
             }
         },
         collection: 'user_stats'

@@ -4,8 +4,6 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
-var ERROR_PREFERENCE_REQUIRED = 'User preference is required';
-
 var getById = function(userId) {
 
     return transaction.doReadOnly(function(db) {
@@ -24,9 +22,9 @@ var getById = function(userId) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserProfile.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
-                    resolve(_.first(preferences));
+                    resolve(_.first(profiles));
                 });
 
             }
@@ -36,18 +34,38 @@ var getById = function(userId) {
     });
 };
 
-var applyPatchesForUserPreference = function (preference, patches, db) {
+var applyPatchesForUpdate = function (profile, patches, db) {
 
     _(patches).forEach(function(patchOp) {
 
         switch (patchOp.path) {
 
+            case  '/displayName':
+
+                if (patchOp.op == 'replace') {
+                    profile.displayName = patchOp.value;
+                } else if (patchOp.op == 'remove') {
+                    profile.displayName = null;
+                }
+
+            break;
+
+            case  '/about':
+
+                if (patchOp.op == 'replace') {
+                    profile.about = patchOp.value;
+                } else if (patchOp.op == 'remove') {
+                    profile.about = null;
+                }
+
+            break;
+
             case  '/otherServices':
 
                 if (patchOp.op == 'replace') {
-                    preference.otherServices = patchOp.value;
+                    profile.otherServices = patchOp.value;
                 } else if (patchOp.op == 'remove') {
-                    preference.otherServices = false;
+                    profile.otherServices = false;
                 }
 
             break;
@@ -79,22 +97,22 @@ var update = function(userId, patches) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserProfile.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
 
-                    var preference;
+                    var profile;
 
-                    if (!_.isEmpty(preferences)) {
-                        preference = _.first(preferences);
+                    if (!_.isEmpty(profiles)) {
+                        profile = _.first(profiles);
                     } else {
-                        preference = new db.models.UserPreference({'user_id': userId});
+                        profile = new db.models.UserProfile({'user_id': userId});
                     }
 
-                    applyPatchesForUserPreference(preference, patches, db);
+                    applyPatchesForUpdate(profile, patches, db);
 
-                    preference.save(function(err) {
+                    profile.save(function(err) {
                         if (err) reject(err);
-                        resolve(preference);
+                        resolve(profile);
                     });
 
                 });
@@ -129,16 +147,16 @@ var setCities = function(userId, cityIds) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserProfile.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
-                    if (_.isEmpty(preferences)) reject('User preference is required');
+                    if (_.isEmpty(profiles)) reject('User profile is required');
 
-                    var preference = _.first(preferences);
+                    var profile = _.first(profiles);
 
                     db.models.City.find({'id': cityIds}, function(err, cities) {
                         if (err) reject(err);
 
-                        preference.setCities(cities, function(err) {
+                        profile.setCities(cities, function(err) {
                             if (err) reject(err);
                             resolve(true);
                         });
@@ -172,13 +190,13 @@ var getCities = function(userId) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
-                    if (_.isEmpty(preferences)) reject('User preference is required');
+                    if (_.isEmpty(profiles)) reject('User profile is required');
 
-                    var preference = _.first(preferences);
+                    var profile = _.first(profiles);
 
-                    preference.getCities(function(err, cities) {
+                    profile.getCities(function(err, cities) {
                         if (err) reject(err);
                         resolve(cities);
                     });
@@ -215,16 +233,16 @@ var setProfessions = function(userId, professionIds) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
-                    if (_.isEmpty(preferences)) reject('User preference is required');
+                    if (_.isEmpty(profiles)) reject('User profile is required');
 
-                    var preference = _.first(preferences);
+                    var profile = _.first(profiles);
 
                     db.models.Profession.find({'id': professionIds}, function(err, professions) {
                         if (err) reject(err);
 
-                        preference.setProfessions(professions, function(err) {
+                        profile.setProfessions(professions, function(err) {
                             if (err) reject(err);
                             resolve(true);
                         });
@@ -257,13 +275,13 @@ var getProfessions = function(userId) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
-                    if (_.isEmpty(preferences)) reject('User preference is required');
+                    if (_.isEmpty(profiles)) reject('User profil is required');
 
-                    var preference = _.first(preferences);
+                    var profile = _.first(profiles);
 
-                    preference.getProfessions(function(err, professions) {
+                    profile.getProfessions(function(err, professions) {
                         if (err) reject(err);
                         resolve(professions);
                     });
@@ -299,16 +317,16 @@ var setServices = function(userId, servicesIds) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
-                    if (_.isEmpty(preferences)) reject('User preference is required');
+                    if (_.isEmpty(profiles)) reject('User profile is required');
 
-                    var preference = _.first(preferences);
+                    var profile = _.first(profiles);
 
                     db.models.Service.find({'id': servicesIds}, function(err, services) {
                         if (err) reject(err);
 
-                        preference.setServices(services, function(err) {
+                        profile.setServices(services, function(err) {
                             if (err) reject(err);
                             resolve(true);
                         });
@@ -341,13 +359,13 @@ var getServices = function(userId) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, preferences) {
+                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
                     if (err) reject(err);
-                    if (_.isEmpty(preferences)) reject('User preference is required');
+                    if (_.isEmpty(profiles)) reject('User profile is required');
 
-                    var preference = _.first(preferences);
+                    var profile = _.first(profiles);
 
-                    preference.getServices(function(err, services) {
+                    profile.getServices(function(err, services) {
                         if (err) reject(err);
                         resolve(services);
                     });

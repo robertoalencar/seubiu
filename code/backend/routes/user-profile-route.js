@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var userPreferenceService = require('../services/user-preference-service');
+var userProfileService = require('../services/user-profile-service');
 
 module.exports = function(router, isAuthenticated, isAdmin) {
 
@@ -8,15 +8,15 @@ module.exports = function(router, isAuthenticated, isAdmin) {
         res.sendStatus(403);
     }
 
-    router.route('/users/:userId/preference')
+    router.route('/users/:userId/profile')
 
         .get(userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
-            userPreferenceService.getById(userId).then(function(preference){
-                if (_.isEmpty(preference)) res.status(404);
-                res.json(preference);
+            userProfileService.getById(userId).then(function(profile){
+                if (_.isEmpty(profile)) res.status(404);
+                res.json(profile);
             }, function(err) {
                 res.status(400).send(err.message || err);
             });
@@ -27,21 +27,21 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userPreferenceService.update(userId, req.body.patches).then(function(preference){
-                res.json(preference);
+            userProfileService.update(userId, req.body.patches).then(function(profile){
+                res.json(profile);
             }, function(err) {
                 res.status(400).send(err.message || err);
             });
 
         });
 
-    router.route('/users/:userId/preference/cities')
+    router.route('/users/:userId/profile/cities')
 
         .get(userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
-            userPreferenceService.getCities(userId).then(function(cities){
+            userProfileService.getCities(userId).then(function(cities){
                 res.json(cities);
             }, function(err) {
                 res.status(400).send(err.message || err);
@@ -54,7 +54,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
             var userId = req.params.userId;
             var cityIds = req.body.cityIds;
 
-            userPreferenceService.setCities(userId, cityIds).then(function(success){
+            userProfileService.setCities(userId, cityIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
                 res.status(400).send(err);
@@ -63,14 +63,14 @@ module.exports = function(router, isAuthenticated, isAdmin) {
         });
 
 
- router.route('/users/:userId/preference/professions')
+ router.route('/users/:userId/profile/professions')
 
         .post(userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var professionIds = req.body.professionIds;
 
-            userPreferenceService.setProfessions(userId, professionIds).then(function(success){
+            userProfileService.setProfessions(userId, professionIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
                 res.status(400).send(err.message || err);
@@ -83,7 +83,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userPreferenceService.getProfessions(userId).then(function(professions){
+            userProfileService.getProfessions(userId).then(function(professions){
                 res.json(professions);
             }, function(err) {
                 res.status(400).send(err.message || err);
@@ -91,14 +91,14 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         });
 
-    router.route('/users/:userId/preference/services')
+    router.route('/users/:userId/profile/services')
 
         .post(userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var servicesIds = req.body.servicesIds;
 
-            userPreferenceService.setServices(userId, servicesIds).then(function(success){
+            userProfileService.setServices(userId, servicesIds).then(function(success){
                 res.status(200).send(success);
             }, function(err) {
                 res.status(400).send(err.message || err);
@@ -111,7 +111,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             var userId = req.params.userId;
 
-            userPreferenceService.getServices(userId).then(function(services){
+            userProfileService.getServices(userId).then(function(services){
                 res.json(services);
             }, function(err) {
                 res.status(400).send(err.message || err);
