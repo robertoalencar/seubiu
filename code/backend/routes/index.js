@@ -11,7 +11,6 @@ function isAdmin(req, res, next) {
   res.sendStatus(403);
 }
 
-require('./file-route')(router, isAuthenticated, isAdmin);
 require('./user-route')(router, isAuthenticated, isAdmin);
 require('./profession-route')(router, isAuthenticated, isAdmin);
 require('./state-route')(router, isAuthenticated, isAdmin);

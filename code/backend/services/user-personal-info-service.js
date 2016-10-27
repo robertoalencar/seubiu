@@ -23,9 +23,14 @@ var getById = function(userId) {
 
             } else {
 
-                db.models.UserPersonalInfo.find({'user_id': userId}, [], function (err, personalInfos) {
-                    if (err) reject(err);
-                    resolve(_.first(personalInfos));
+                db.models.UserPersonalInfo.find({'user_id': userId}).first(function (err, personalInfo) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(personalInfo)) {
+                        reject('User personal info not found');
+                    } else {
+                        resolve(personalInfo);
+                    }
                 });
 
             }
@@ -102,23 +107,21 @@ var update = function(userId, patches) {
 
             } else {
 
-                db.models.UserPersonalInfo.find({'user_id': userId}, [], function (err, personalInfos) {
-                    if (err) reject(err);
-
-                    var personalInfo;
-
-                    if (!_.isEmpty(personalInfos)) {
-                        personalInfo = _.first(personalInfos);
+                db.models.UserPersonalInfo.find({'user_id': userId}).first(function (err, personalInfo) {
+                    if (err) {
+                        reject(err);
                     } else {
-                        personalInfo = new db.models.UserPersonalInfo({'user_id': userId});
+                        if (_.isNil(personalInfo)) {
+                            personalInfo = new db.models.UserPersonalInfo({'user_id': userId});
+                        }
+
+                        applyPatchesForUserPersonalInfo(personalInfo, patches, db);
+
+                        personalInfo.save(function(err) {
+                            if (err) reject(err);
+                            resolve(personalInfo);
+                        });
                     }
-
-                    applyPatchesForUserPersonalInfo(personalInfo, patches, db);
-
-                    personalInfo.save(function(err) {
-                        if (err) reject(err);
-                        resolve(personalInfo);
-                    });
 
                 });
 

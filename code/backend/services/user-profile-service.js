@@ -22,9 +22,9 @@ var getById = function(userId) {
 
             } else {
 
-                db.models.UserProfile.find({'user_id': userId}, [], function (err, profiles) {
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
                     if (err) reject(err);
-                    resolve(_.first(profiles));
+                    resolve(profile);
                 });
 
             }
@@ -97,23 +97,24 @@ var update = function(userId, patches) {
 
             } else {
 
-                db.models.UserProfile.find({'user_id': userId}, [], function (err, profiles) {
-                    if (err) reject(err);
-
-                    var profile;
-
-                    if (!_.isEmpty(profiles)) {
-                        profile = _.first(profiles);
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
                     } else {
-                        profile = new db.models.UserProfile({'user_id': userId});
+
+                        if (_.isNil(profile)) {
+                            profile = new db.models.UserProfile({'user_id': userId});
+                        }
+
+                        applyPatchesForUpdate(profile, patches, db);
+
+                        profile.save(function(err) {
+                            if (err) reject(err);
+                            resolve(profile);
+                        });
+
                     }
 
-                    applyPatchesForUpdate(profile, patches, db);
-
-                    profile.save(function(err) {
-                        if (err) reject(err);
-                        resolve(profile);
-                    });
 
                 });
 
@@ -147,21 +148,27 @@ var setCities = function(userId, cityIds) {
 
             } else {
 
-                db.models.UserProfile.find({'user_id': userId}, [], function (err, profiles) {
-                    if (err) reject(err);
-                    if (_.isEmpty(profiles)) reject('User profile is required');
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else {
 
-                    var profile = _.first(profiles);
+                        db.models.City.find({'id': cityIds}, function(err, cities) {
+                            if (err) {
+                                reject(err);
+                            } else {
 
-                    db.models.City.find({'id': cityIds}, function(err, cities) {
-                        if (err) reject(err);
+                                 profile.setCities(cities, function(err) {
+                                    if (err) reject(err);
+                                    resolve(true);
+                                });
 
-                        profile.setCities(cities, function(err) {
-                            if (err) reject(err);
-                            resolve(true);
+                            }
+
                         });
-
-                    });
+                    }
 
                 });
 
@@ -190,17 +197,18 @@ var getCities = function(userId) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
-                    if (err) reject(err);
-                    if (_.isEmpty(profiles)) reject('User profile is required');
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else {
+                        profile.getCities(function(err, cities) {
+                            if (err) reject(err);
+                            resolve(cities);
+                        });
 
-                    var profile = _.first(profiles);
-
-                    profile.getCities(function(err, cities) {
-                        if (err) reject(err);
-                        resolve(cities);
-                    });
-
+                    }
 
                 });
 
@@ -233,21 +241,28 @@ var setProfessions = function(userId, professionIds) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
-                    if (err) reject(err);
-                    if (_.isEmpty(profiles)) reject('User profile is required');
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else {
 
-                    var profile = _.first(profiles);
+                        db.models.Profession.find({'id': professionIds}, function(err, professions) {
+                            if (err) {
+                                reject(err);
+                            } else {
 
-                    db.models.Profession.find({'id': professionIds}, function(err, professions) {
-                        if (err) reject(err);
+                                profile.setProfessions(professions, function(err) {
+                                    if (err) reject(err);
+                                    resolve(true);
+                                });
 
-                        profile.setProfessions(professions, function(err) {
-                            if (err) reject(err);
-                            resolve(true);
+                            }
+
                         });
 
-                    });
+                    }
                 });
 
             }
@@ -275,16 +290,17 @@ var getProfessions = function(userId) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
-                    if (err) reject(err);
-                    if (_.isEmpty(profiles)) reject('User profil is required');
-
-                    var profile = _.first(profiles);
-
-                    profile.getProfessions(function(err, professions) {
-                        if (err) reject(err);
-                        resolve(professions);
-                    });
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else {
+                        profile.getProfessions(function(err, professions) {
+                            if (err) reject(err);
+                            resolve(professions);
+                        });
+                    }
 
                 });
 
@@ -317,21 +333,29 @@ var setServices = function(userId, servicesIds) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
-                    if (err) reject(err);
-                    if (_.isEmpty(profiles)) reject('User profile is required');
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else {
 
-                    var profile = _.first(profiles);
+                        db.models.Service.find({'id': servicesIds}, function(err, services) {
+                            if (err) {
+                                reject(err);
+                            } else {
 
-                    db.models.Service.find({'id': servicesIds}, function(err, services) {
-                        if (err) reject(err);
+                                profile.setServices(services, function(err) {
+                                    if (err) reject(err);
+                                    resolve(true);
+                                });
 
-                        profile.setServices(services, function(err) {
-                            if (err) reject(err);
-                            resolve(true);
+                            }
+
                         });
 
-                    });
+                    }
+
                 });
 
             }
@@ -359,16 +383,19 @@ var getServices = function(userId) {
 
             } else {
 
-                db.models.UserPreference.find({'user_id': userId}, [], function (err, profiles) {
-                    if (err) reject(err);
-                    if (_.isEmpty(profiles)) reject('User profile is required');
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else {
 
-                    var profile = _.first(profiles);
+                        profile.getServices(function(err, services) {
+                            if (err) reject(err);
+                            resolve(services);
+                        });
 
-                    profile.getServices(function(err, services) {
-                        if (err) reject(err);
-                        resolve(services);
-                    });
+                    }
 
                 });
 
@@ -377,6 +404,139 @@ var getServices = function(userId) {
         }));
 
     });
+};
+
+var updateDisplayImage = function(userId, name, size, type, data, ip) {
+
+    return transaction.doReadWrite(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!userId) {
+                errors.push('User ID is required');
+            }
+
+            if (_.isEmpty(name)) {
+                errors.push('Name is required');
+            }
+
+            if (!size  || size  <= 0) {
+                errors.push('Size is required');
+            }
+
+            if (_.isEmpty(type)) {
+                errors.push('Type is required');
+            }
+
+            if (_.isEmpty(data)) {
+                errors.push('Data is required');
+            }
+
+            if (_.isEmpty(ip)) {
+                errors.push('IP is required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(_.join(errors, ', '));
+
+            } else {
+
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else {
+
+                        db.models.File.find({'id': profile.displayimage_id}).remove(function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+
+                                var newFile = new db.models.File({
+                                    'name' : name,
+                                    'size' : size,
+                                    'type' : type,
+                                    'data' : data,
+                                    'ip'   : ip
+                                });
+
+                                db.models.File.create(newFile, function(err, savedFile) {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+
+                                        profile.setDisplayImage(savedFile, function(err) {
+                                            if (err) reject(err);
+                                            resolve(true);
+                                        });
+
+                                    }
+
+
+                                });
+
+                            }
+
+                        });
+                    }
+
+                });
+
+            }
+
+        }));
+
+    });
+
+};
+
+
+var getDisplayImage = function(userId) {
+
+    return transaction.doReadWrite(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!userId) {
+                errors.push('User ID is required');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(_.join(errors, ', '));
+
+            } else {
+
+                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
+                    if (err) {
+                        reject(err);
+                    } else if (_.isNil(profile)) {
+                        reject('User profile not found');
+                    } else if (_.isNil(profile.displayimage_id)) {
+                        reject('Display image is required');
+                    } else {
+
+                        db.models.File.get(profile.displayimage_id, function(err, file) {
+                            if (err) reject(err);
+                            resolve(file);
+                        });
+
+                    }
+
+                });
+
+            }
+
+        }));
+
+    });
+
 };
 
 
@@ -390,6 +550,9 @@ module.exports = {
     setProfessions: setProfessions,
     getProfessions: getProfessions,
     setServices: setServices,
-    getServices: getServices
+    getServices: getServices,
+
+    updateDisplayImage: updateDisplayImage,
+    getDisplayImage: getDisplayImage
 
 };

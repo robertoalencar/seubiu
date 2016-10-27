@@ -330,14 +330,18 @@ var update = function(userId, patches, isAdmin) {
             } else {
 
                 db.models.User.get(userId, function(err, user) {
-                    if (err) reject(err);
+                    if (err) {
+                        reject(err);
+                    } else {
 
-                    applyPatchesForUser(user, patches);
+                        applyPatchesForUser(user, patches);
 
-                    user.save(function(err) {
-                        if (err) reject(err);
-                        resolve(user);
-                    });
+                        user.save(function(err) {
+                            if (err) reject(err);
+                            resolve(user);
+                        });
+
+                    }
 
                 });
 

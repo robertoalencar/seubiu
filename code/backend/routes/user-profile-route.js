@@ -1,4 +1,7 @@
 var _ = require('lodash');
+var multer  = require('multer');
+var storage = multer.memoryStorage();
+var upload = multer({ storage: storage });
 var userProfileService = require('../services/user-profile-service');
 
 module.exports = function(router, isAuthenticated, isAdmin) {
@@ -113,6 +116,34 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
             userProfileService.getServices(userId).then(function(services){
                 res.json(services);
+            }, function(err) {
+                res.status(400).send(err.message || err);
+            });
+
+        });
+
+    router.route('/users/:userId/profile/displayimage')
+
+        .get(function(req, res) {
+
+            var userId = req.params.userId;
+
+            userProfileService.getDisplayImage(userId).then(function(file){
+                res.type(file.type);
+                res.end(file.data, 'binary');
+            }, function(err) {
+                res.status(404).send(err.message || err);
+            });
+
+        })
+
+        .post(userHasAccess, upload.single('file'), function(req, res) {
+
+            var userId = req.params.userId;
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+            userProfileService.updateDisplayImage(userId, req.file.originalname, req.file.size, req.file.mimetype, req.file.buffer, ip).then(function(success){
+                res.status(200).send(success);
             }, function(err) {
                 res.status(400).send(err.message || err);
             });

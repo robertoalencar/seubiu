@@ -319,16 +319,20 @@ var update = function(userId, addressId, patches) {
             } else {
 
                 db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
-                    if (err) reject(err);
+                    if (err) {
+                        reject(err);
+                    } else {
 
-                    var address = _.first(addresses);
+                        var address = _.first(addresses);
 
-                    applyPatchesForAddress(address, patches);
+                        applyPatchesForAddress(address, patches);
 
-                    address.save(function(err) {
-                        if (err) reject(err);
-                        resolve(address);
-                    });
+                        address.save(function(err) {
+                            if (err) reject(err);
+                            resolve(address);
+                        });
+
+                    }
 
                 });
 
