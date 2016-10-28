@@ -6,19 +6,20 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var redis = require("redis");
-var RedisStore = require('connect-redis')(session);
 var passport = require('passport');
-var Strategy = require('passport-local').Strategy;
+var JwtStrategy = require('passport-jwt').Strategy;
+var ExtractJwt = require('passport-jwt').ExtractJwt;
+var jwt = require('jsonwebtoken');
 var responseTime = require('response-time');
 var cryptoUtil = require('./utils/crypto-util');
 var userService = require('./services/user-service');
 
-passport.use(new Strategy({
-    passReqToCallback: true
-  },
-  function(req, username, password, done) {
-    userService.getByEmailAndPassword(username, password).then(function(user){
+var opts = {}
+opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
+opts.secretOrKey = process.env.SESSION_SECRET;
+passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+
+    userService.getById(jwt_payload.id).then(function(user){
       if (!user) {
         done(null, false);
       } else {
@@ -27,22 +28,8 @@ passport.use(new Strategy({
     }, function(err) {
       done(err);
     });
-  }
-));
 
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-
-  userService.getById(id).then(function(user){
-      done(null, user);
-    }, function(err) {
-      done(err);
-    });
-
-});
+}));
 
 var app = express();
 
@@ -61,38 +48,39 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
-    secret: process.env.SESSION_SECRET,
-    store: new RedisStore(
-      {client: redis.createClient({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT})}
-    ),
-    db: 1,
-    rolling: true,
-    saveUninitialized: false,
-    resave: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.get('/', function(req, res, next) {
   res.render('index', { title: 'Seu Biu' });
 });
 
-app.post('/login',
-  passport.authenticate('local', { session: true }),
-  function(req, res) {
-    res.sendStatus(200);
+app.get('/api/me', passport.authenticate('jwt', { session: false}),
+    function(req, res) {
+      res.send(req.user);
+    }
+);
+
+app.post('/api/authenticate', function(req, res) {
+
+  var email = req.body.email;
+  var password = req.body.password;
+
+  userService.getByEmailAndPassword(email, password).then(function(user){
+      if (!user) {
+        res.status(401).send('Unauthorized');
+      } else {
+
+        var token = jwt.sign({id:user.id}, process.env.SESSION_SECRET, {
+          expiresIn: '30d'
+        });
+
+        res.json({
+          token: token
+        });
+
+      }
+    }, function(err) {
+      res.status(401).send(err.message || err);
   });
 
-app.get('/logout',
-  function(req, res){
-    req.logout();
-    req.session.destroy(function(err) {
-      res.clearCookie('connect.sid');
-      res.sendStatus(200);
-  });
 });
 
 app.use('/api', require('./routes/'));

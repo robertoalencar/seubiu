@@ -1,16 +1,11 @@
 var _ = require('lodash');
 var userDeviceService = require('../services/user-device-service');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
-
-    function userHasAccess(req, res, next) {
-        if (req.isAuthenticated() && (req.user.id == req.params.userId || req.user.admin)) { return next(null); }
-        res.sendStatus(403);
-    }
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/devices')
 
-        .post(userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var deviceToken = req.body.deviceToken;
@@ -24,7 +19,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -38,7 +33,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId/devices/:deviceToken')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var deviceToken = req.params.deviceToken;

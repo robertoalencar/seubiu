@@ -1,16 +1,11 @@
 var _ = require('lodash');
 var userPersonalInfoService = require('../services/user-personal-info-service');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
-
-    function userHasAccess(req, res, next) {
-        if (req.isAuthenticated() && (req.user.id == req.params.userId || req.user.admin)) { return next(null); }
-        res.sendStatus(403);
-    }
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/personalinfo')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -23,7 +18,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .put(userHasAccess, function(req, res) {
+        .put(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 

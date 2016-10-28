@@ -1,7 +1,7 @@
 var countryService = require('../services/country-service');
 var stateService = require('../services/state-service');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/countries')
 

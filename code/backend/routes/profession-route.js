@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var professionService = require('../services/profession-service');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/professions')
 

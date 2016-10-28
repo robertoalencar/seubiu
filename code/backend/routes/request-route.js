@@ -2,7 +2,7 @@ var requestService = require('../services/request-service');
 var userService = require('../services/user-service');
 var userSearchService = require('../services/user-search-service');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/requests')
 

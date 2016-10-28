@@ -4,16 +4,11 @@ var storage = multer.memoryStorage();
 var upload = multer({ storage: storage });
 var userProfileService = require('../services/user-profile-service');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
-
-    function userHasAccess(req, res, next) {
-        if (req.isAuthenticated() && (req.user.id == req.params.userId || req.user.admin)) { return next(null); }
-        res.sendStatus(403);
-    }
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/profile')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -26,7 +21,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .put(userHasAccess, function(req, res) {
+        .put(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -40,7 +35,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId/profile/cities')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -52,7 +47,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .post(userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var cityIds = req.body.cityIds;
@@ -68,7 +63,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
  router.route('/users/:userId/profile/professions')
 
-        .post(userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var professionIds = req.body.professionIds;
@@ -82,7 +77,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -96,7 +91,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId/profile/services')
 
-        .post(userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var servicesIds = req.body.servicesIds;
@@ -110,7 +105,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -137,7 +132,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .post(userHasAccess, upload.single('file'), function(req, res) {
+        .post(isAuthenticated, userHasAccess, upload.single('file'), function(req, res) {
 
             var userId = req.params.userId;
             var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;

@@ -1,16 +1,11 @@
 var _ = require('lodash');
 var userAddressService = require('../services/user-address-service');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
-
-    function userHasAccess(req, res, next) {
-        if (req.isAuthenticated() && (req.user.id == req.params.userId || req.user.admin)) { return next(null); }
-        res.sendStatus(403);
-    }
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/addresses')
 
-        .post(userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -22,7 +17,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -36,7 +31,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId/addresses/:addressId')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var addressId = req.params.addressId;
@@ -50,7 +45,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .put(userHasAccess, function(req, res) {
+        .put(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var addressId = req.params.addressId;
@@ -63,7 +58,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .delete(userHasAccess, function(req, res) {
+        .delete(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
             var addressId = req.params.addressId;

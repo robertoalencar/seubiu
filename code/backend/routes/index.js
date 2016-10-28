@@ -1,25 +1,28 @@
 var express = require('express');
 var router = express.Router();
+var passport = require('passport');
 
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-  res.sendStatus(401);
-}
+var authenticate = passport.authenticate('jwt', { session: false});
 
 function isAdmin(req, res, next) {
   if (req.isAuthenticated() && req.user.admin) { return next(null); }
   res.sendStatus(403);
 }
 
-require('./user-route')(router, isAuthenticated, isAdmin);
-require('./profession-route')(router, isAuthenticated, isAdmin);
-require('./state-route')(router, isAuthenticated, isAdmin);
-require('./city-route')(router, isAuthenticated, isAdmin);
-require('./country-route')(router, isAuthenticated, isAdmin);
-require('./request-route.js')(router, isAuthenticated, isAdmin);
-require('./user-profile-route')(router, isAuthenticated, isAdmin);
-require('./user-address-route')(router, isAuthenticated, isAdmin);
-require('./user-device-route')(router, isAuthenticated, isAdmin);
-require('./user-personal-info-route')(router, isAuthenticated, isAdmin);
+function userHasAccess(req, res, next) {
+    if (req.isAuthenticated() && (req.user.id == req.params.userId || req.user.admin)) { return next(null); }
+    res.sendStatus(403);
+}
+
+require('./user-route')(router, authenticate, isAdmin, userHasAccess);
+require('./profession-route')(router, authenticate, isAdmin, userHasAccess);
+require('./state-route')(router, authenticate, isAdmin, userHasAccess);
+require('./city-route')(router, authenticate, isAdmin, userHasAccess);
+require('./country-route')(router, authenticate, isAdmin, userHasAccess);
+require('./request-route.js')(router, authenticate, isAdmin, userHasAccess);
+require('./user-profile-route')(router, authenticate, isAdmin, userHasAccess);
+require('./user-address-route')(router, authenticate, isAdmin, userHasAccess);
+require('./user-device-route')(router, authenticate, isAdmin, userHasAccess);
+require('./user-personal-info-route')(router, authenticate, isAdmin, userHasAccess);
 
 module.exports = router;

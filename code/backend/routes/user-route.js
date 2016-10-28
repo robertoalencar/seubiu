@@ -1,18 +1,13 @@
 var _ = require('lodash');
 var userService = require('../services/user-service');
 var userDeviceService = require('../services/user-device-service');
+var passport = require('passport');
 
-module.exports = function(router, isAuthenticated, isAdmin) {
-
-
-    function userHasAccess(req, res, next) {
-        if (req.isAuthenticated() && (req.user.id == req.params.userId || req.user.admin)) { return next(null); }
-        res.sendStatus(403);
-    }
+module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users')
 
-        .get(isAdmin, function(req, res) {
+        .get(isAuthenticated, isAdmin, function(req, res) {
 
             userService.getAll().then(function(users){
                 res.json(users);
@@ -34,7 +29,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -47,7 +42,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-         .put(userHasAccess, function(req, res) {
+         .put(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -59,7 +54,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .delete(isAdmin, function(req, res) {
+        .delete(isAuthenticated, isAdmin, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -76,7 +71,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId/profile')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -85,7 +80,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .put(userHasAccess, function(req, res) {
+        .put(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -96,7 +91,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
     router.route('/users/:userId/personal')
 
-        .get(userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
@@ -105,7 +100,7 @@ module.exports = function(router, isAuthenticated, isAdmin) {
 
         })
 
-        .put(userHasAccess, function(req, res) {
+        .put(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
 
