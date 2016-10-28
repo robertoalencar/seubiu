@@ -5,7 +5,7 @@ var searchByProfessionServicesAndCity = function (professionId, servicesIds, cit
     return new Promise(function (resolve, reject) {
 
         var sql = [
-            'SELECT DISTINCT u."id", u."name", upro."displayName", upro."displayimage_id", us."rating", us."score"',
+            'SELECT DISTINCT u."id", u."name", upro."displayName", us."rating", us."score"',
                 'FROM',
                     '"user" AS u',
                     'INNER JOIN user_profile AS upro ON (u.id = upro.user_id)',
