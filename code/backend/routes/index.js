@@ -24,5 +24,6 @@ require('./user-profile-route')(router, authenticate, isAdmin, userHasAccess);
 require('./user-address-route')(router, authenticate, isAdmin, userHasAccess);
 require('./user-device-route')(router, authenticate, isAdmin, userHasAccess);
 require('./user-personal-info-route')(router, authenticate, isAdmin, userHasAccess);
+require('./user-search-route')(router, authenticate, isAdmin, userHasAccess);
 
 module.exports = router;
