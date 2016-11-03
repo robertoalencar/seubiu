@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="br.com.orube.client.DashBoardActivity"
+    android:orientation="vertical">
+
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="30px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/bem_vindo"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal" />
+
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:id="@+id/SpnJobType"></Spinner>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/proximo"
+        android:id="@+id/btnProximo"
+        android:layout_gravity="center_horizontal" />
+
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="30px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/nao_encontrou"
+        android:id="@+id/lbmMsgSetp1"
+        android:layout_gravity="center_horizontal" />
+
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="30px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/clique_aqui"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal" />
+
+
+</LinearLayout>
