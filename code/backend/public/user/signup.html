@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Seu Biu</title>
+
+	<script type="text/javascript">
+
+		new Vue({
+			el: '#app',
+			data: {
+				message: 'Hello Vue.js!'
+			}
+		})
+
+	</script>
+
+</head>
+
+<body>
+
+<form action="http://seubiu.com/api/users" method="post">
+
+	<div id="app">
+		<p>{{ message }}</p>
+	</div>
+
+    Nome:
+    <input type="text" name="auth_token" id="auth_token" size="50">
+
+    <input type="submit" value="Upload Image" name="submit">
+
+</form>
+
+</body>
+
+<script src="javascripts/vue.js"></script>
+
+</html>
