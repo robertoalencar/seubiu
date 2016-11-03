@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">SeuBiu</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">user / email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_dash_board">DashBoardActivity</string>
+    <string name="title_activity_job_location">Map</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="bem_vindo">Seja bem vindo!</string>
+    <string name="solicitar">Solicitar</string>
+    <string name="solicitados">Serviços Solicitados</string>
+    <string name="realizados">Serviços Realizados</string>
+    <string name="conta">Criar minha conta</string>
+    <string name="login">Login</string>
+    <string name="proximo">Próximo</string>
+    <string name="nao_encontrou">Não encontrou o profissional que precisa?</string>
+    <string name="clique_aqui">Clique aqui</string>
+    <string name="professional">Professional:</string>
+    <string name="servico">Para qual serviço?</string>
+</resources>
