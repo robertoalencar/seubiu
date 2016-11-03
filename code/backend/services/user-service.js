@@ -35,8 +35,8 @@ var getByEmailAndPassword = function(email, password) {
             if (!_.isEmpty(errors)) {
                 reject(_.join(errors, ', '));
             } else {
-
-                db.models.User.find({'password': md5(password), 'email': email, 'emailVerified': true}, 1, function (err, users) {
+                //TODO: Add this filter when the email verification was implemented: , 'emailVerified': true
+                db.models.User.find({'password': md5(password), 'email': email}, 1, function (err, users) {
                     if (err) reject(err);
                     resolve(_.first(users));
                 });
