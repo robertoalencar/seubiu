@@ -16,7 +16,7 @@ var checkSecurityForFilter = function(filter, isAdmin){
     });
 
     if (hasFieldAllowedOnlyForAdmin && !isAdmin) {
-        errors.push('Field allowed only for administrators');
+        errors.push('FIELD_ALLOWED_ONLY_FOR_ADMIN');
     }
 
     return errors;

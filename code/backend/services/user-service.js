@@ -25,15 +25,15 @@ var getByEmailAndPassword = function(email, password) {
             var errors = [];
 
             if (_.isEmpty(email)) {
-                errors.push('Email is required');
+                errors.push('EMAIL_IS_REQUIRED');
             }
 
             if (_.isEmpty(password)) {
-                errors.push('Password is required');
+                errors.push('PASSOWRD_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
-                reject(_.join(errors, ', '));
+                reject(errors);
             } else {
                 //TODO: Add this filter when the email verification was implemented: , 'emailVerified': true
                 db.models.User.find({'password': md5(password), 'email': email}, 1, function (err, users) {
@@ -58,12 +58,12 @@ var getById = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -122,33 +122,33 @@ var create = function(user) {
         var errors = [];
 
         if (_.isEmpty(user.name)) {
-            errors.push('Name is required');
+            errors.push('NAME_IS_REQUIRED');
         }
 
         if (_.isEmpty(user.surname)) {
-            errors.push('Surname is required');
+            errors.push('SURNAME_IS_REQUIRED');
         }
 
         if (_.isEmpty(user.phone)) {
-            errors.push('Phone is required');
+            errors.push('PHONE_IS_REQUIRED');
         } else if (phoneAlreadyInUse(user.phone, db)) {
-            errors.push('Phone already in use');
+            errors.push('PHONE_ALREADY_IN_USE');
         }
 
         if (_.isEmpty(user.email)) {
-            errors.push('Email is required');
+            errors.push('EMAIL_IS_REQUIRED');
         } else if (emailAlreadyInUse(user.email, db)) {
-            errors.push('Email already in use');
+            errors.push('EMAIL_ALREADY_IN_USE');
         }
 
         if (_.isEmpty(user.password)) {
-            errors.push('Password is required');
+            errors.push('PASSOWRD_IS_REQUIRED');
         } else if (user.password.length < MINIMUM_PASSWORD_SIZE) {
-            errors.push('Password is too short: < ' + MINIMUM_PASSWORD_SIZE);
+            errors.push('PASSOWRD_IS_TOO_SHORT');
         }
 
         if (!_.isEmpty(errors)) {
-            throw new Error(_.join(errors, ', '));
+            throw errors;
         } else {
 
             var isBootStrap = (getTotalUsers(db) === 0);
@@ -187,12 +187,12 @@ var remove = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -227,7 +227,7 @@ var checkSecurityForPatches = function(patches, isAdmin){
     });
 
     if (hasPathAllowedOnlyForAdmin && !isAdmin) {
-        errors.push('Path allowed only for administrators');
+        errors.push('PATH_ALLOWED_ONLY_FOR_ADMIN');
     }
 
     return errors;
@@ -314,18 +314,18 @@ var update = function(userId, patches, isAdmin) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (_.isEmpty(patches)) {
-                errors.push('Patches are required');
+                errors.push('PATCHES_ARE_REQUIRED');
             }
 
             errors = _.concat(errors, checkSecurityForPatches(patches, Boolean(isAdmin)));
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 

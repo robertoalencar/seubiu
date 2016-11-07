@@ -32,12 +32,12 @@ var getStatesByCountry = function(idCountry) {
             var errors = [];
 
             if (!idCountry) {
-                errors.push('Country ID is required');
+                errors.push('COUNTRY_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
