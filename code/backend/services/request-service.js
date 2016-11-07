@@ -3,26 +3,6 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
-var checkSecurityForFilter = function(filter, isAdmin){
-    var errors = [];
-    var hasFieldAllowedOnlyForAdmin = false;
-
-    _(filter).forEach(function(field) {
-
-        if (field == '/admin' || patchOp.path == '/emailVerified' || patchOp.path == '/status') {
-            hasFieldAllowedOnlyForAdmin = true;
-        }
-
-    });
-
-    if (hasFieldAllowedOnlyForAdmin && !isAdmin) {
-        errors.push('FIELD_ALLOWED_ONLY_FOR_ADMIN');
-    }
-
-    return errors;
-
-};
-
 var getByFilter = function(filter, db, reject, resolve) {
 
     db.models.Request.find(filter, [ 'description', 'A' ], function (err, requests) {
@@ -44,9 +24,39 @@ var getAll = function(filter) {
     });
 };
 
+var getByOwner = function(userId) {
+    return transaction.doReadOnly(function(db) {
+
+        return await (new Promise(function (resolve, reject) {
+
+            var errors = [];
+
+            if (!userId) {
+                errors.push('USER_ID_IS_REQUIRED');
+            }
+
+            if (!_.isEmpty(errors)) {
+
+                reject(errors);
+
+            } else {
+                getByFilter({'owner_id':userId}, db, reject, resolve);
+            }
+
+        }));
+
+    });
+};
+
+var create = function(userId, request) {
+    //TODO: Implement this...
+
+};
 
 module.exports = {
 
-    getAll: getAll
+    getAll: getAll,
+    getByOwner: getByOwner,
+    create: create
 
 };
