@@ -32,12 +32,12 @@ var getCitiesByState = function(idState) {
             var errors = [];
 
             if (!idState) {
-                errors.push('State ID is required');
+                errors.push('STATE_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 

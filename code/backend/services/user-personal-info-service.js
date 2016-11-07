@@ -14,12 +14,12 @@ var getById = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -27,7 +27,7 @@ var getById = function(userId) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(personalInfo)) {
-                        reject('User personal info not found');
+                        reject(['USER_PERSONAL_INFO_NOT_FOUND']);
                     } else {
                         resolve(personalInfo);
                     }
@@ -51,7 +51,7 @@ var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
                 if (patchOp.op == 'replace') {
                     personalInfo.birthDate = patchOp.value;
                 } else if (patchOp.op == 'remove') {
-                    personalInfo.birthDate = false;
+                    personalInfo.birthDate = null;
                 }
 
             break;
@@ -94,16 +94,16 @@ var update = function(userId, patches) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (_.isEmpty(patches)) {
-                errors.push('Patches are required');
+                errors.push('PATCHES_ARE_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -132,8 +132,6 @@ var update = function(userId, patches) {
     });
 
 };
-
-
 
 module.exports = {
 
