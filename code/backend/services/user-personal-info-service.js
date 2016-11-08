@@ -51,7 +51,7 @@ var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
                 if (patchOp.op == 'replace') {
                     personalInfo.birthDate = patchOp.value;
                 } else if (patchOp.op == 'remove') {
-                    personalInfo.birthDate = false;
+                    personalInfo.birthDate = '';
                 }
 
             break;

@@ -17,7 +17,15 @@ new Vue({
   methods: {
     signup: function (event) {
 
-      this.$http.post('/api/users', {name: this.name, surname: this.surname, email: this.email, password: this.password, phone: this.phone}).then((response) => {
+      var patches = {
+            "patches": [
+              { "op": "replace", "path": "/rg", "value": this.rg },
+              { "op": "replace", "path": "/cpf", "value": this.cpf }
+            ]
+          }
+
+      this.$http.put('/api/users/1/personalinfo', patches).then((response) => {
+
           console.log(response);
           alert('Sucesso!');
 
