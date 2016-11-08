@@ -1,5 +1,6 @@
 var stateService = require('../services/state-service');
 var cityService = require('../services/city-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -10,7 +11,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             stateService.getAll().then(function(states){
                 res.json(states);
             }, function(err) {
-                res.status(500).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -24,7 +25,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             cityService.getCitiesByState(idState).then(function(cities){
                 res.json(cities);
             }, function(err) {
-                res.status(500).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });

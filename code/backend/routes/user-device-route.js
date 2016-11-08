@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var userDeviceService = require('../services/user-device-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -14,7 +15,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userDeviceService.add(userId, deviceToken, deviceTypeId).then(function(addedDevice){
                 res.json(addedDevice);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -26,7 +27,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userDeviceService.getAllByUserId(userId).then(function(devices){
                 res.json(devices);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -41,7 +42,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userDeviceService.getByToken(userId, deviceToken).then(function(device){
                 res.json(device);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });

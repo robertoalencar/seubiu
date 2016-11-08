@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var requestService = require('../services/request-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -12,7 +13,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             requestService.create(userId, req.body).then(function(newRequest){
                 res.json(newRequest);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -24,7 +25,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             requestService.getByOwner(userId).then(function(requests){
                 res.json(requests);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
 

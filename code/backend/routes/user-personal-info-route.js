@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var userPersonalInfoService = require('../services/user-personal-info-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -13,7 +14,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
                 if (_.isEmpty(personalInfo)) res.status(404);
                 res.json(personalInfo);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -25,7 +26,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userPersonalInfoService.update(userId, req.body.patches).then(function(personalInfo){
                 res.json(personalInfo);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
