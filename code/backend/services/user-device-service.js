@@ -13,20 +13,20 @@ var add = function(userId, deviceToken, deviceTypeId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (_.isEmpty(deviceToken)) {
-                errors.push('Device token is required');
+                errors.push('DEVICE_TOKEN_IS_REQUIRED');
             }
 
             if (_.isEmpty(deviceTypeId)) {
-                errors.push('Device type is required');
+                errors.push('DEVICE_TYPE_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -53,12 +53,12 @@ var getAllByUserId = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -83,16 +83,16 @@ var getByToken = function(userId, deviceToken) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (_.isEmpty(deviceToken)) {
-                errors.push('Device token is required');
+                errors.push('DEVICE_TOKEN_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 

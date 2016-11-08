@@ -1,9 +1,11 @@
-package br.com.orube.client;
+package br.com.orube.client.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class ProfessionalFindedActivity extends AppCompatActivity {
+import br.com.orube.client.R;
+
+public class ProfessionalRequiredActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

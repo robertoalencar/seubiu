@@ -1,4 +1,4 @@
-package br.com.orube.client;
+package br.com.orube.client.activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import br.com.orube.client.R;
 
 public class JobLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 

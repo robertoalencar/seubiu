@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var userService = require('../services/user-service');
 var userDeviceService = require('../services/user-device-service');
+var routeUtil = require('../utils/route-util');
 var passport = require('passport');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
@@ -12,7 +13,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userService.getAll().then(function(users){
                 res.json(users);
             }, function(err) {
-                res.status(500).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -22,7 +23,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userService.create(req.body).then(function(newUser){
                 res.json(newUser);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -37,7 +38,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
                 if (_.isEmpty(user)) res.status(404);
                 res.json(user);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -49,7 +50,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userService.update(userId, req.body.patches, req.user.admin).then(function(user){
                 res.json(user);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -59,9 +60,9 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             var userId = req.params.userId;
 
             userService.remove(userId).then(function(success){
-                res.status(200).send(success);
+                res.send(success);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });

@@ -1,5 +1,6 @@
 var countryService = require('../services/country-service');
 var stateService = require('../services/state-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -10,7 +11,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             countryService.getAll().then(function(countries){
                 res.json(countries);
             }, function(err) {
-                res.status(500).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -24,7 +25,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             stateService.getStatesByCountry(idCountry).then(function(states){
                 res.json(states);
             }, function(err) {
-                res.status(500).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });

@@ -14,20 +14,20 @@ var searchByProfessionServicesAndCity = function(professionId, servicesIds, city
             var errors = [];
 
             if (!professionId) {
-                errors.push('Profession ID is required');
+                errors.push('PROFESSION_ID_IS_REQUIRED');
             }
 
             if (_.isEmpty(servicesIds)) {
-                errors.push('Services IDs are required');
+                errors.push('SERVICES_IDS_ARE_REQUIRED');
             }
 
             if (!cityId) {
-                errors.push('City ID is required');
+                errors.push('CITY_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 

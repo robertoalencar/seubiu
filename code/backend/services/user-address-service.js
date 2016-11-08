@@ -12,12 +12,12 @@ var getAllByUserId = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -43,16 +43,16 @@ var getById = function(userId, addressId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!addressId) {
-                errors.push('Address ID is required');
+                errors.push('ADDRESS_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -78,16 +78,16 @@ var remove = function(userId, addressId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!addressId) {
-                errors.push('Address ID is required');
+                errors.push('ADDRESS_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -113,48 +113,48 @@ var create = function(userId, addr) {
             var errors = [];
 
             if (!userId) {
-                errors.push("User ID is required");
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (_.isEmpty(addr.description)) {
-                errors.push("Description is required");
+                errors.push('DESCRIPTION_IS_REQUIRED');
             }
 
             if (_.isEmpty(addr.main)) {
-                errors.push("Main is required");
+                errors.push('MAIN_IS_REQUIRED');
             }
 
             if (!addr.zipCode) {
-                errors.push("ZipCode is required");
+                errors.push('ZIPCODE_IS_REQUIRED');
             }
 
             if (_.isEmpty(addr.address)) {
-                errors.push("Address is required");
+                errors.push('ADDRESS_IS_REQUIRED');
             }
 
             if (!addr.number) {
-                errors.push("Number is required");
+                errors.push('NUMBER_IS_REQUIRED');
             }
 
             if (_.isEmpty(addr.district)) {
-                errors.push("District is required");
+                errors.push('DISTRICT_IS_REQUIRED');
             }
 
             if (!addr.cityId) {
-                errors.push("City ID is required");
+                errors.push('CITY_ID_IS_REQUIRED');
             }
 
             if (!addr.stateId) {
-                errors.push("State Id is required");
+                errors.push('STATE_ID_IS_REQUIRED');
             }
 
             if (!addr.countryId) {
-                errors.push("Country ID is required");
+                errors.push("COUNTRY_ID_IS_REQUIRED");
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -301,20 +301,20 @@ var update = function(userId, addressId, patches) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push('USER_ID_IS_REQUIRED');
             }
 
             if (!addressId) {
-                errors.push('Address ID is required');
+                errors.push('ADDRESS_ID_IS_REQUIRED');
             }
 
             if (_.isEmpty(patches)) {
-                errors.push('Patches are required');
+                errors.push('PATCHES_ARE_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 

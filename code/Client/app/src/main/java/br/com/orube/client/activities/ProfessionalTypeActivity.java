@@ -1,4 +1,4 @@
-package br.com.orube.client;
+package br.com.orube.client.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import br.com.orube.client.R;
 import br.com.orube.client.util.CustomAdapter;
 import br.com.orube.client.util.Model;
 

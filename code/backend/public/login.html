@@ -11,13 +11,13 @@
 
     <form v-on:submit.prevent action="#">
         <div>
+            <label for="email">Email:</label>
             <input type="text" v-model="email" name="email" id="email" required>
-            <label for="email">Email</label>
         </div>
 
           <div>
+            <label for="password">Password:</label>
             <input type="password" v-model="password" name="password" id="password" required>
-            <label for="password">Password</label>
         </div>
 
         <button v-on:click="login">Login</button>

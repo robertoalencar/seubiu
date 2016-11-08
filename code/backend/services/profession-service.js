@@ -17,7 +17,7 @@ var getServicesByProfession = function(id) {
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 
@@ -60,12 +60,12 @@ var getById = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('Profession ID is required');
+                errors.push('PROFESSION_ID_IS_REQUIRED');
             }
 
             if (!_.isEmpty(errors)) {
 
-                reject(_.join(errors, ', '));
+                reject(errors);
 
             } else {
 

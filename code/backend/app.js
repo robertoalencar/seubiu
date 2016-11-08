@@ -65,7 +65,7 @@ app.post('/api/authenticate', function(req, res) {
 
   userService.getByEmailAndPassword(email, password).then(function(user){
       if (!user) {
-        res.status(401).send('Unauthorized');
+        res.sendStatus(401);
       } else {
 
         var token = jwt.sign({id:user.id}, process.env.SESSION_SECRET, {
@@ -78,7 +78,7 @@ app.post('/api/authenticate', function(req, res) {
 
       }
     }, function(err) {
-      res.status(401).send(err.message || err);
+      res.sendStatus(401);
   });
 
 });

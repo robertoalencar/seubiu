@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var professionService = require('../services/profession-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -10,7 +11,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             professionService.getAll().then(function(professions){
                 res.json(professions);
             }, function(err) {
-                res.status(500).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -25,7 +26,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
                 if (_.isEmpty(profession)) res.status(404);
                 res.json(profession);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -40,7 +41,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
                 if (_.isEmpty(services)) res.status(404);
                 res.json(services);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
