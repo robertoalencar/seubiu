@@ -73,6 +73,7 @@ app.post('/api/authenticate', function(req, res) {
         });
 
         res.json({
+          userId: user.id,
           token: token
         });
 
