@@ -69,10 +69,11 @@ app.post('/api/authenticate', function(req, res) {
       } else {
 
         var token = jwt.sign({id:user.id}, process.env.SESSION_SECRET, {
-          expiresIn: '30d'
+          expiresIn: '1d'
         });
 
         res.json({
+          user: user,
           token: token
         });
 
