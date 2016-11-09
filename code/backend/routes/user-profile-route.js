@@ -3,6 +3,7 @@ var multer  = require('multer');
 var storage = multer.memoryStorage();
 var upload = multer({ storage: storage });
 var userProfileService = require('../services/user-profile-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -16,7 +17,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
                 if (_.isEmpty(profile)) res.status(404);
                 res.json(profile);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -28,7 +29,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userProfileService.update(userId, req.body.patches).then(function(profile){
                 res.json(profile);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -42,7 +43,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userProfileService.getCities(userId).then(function(cities){
                 res.json(cities);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -53,9 +54,9 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             var cityIds = req.body.cityIds;
 
             userProfileService.setCities(userId, cityIds).then(function(success){
-                res.status(200).send(success);
+                res.send(success);
             }, function(err) {
-                res.status(400).send(err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -69,9 +70,9 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             var professionIds = req.body.professionIds;
 
             userProfileService.setProfessions(userId, professionIds).then(function(success){
-                res.status(200).send(success);
+                res.send(success);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
 
@@ -84,7 +85,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userProfileService.getProfessions(userId).then(function(professions){
                 res.json(professions);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -97,9 +98,9 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             var servicesIds = req.body.servicesIds;
 
             userProfileService.setServices(userId, servicesIds).then(function(success){
-                res.status(200).send(success);
+                res.send(success);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
 
@@ -112,7 +113,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             userProfileService.getServices(userId).then(function(services){
                 res.json(services);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });
@@ -127,7 +128,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
                 res.type(file.type);
                 res.end(file.data, 'binary');
             }, function(err) {
-                res.status(404).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         })
@@ -135,12 +136,12 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
         .post(isAuthenticated, userHasAccess, upload.single('file'), function(req, res) {
 
             var userId = req.params.userId;
-            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            var ip = routeUtil.getCurrentIp(req);
 
             userProfileService.updateDisplayImage(userId, req.file.originalname, req.file.size, req.file.mimetype, req.file.buffer, ip).then(function(success){
-                res.status(200).send(success);
+                res.send(success);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });

@@ -6,17 +6,17 @@
 	<meta charset="UTF-8">
 	<title>Seu Biu</title>
 
-	<script type="text/javascript" src="javascripts/jquery-3.1.1.min.js"></script>
-	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="javascripts/maskedinput.js"></script>
-
 	<script src="javascripts/vue.js"></script>
 	<script src="javascripts/vue-router.js"></script>
 	<script src="javascripts/vue-resource.min.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="view/css/estilo.css" />
 	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
-	
+	  
+	<script type="text/javascript" src="javascripts/jquery-2.1.4.js"></script>
+	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="javascripts/maskedinput.js"></script>
+		
 </head>
 
 <body>
@@ -53,7 +53,7 @@
 				
 				<div class="form-group">
 					<label for="phone">DDD + Celular</label>
-					<input type="text" class="form-control" id="phone" v-model="phone" v-mask=" '(99) 99999.9999' " name="phone" style="width: 300px;" maxlength="50" placeholder="(99) 99999.9999" required />
+					<input type="text" class="form-control" id="phone" v-model="phone" name="phone" style="width: 300px;" maxlength="50" placeholder="(99) 99999.9999" required />
 				</div>
 					
 				<br />

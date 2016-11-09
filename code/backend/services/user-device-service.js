@@ -4,6 +4,15 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 
+var tokenAlreadyExists = function(userId, deviceToken, deviceTypeId, db) {
+    return await (new Promise(function (resolve, reject) {
+        db.models.UserDevice.exists({ 'user_id': userId, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId }, function (err, exists) {
+            if (err) reject(err);
+            resolve(exists);
+        });
+    }));
+};
+
 var add = function(userId, deviceToken, deviceTypeId) {
 
     return transaction.doReadWrite(function(db) {
@@ -22,6 +31,13 @@ var add = function(userId, deviceToken, deviceTypeId) {
 
             if (_.isEmpty(deviceTypeId)) {
                 errors.push('DEVICE_TYPE_IS_REQUIRED');
+            }
+
+            if (userId && !_.isEmpty(deviceToken) && !_.isEmpty(deviceTypeId)
+                && tokenAlreadyExists(userId, deviceToken, deviceTypeId, db)) {
+
+                errors.push('DEVICE_TOKEN_ALREADY_EXISTS');
+
             }
 
             if (!_.isEmpty(errors)) {

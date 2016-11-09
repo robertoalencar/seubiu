@@ -1,4 +1,5 @@
 var requestService = require('../services/request-service');
+var routeUtil = require('../utils/route-util');
 
 module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
@@ -9,7 +10,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             requestService.getAll(req.query).then(function(requests){
                 res.json(requests);
             }, function(err) {
-                res.status(400).send(err.message || err);
+                routeUtil.handleException(res, err);
             });
 
         });

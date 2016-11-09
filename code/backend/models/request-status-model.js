@@ -7,4 +7,9 @@ module.exports = function (orm, db) {
         collection: 'request_status'
     });
 
+    RequestStatus.NEW = 1;
+    RequestStatus.WAITING = 2;
+    RequestStatus.ACTIVE = 3;
+    RequestStatus.FINISHED = 4;
+    RequestStatus.CLOSED = 5;
 };
