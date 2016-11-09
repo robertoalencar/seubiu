@@ -9,8 +9,9 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
         .post(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-            requestService.create(userId, req.body).then(function(newRequest){
+            requestService.create(userId, ip, req.body).then(function(newRequest){
                 res.json(newRequest);
             }, function(err) {
                 routeUtil.handleException(res, err);

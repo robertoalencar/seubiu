@@ -7,4 +7,6 @@ module.exports = function (orm, db) {
         collection: 'request_status'
     });
 
+    RequestStatus.NEW = 1;
+
 };
