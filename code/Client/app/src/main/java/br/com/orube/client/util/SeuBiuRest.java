@@ -2,7 +2,9 @@ package br.com.orube.client.util;
 
 import java.util.List;
 
+import br.com.orube.client.model.AuthToken;
 import br.com.orube.client.model.Profession;
+import br.com.orube.client.model.Service;
 import br.com.orube.client.model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -21,7 +23,7 @@ public interface SeuBiuRest {
 
     @FormUrlEncoded
     @POST("/api/authenticate")
-    Call<Object> authenticate(@Field("email") String email, @Field("password") String password);
+    Call<AuthToken> authenticate(@Field("email") String email, @Field("password") String password);
 
     @POST("/api/users")
     Call<User> users(@Body User user);
@@ -30,7 +32,12 @@ public interface SeuBiuRest {
     Call<List<Profession>> professions();
 
     @GET("/api/professions/{id}/services")
-    Call<List<Profession>> professions(@Path("id")String id);
+    Call<List<Service>> services(@Path("id")String id);
+
+    @POST("/users/{userId}/devices")
+    Call<AuthToken> sendDevices(@Path("userId") String id,
+                                @Path("deviceToken") String deviceToken,
+                                @Path("deviceTypeId") String deviceTypeId);
 
 
 

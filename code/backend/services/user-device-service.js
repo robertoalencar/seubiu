@@ -47,7 +47,7 @@ var add = function(userId, deviceToken, deviceTypeId) {
 
             } else {
 
-                db.models.UserDevice.create({ 'user_id': id, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId}, function(err, addedDevice) {
+                db.models.UserDevice.create({ 'user_id': userId, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId}, function(err, addedDevice) {
                     if (err) reject(err);
                     resolve(addedDevice);
                 });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -13,7 +14,9 @@ import java.util.List;
 
 import br.com.orube.client.R;
 import br.com.orube.client.model.Profession;
+import br.com.orube.client.model.Service;
 import br.com.orube.client.util.ServiceGenerator;
+import br.com.orube.client.util.SeuBiuRequest;
 import br.com.orube.client.util.SeuBiuRest;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,31 +39,13 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
         button = (Button)findViewById(R.id.btnProximo);
 
         ArrayAdapter<String> combo = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1 );
-        //combo.addAll("Encanador", "Pedreiro", "Eletricista", "Pintor");
-        List<Profession> lista;
-        SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class);
 
-        rest.professions().enqueue(new Callback<List<Profession>>() {
-            @Override
-            public void onResponse(Call<List<Profession>> call, Response<List<Profession>> response) {
-                if(response.isSuccessful()){
-                    lista = response.body();
-                    for(Profession p : lista){
-                        combo.add(p.getDescription());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Profession>> call, Throwable t) {
-
-            }
-        });
-
-
+        List<Profession> lista = SeuBiuRequest.getInstance().getProfessionList();
+        for (Profession p : lista) {
+            combo.add(p.getDescription());
+        }
         combo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(combo);
-
 
         button.setOnClickListener( this );
 
@@ -71,9 +56,42 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
 
         Intent intent;
         if( v == button ){
-            intent = new Intent(this, ProfessionalTypeActivity.class);
-            startActivity(intent);
+            SeuBiuRequest.getInstance().setProfession( spinner.getSelectedItem().toString() );
+
+            getServices();
+
+
         }
+
+    }
+
+    private void avancar() {
+        Intent intent;
+        intent = new Intent(this, ProfessionalTypeActivity.class);
+        startActivity(intent);
+    }
+
+    private void getServices() {
+        SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class);
+
+        String id = SeuBiuRequest.getInstance().getProfession().getId().toString();
+
+        rest.services( id ).enqueue(new Callback<List<Service>>() {
+            @Override
+            public void onResponse(Call<List<Service>> call, Response<List<Service>> response) {
+                if(response.isSuccessful()){
+                    SeuBiuRequest.getInstance().setServiceList( response.body() );
+                    avancar();
+                }else{
+                    Log.d("REST", response.body() + " - " + response.message() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Service>> call, Throwable t) {
+                Log.d("REST", t.getMessage() );
+            }
+        });
 
     }
 }

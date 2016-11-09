@@ -2,6 +2,7 @@ package br.com.orube.client.util;
 
 import java.io.IOException;
 
+import br.com.orube.client.model.AuthToken;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -14,7 +15,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ServiceGenerator {
 
-        private static String token = null;
 
 
         public static final String API_BASE_URL = "http://www.seubiu.com";
@@ -25,13 +25,7 @@ public class ServiceGenerator {
                         .baseUrl(API_BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create());
 
-    public static String getToken() {
-        return token;
-    }
 
-    public static void setToken(String token) {
-        ServiceGenerator.token = token;
-    }
 
     public static <S> S createService(Class<S> serviceClass) {
         return createService(serviceClass, null);

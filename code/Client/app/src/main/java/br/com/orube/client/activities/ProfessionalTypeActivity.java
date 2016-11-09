@@ -6,23 +6,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.orube.client.R;
+import br.com.orube.client.model.Service;
 import br.com.orube.client.util.CustomAdapter;
 import br.com.orube.client.util.Model;
+import br.com.orube.client.util.SeuBiuRequest;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class ProfessionalTypeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ListView listView;
-    Model[] modelItems;
+    Model[] modelItems = null;
 
     private Button btnMapa;
     private Button btnProximo;
+
+    @Bind(R.id.lblProfessional)
+    public TextView lblProfessional;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_professional_type);
+        ButterKnife.bind(this);
 
         btnMapa = (Button)findViewById(R.id.btnMapa);
         btnProximo = (Button)findViewById(R.id.btnAvancar2);
@@ -30,13 +42,19 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
         btnMapa.setOnClickListener( this );
         btnProximo.setOnClickListener( this );
 
+        lblProfessional.setText( SeuBiuRequest.getInstance().getProfession().getDescription());
+
         listView = (ListView) findViewById(R.id.listView1);
-        modelItems = new Model[5];
-        modelItems[0] = new Model("Serviço 1", 0);
-        modelItems[1] = new Model("Serviço 2", 0);
-        modelItems[2] = new Model("Serviço 3", 0);
-        modelItems[3] = new Model("Serviço 4", 0);
-        modelItems[4] = new Model("Serviço 5", 0);
+
+        List<Service> services = SeuBiuRequest.getInstance().getServiceList();
+        List<Model> modelList = new ArrayList<>();
+
+        for(Service s : services){
+            modelList.add(new Model(s.getDescription(), 0));
+        }
+
+        modelItems = modelList.toArray(new Model[modelList.size()]);
+
         CustomAdapter adapter = new CustomAdapter(this, modelItems);
         listView.setAdapter(adapter);
 

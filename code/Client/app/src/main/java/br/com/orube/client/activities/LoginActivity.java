@@ -15,8 +15,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import br.com.orube.client.R;
+import br.com.orube.client.model.AuthToken;
+import br.com.orube.client.model.Profession;
 import br.com.orube.client.util.ServiceGenerator;
+import br.com.orube.client.util.SeuBiuRequest;
 import br.com.orube.client.util.SeuBiuRest;
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -28,10 +33,14 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    @Bind(R.id.input_email) EditText email;
-    @Bind(R.id.input_password) EditText password;
-    @Bind(R.id.btn_login) Button btnLogin;
-    @Bind(R.id.link_signup) TextView lnkSignUp;
+    @Bind(R.id.input_email)
+    EditText email;
+    @Bind(R.id.input_password)
+    EditText password;
+    @Bind(R.id.btn_login)
+    Button btnLogin;
+    @Bind(R.id.link_signup)
+    TextView lnkSignUp;
 
 
     @Override
@@ -62,50 +71,103 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "Login");
 
-        if (!validate()) {
+        if (validate()) {
+            //btnLogin.setEnabled(false);
+            final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_NoActionBar);
+            showProgress(progressDialog);
+
+            String email = this.email.getText().toString();
+            String password = this.password.getText().toString();
+
+            String iMei = getImei();
+
+            getProfessions();
+            doLogin(progressDialog, email, password);
+
+            //postDelayed();
+        }else {
             onLoginFailed();
-            return;
         }
+    }
 
-        //btnLogin.setEnabled(false);
-
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_NoActionBar);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Autenticando...");
-        progressDialog.show();
-
-        String email = this.email.getText().toString();
-        String password = this.password.getText().toString();
+    private void getProfessions() {
 
         SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class);
 
-        Call<Object> auth = rest.authenticate(email, password);
-
-        auth.enqueue(new Callback<Object>() {
+        rest.professions().enqueue(new Callback<List<Profession>>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
+            public void onResponse(Call<List<Profession>> call, Response<List<Profession>> response) {
                 if (response.isSuccessful()) {
-                    String token = prepareToken(response.body().toString());
-                    ServiceGenerator.setToken(token);
-                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
-                    startActivityForResult(intent, REQUEST_SIGNUP);
-                } else {
-
-                    Log.d("REST", response.message());
-                    progressDialog.dismiss();
-                    Toast.makeText(getBaseContext(),response.message() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    SeuBiuRequest.getInstance().setProfessionList(response.body());
+                }else{
+                    Log.d("REST", response.body() + " - " + response.message());
                 }
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+            public void onFailure(Call<List<Profession>> call, Throwable t) {
                 Log.d("REST", t.getMessage());
-                progressDialog.dismiss();
-                Toast.makeText(getBaseContext(),t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
-       //postDelayed();
+    }
+
+
+    private void doLogin(final ProgressDialog progressDialog, String email, String password) {
+        SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class);
+
+        Call<AuthToken> auth = rest.authenticate(email, password);
+
+        auth.enqueue(new Callback<AuthToken>() {
+            @Override
+            public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
+                if (response.isSuccessful()) {
+                    SeuBiuRequest.getInstance().setToken(response.body());
+                    sendDevice();
+                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+                    startActivityForResult(intent, REQUEST_SIGNUP);
+                } else {
+                    Log.d("REST", response.message());
+                    progressDialog.dismiss();
+                    Toast.makeText(getBaseContext(), response.message() + " " + response.body(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthToken> call, Throwable t) {
+                Log.d("REST", t.getMessage());
+                progressDialog.dismiss();
+                Toast.makeText(getBaseContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void sendDevice() {
+        AuthToken token = SeuBiuRequest.getInstance().getToken();
+
+        SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class, token.getToken());
+        rest.sendDevices( token.getUserId().toString(), getImei(), "1").enqueue(new Callback<AuthToken>() {
+            @Override
+            public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
+                if(response.isSuccessful()){
+                    Log.d("REST", response.body() + " - " + response.message() );
+                }else{
+                    Log.d("REST", response.body() + " - " + response.message() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthToken> call, Throwable t) {
+                Log.d("REST", t.getMessage() );
+            }
+        });
+
+    }
+
+    private void showProgress(ProgressDialog progressDialog) {
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Autenticando...");
+        progressDialog.show();
     }
 
     private void postDelayed() {
@@ -122,10 +184,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private String prepareToken(String s) {
-        if( s != null ){
-            return s.replace("{","")
-                    .replace("}","")
-                    .replace("token=","")
+        if (s != null) {
+            return s.replace("{", "")
+                    .replace("}", "")
+                    .replace("token=", "")
                     .trim();
         }
         return null;
@@ -157,8 +219,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login falhou", Toast.LENGTH_LONG).show();
-        email.setError("");
-        password.setError("");
+        email.setText("");
+        password.setText("");
 
         btnLogin.setEnabled(true);
     }
@@ -186,8 +248,8 @@ public class LoginActivity extends AppCompatActivity {
         return valid;
     }
 
-    private String getImei(){
-        TelephonyManager mngr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    private String getImei() {
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         return mngr.getDeviceId();
     }
 }
