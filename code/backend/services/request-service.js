@@ -69,11 +69,11 @@ var create = function(userId, ip, data) {
             errors.push('ADDRESS_IS_REQUIRED');
         }
 
-        if (_.isNil(data.coordLat) || !_.isNumber(data.coordLat)) {
+        if (_.isNil(data.coordLat) || _.isNaN(data.coordLat)) {
             errors.push('COORDLAT_IS_REQUIRED');
         }
 
-        if (_.isNil(data.coordLong) || !_.isNumber(data.coordLong)) {
+        if (_.isNil(data.coordLong) || _.isNaN(data.coordLong)) {
             errors.push('COORDLONG_IS_REQUIRED');
         }
 
@@ -104,7 +104,7 @@ var create = function(userId, ip, data) {
                     'address': data.address,
                     'coordLat': data.coordLat,
                     'coordLong': data.coordLong,
-                    'user_id': userId,
+                    'owner_id': userId,
                     'city_id': data.cityId,
                     'profession_id': data.professionId,
                     'status_id': db.models.RequestStatus.NEW
@@ -116,7 +116,7 @@ var create = function(userId, ip, data) {
 
             await (new Promise(function (resolve, reject) {
 
-                db.models.Service.find({'id': serviceIds}, function(err, services) {
+                db.models.Service.find({'id': data.serviceIds}, function(err, services) {
                     if (err) {
                         reject(err);
                     } else {
@@ -134,7 +134,7 @@ var create = function(userId, ip, data) {
 
             await (new Promise(function (resolve, reject) {
 
-                db.models.User.find({'id': candidateIds}, function(err, users) {
+                db.models.User.find({'id': data.candidateIds}, function(err, users) {
                     if (err) {
                         reject(err);
                     } else {

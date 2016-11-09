@@ -10,8 +10,15 @@ var handleException = function(res, err) {
 
 };
 
+var getCurrentIp = function(req) {
+
+    return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+};
+
 module.exports = {
 
-    handleException: handleException
+    handleException: handleException,
+    getCurrentIp: getCurrentIp
 
 };

@@ -9,7 +9,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
         .post(isAuthenticated, userHasAccess, function(req, res) {
 
             var userId = req.params.userId;
-            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            var ip = routeUtil.getCurrentIp(req);
 
             requestService.create(userId, ip, req.body).then(function(newRequest){
                 res.json(newRequest);

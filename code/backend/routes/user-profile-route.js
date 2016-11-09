@@ -136,7 +136,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
         .post(isAuthenticated, userHasAccess, upload.single('file'), function(req, res) {
 
             var userId = req.params.userId;
-            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            var ip = routeUtil.getCurrentIp(req);
 
             userProfileService.updateDisplayImage(userId, req.file.originalname, req.file.size, req.file.mimetype, req.file.buffer, ip).then(function(success){
                 res.send(success);
