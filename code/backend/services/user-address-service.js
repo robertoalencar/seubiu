@@ -2,6 +2,7 @@ var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 var getAllByUserId = function(id) {
 
@@ -12,7 +13,7 @@ var getAllByUserId = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -43,11 +44,11 @@ var getById = function(userId, addressId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!addressId) {
-                errors.push('ADDRESS_ID_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -78,11 +79,11 @@ var remove = function(userId, addressId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!addressId) {
-                errors.push('ADDRESS_ID_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -113,43 +114,43 @@ var create = function(userId, addr) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(addr.description)) {
-                errors.push('DESCRIPTION_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.DESCRIPTION_IS_REQUIRED);
             }
 
             if (_.isEmpty(addr.main)) {
-                errors.push('MAIN_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.MAIN_IS_REQUIRED);
             }
 
             if (!addr.zipCode) {
-                errors.push('ZIPCODE_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.ZIPCODE_IS_REQUIRED);
             }
 
             if (_.isEmpty(addr.address)) {
-                errors.push('ADDRESS_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.ADDRESS_IS_REQUIRED);
             }
 
             if (!addr.number) {
-                errors.push('NUMBER_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.NUMBER_IS_REQUIRED);
             }
 
             if (_.isEmpty(addr.district)) {
-                errors.push('DISTRICT_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.DISTRICT_IS_REQUIRED);
             }
 
             if (!addr.cityId) {
-                errors.push('CITY_ID_IS_REQUIRED');
+                errors.push(ERROR.City.CITY_ID_IS_REQUIRED);
             }
 
             if (!addr.stateId) {
-                errors.push('STATE_ID_IS_REQUIRED');
+                errors.push(ERROR.State.STATE_ID_IS_REQUIRED);
             }
 
             if (!addr.countryId) {
-                errors.push("COUNTRY_ID_IS_REQUIRED");
+                errors.push(ERROR.Country.COUNTRY_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -301,15 +302,15 @@ var update = function(userId, addressId, patches) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!addressId) {
-                errors.push('ADDRESS_ID_IS_REQUIRED');
+                errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(patches)) {
-                errors.push('PATCHES_ARE_REQUIRED');
+                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {

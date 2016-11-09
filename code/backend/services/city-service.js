@@ -2,6 +2,7 @@ var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 var getByFilter = function(filter, db, reject, resolve) {
 
@@ -32,7 +33,7 @@ var getCitiesByState = function(idState) {
             var errors = [];
 
             if (!idState) {
-                errors.push('STATE_ID_IS_REQUIRED');
+                errors.push(ERROR.State.STATE_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {

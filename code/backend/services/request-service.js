@@ -2,6 +2,7 @@ var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 var getByFilter = function(filter, db, reject, resolve) {
 
@@ -32,7 +33,7 @@ var getByOwner = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -54,43 +55,43 @@ var create = function(userId, ip, data) {
         var errors = [];
 
         if (!userId) {
-            errors.push('USER_ID_IS_REQUIRED');
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (_.isEmpty(data.description)) {
-            errors.push('DESCRIPTION_IS_REQUIRED');
+            errors.push(ERROR.Request.DESCRIPTION_IS_REQUIRED);
         }
 
         if (_.isEmpty(ip)) {
-            errors.push('IP_IS_REQUIRED');
+            errors.push(ERROR.Common.IP_IS_REQUIRED);
         }
 
         if (_.isEmpty(data.address)) {
-            errors.push('ADDRESS_IS_REQUIRED');
+            errors.push(ERROR.Request.ADDRESS_IS_REQUIRED);
         }
 
         if (_.isNil(data.coordLat) || _.isNaN(data.coordLat)) {
-            errors.push('COORDLAT_IS_REQUIRED');
+            errors.push(ERROR.Request.COORDLAT_IS_REQUIRED);
         }
 
         if (_.isNil(data.coordLong) || _.isNaN(data.coordLong)) {
-            errors.push('COORDLONG_IS_REQUIRED');
+            errors.push(ERROR.Request.COORDLONG_IS_REQUIRED);
         }
 
         if (!data.cityId) {
-            errors.push('CITY_ID_IS_REQUIRED');
+            errors.push(ERROR.City.CITY_ID_IS_REQUIRED);
         }
 
         if (!data.professionId) {
-            errors.push('PROFESSION_ID_IS_REQUIRED');
+            errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
         }
 
         if (_.isNil(data.serviceIds) || _.isEmpty(data.serviceIds)) {
-            errors.push('SERVICE_IDS_ARE_REQUIRED');
+            errors.push(ERROR.Request.SERVICE_IDS_ARE_REQUIRED);
         }
 
         if (_.isNil(data.candidateIds) || _.isEmpty(data.candidateIds)) {
-            errors.push('CANDIDATE_IDS_ARE_REQUIRED');
+            errors.push(ERROR.Request.CANDIDATE_IDS_ARE_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {

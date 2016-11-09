@@ -3,6 +3,7 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 var tokenAlreadyExists = function(userId, deviceToken, deviceTypeId, db) {
     return await (new Promise(function (resolve, reject) {
@@ -22,21 +23,21 @@ var add = function(userId, deviceToken, deviceTypeId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(deviceToken)) {
-                errors.push('DEVICE_TOKEN_IS_REQUIRED');
+                errors.push(ERROR.UserDevice.DEVICE_TOKEN_IS_REQUIRED);
             }
 
             if (_.isEmpty(deviceTypeId)) {
-                errors.push('DEVICE_TYPE_IS_REQUIRED');
+                errors.push(ERROR.DeviceType.DEVICE_TYPE_IS_REQUIRED);
             }
 
             if (userId && !_.isEmpty(deviceToken) && !_.isEmpty(deviceTypeId)
                 && tokenAlreadyExists(userId, deviceToken, deviceTypeId, db)) {
 
-                errors.push('DEVICE_TOKEN_ALREADY_EXISTS');
+                errors.push(ERROR.UserDevice.DEVICE_TOKEN_ALREADY_EXISTS);
 
             }
 
@@ -69,7 +70,7 @@ var getAllByUserId = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -99,11 +100,11 @@ var getByToken = function(userId, deviceToken) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(deviceToken)) {
-                errors.push('DEVICE_TOKEN_IS_REQUIRED');
+                errors.push(ERROR.UserDevice.DEVICE_TOKEN_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {

@@ -3,6 +3,7 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 var getById = function(userId) {
 
@@ -13,7 +14,7 @@ var getById = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -84,11 +85,11 @@ var update = function(userId, patches) {
             var errors = [];
 
             if (!userId) {
-                errors.push('User ID is required');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(patches)) {
-                errors.push('Patches are required');
+                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -135,11 +136,11 @@ var setCities = function(userId, cityIds) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(cityIds)) {
-                errors.push('CITY_IDS_ARE_REQUIRED');
+                errors.push(ERROR.UserProfile.CITY_IDS_ARE_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -152,7 +153,7 @@ var setCities = function(userId, cityIds) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else {
 
                         db.models.City.find({'id': cityIds}, function(err, cities) {
@@ -188,7 +189,7 @@ var getCities = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -201,7 +202,7 @@ var getCities = function(userId) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else {
                         profile.getCities(function(err, cities) {
                             if (err) reject(err);
@@ -228,11 +229,11 @@ var setProfessions = function(userId, professionIds) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(professionIds)) {
-                errors.push('PROFESSION_IDS_ARE_REQUIRED');
+                errors.push(ERROR.UserProfile.PROFESSION_IDS_ARE_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -245,7 +246,7 @@ var setProfessions = function(userId, professionIds) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else {
 
                         db.models.Profession.find({'id': professionIds}, function(err, professions) {
@@ -281,7 +282,7 @@ var getProfessions = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -294,7 +295,7 @@ var getProfessions = function(userId) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else {
                         profile.getProfessions(function(err, professions) {
                             if (err) reject(err);
@@ -320,11 +321,11 @@ var setServices = function(userId, servicesIds) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(servicesIds)) {
-                errors.push('SERVICE_IDS_ARE_REQUIRED');
+                errors.push(ERROR.UserProfile.SERVICE_IDS_ARE_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -337,7 +338,7 @@ var setServices = function(userId, servicesIds) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else {
 
                         db.models.Service.find({'id': servicesIds}, function(err, services) {
@@ -374,7 +375,7 @@ var getServices = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -387,7 +388,7 @@ var getServices = function(userId) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else {
 
                         profile.getServices(function(err, services) {
@@ -415,27 +416,27 @@ var updateDisplayImage = function(userId, name, size, type, data, ip) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(name)) {
-                errors.push('NAME_IS_REQUIRED');
+                errors.push(ERROR.Common.NAME_IS_REQUIRED);
             }
 
             if (!size  || size  <= 0) {
-                errors.push('SIZE_IS_REQUIRED');
+                errors.push(ERROR.UserProfile.DisplayImage.SIZE_IS_REQUIRED);
             }
 
             if (_.isEmpty(type)) {
-                errors.push('TYPE_IS_REQUIRED');
+                errors.push(ERROR.UserProfile.DisplayImage.TYPE_IS_REQUIRED);
             }
 
             if (_.isEmpty(data)) {
-                errors.push('DATA_IS_REQUIRED');
+                errors.push(ERROR.UserProfile.DisplayImage.DATA_IS_REQUIRED);
             }
 
             if (_.isEmpty(ip)) {
-                errors.push('IP_IS_REQUIRED');
+                errors.push(ERROR.Common.IP_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -448,7 +449,7 @@ var updateDisplayImage = function(userId, name, size, type, data, ip) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else {
 
                         db.models.File.find({'id': profile.displayimage_id}).remove(function (err) {
@@ -504,7 +505,7 @@ var getDisplayImage = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -517,9 +518,9 @@ var getDisplayImage = function(userId) {
                     if (err) {
                         reject(err);
                     } else if (_.isNil(profile)) {
-                        reject(['USER_PROFILE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
                     } else if (_.isNil(profile.displayimage_id)) {
-                        reject(['DISPLAY_IMAGE_NOT_FOUND']);
+                        reject([ERROR.UserProfile.DISPLAY_IMAGE_NOT_FOUND]);
                     } else {
 
                         db.models.File.get(profile.displayimage_id, function(err, file) {
