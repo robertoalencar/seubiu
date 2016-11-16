@@ -1,25 +1,23 @@
-Vue.directive('mask', function (maskval) {
-    $("#phone").mask(maskval);
-});
-
 
 new Vue({
 
   el: '#app',
   data: {
-    name: '',
-    surname: '',
-    email: '',
-    password: '',
-    confirm_password: '',
-    phone: ''
+    id: '1',
+    birthDate: '',
+    rg: '',
+    rgOrgIssuer: '',
+    cpf: ''
   },
+
   methods: {
     signup: function (event) {
 
       var patches = {
             "patches": [
+              { "op": "replace", "path": "/birthDate", "value": this.birthDate },
               { "op": "replace", "path": "/rg", "value": this.rg },
+              { "op": "replace", "path": "/rgOrgIssuer", "value": this.rgOrgIssuer },
               { "op": "replace", "path": "/cpf", "value": this.cpf }
             ]
           }
@@ -36,4 +34,3 @@ new Vue({
     }
   }
 });
-

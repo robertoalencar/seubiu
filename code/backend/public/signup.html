@@ -16,7 +16,6 @@
 
 	<link rel="stylesheet" type="text/css" href="view/css/estilo.css" />
 	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
-	
 </head>
 
 <body>
@@ -24,6 +23,20 @@
 <div id="app">
 	<div align="center">
 		<div align="left" style="color: #6E6E6E; width: 70%; margin-top: 4%;">
+
+			<hr />
+			
+			<p>
+				<table style="width: 100%">
+					<tr>
+						<td style="float: left; font-size: 24px;"><strong>Cadastro de Usuário</strong> </td>
+						<td style="float: right; text-align: right;"> <img src="images/salvar.jpg" style="width: 14%;">  </td>
+					</tr>
+				</table>
+			</p>
+			
+			<hr />
+
 		    <form v-on:submit.prevent action="#">
 
 		        <div class="form-group">
@@ -53,7 +66,7 @@
 				
 				<div class="form-group">
 					<label for="phone">DDD + Celular</label>
-					<input type="text" class="form-control" id="phone" v-model="phone" v-mask=" '(99) 99999.9999' " name="phone" style="width: 300px;" maxlength="50" placeholder="(99) 99999.9999" required />
+					<input type="text" class="form-control" id="phone" v-model="phone" v-mask=" '(99) 99999.9999' " name="phone" style="width: 500px;" maxlength="50" placeholder="(99) 99999.9999" required />
 				</div>
 					
 				<br />
@@ -69,5 +82,6 @@
 </div>
 
 <script src="javascripts/signup-app.js"></script>
+
 </body>
 </html>

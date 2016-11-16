@@ -1,7 +1,3 @@
-Vue.directive('mask', function (maskval) {
-    $("#phone").mask(maskval);
-});
-
 
 new Vue({
 
@@ -14,6 +10,7 @@ new Vue({
     confirm_password: '',
     phone: ''
   },
+
   methods: {
     signup: function (event) {
 
@@ -28,4 +25,3 @@ new Vue({
     }
   }
 });
-

@@ -24,36 +24,42 @@
 <div id="app">
 	<div align="center">
 		<div align="left" style="color: #6E6E6E; width: 70%; margin-top: 4%;">
+
+			<hr />
+			
+			<p>
+				<table style="width: 100%">
+					<tr>
+						<td style="float: left; font-size: 24px;">Complemento de Cadastro - <strong>Informações Pessoais</strong> </td>
+						<td style="float: right; text-align: right;"> <img src="images/salvar.jpg" style="width: 14%;">  </td>
+					</tr>
+				</table>
+			</p>
+			
+			<hr />
+
 		    <form v-on:submit.prevent action="#">
 
+		    	<input type="hidden" id="id" v-model="id" name="id" value="{{id}}" />
+		    	
+		    	<div class="form-group">
+					<label for="cpf">CPF</label>
+					<input type="text" class="form-control" id="cpf" v-model="cpf" name="cpf" placeholder="000.000.000-00" style="width: 500px;" maxlength="14" required />
+				</div>
+
 		        <div class="form-group">
-					<label for="name">Nome</label>
-					<input type="text" class="form-control" id="name" v-model="name" name="name" style="width: 500px;" maxlength="100" required />
+					<label for="rg">Carteira de Identidade (RG)</label>
+					<input type="text" class="form-control" id="rg" v-model="rg" name="rg" style="width: 500px;" maxlength="14" required />
 				</div>
 
 				<div class="form-group">
-					<label for="name">Sobrenome</label>
-					<input type="text" class="form-control" id="surname" v-model="surname" name="surname" style="width: 500px;" maxlength="100" required />
-				</div>
-					
-				<div class="form-group">
-					<label for="email">E-mail</label>
-					<input type="text" class="form-control" id="email" v-model="email" name="email" style="width: 500px;" maxlength="100" required /> 
+					<label for="rgOrgIssuer">Órgão Expedidor </label>
+					<input type="text" class="form-control" id="rgOrgIssuer" v-model="rgOrgIssuer" name="rgOrgIssuer" style="width: 500px;" required />
 				</div>
 
 				<div class="form-group">
-					<label for="password">Senha</label>
-					<input type="password" class="form-control" id="password" v-model="password" name="password" style="width: 500px;" maxlength="100" required /> 
-				</div>
-
-				<div class="form-group">
-					<label for="password">Confirme a Senha</label>
-					<input type="password" class="form-control" id="confirm_password" v-model="confirm_password" name="confirm_password" style="width: 500px;" maxlength="100" required /> 
-				</div>
-				
-				<div class="form-group">
-					<label for="phone">DDD + Celular</label>
-					<input type="text" class="form-control" id="phone" v-model="phone" name="phone" style="width: 300px;" maxlength="50" placeholder="(99) 99999.9999" required />
+					<label for="birthDate">Data de Nascimento</label>
+					<input type="text" class="form-control" id="birthDate" v-model="birthDate" name="birthDate" placeholder="00/00/0000" style="width: 500px;" maxlength="14" required />
 				</div>
 					
 				<br />
@@ -68,6 +74,6 @@
 
 </div>
 
-<script src="javascripts/signup-app.js"></script>
+<script src="javascripts/personal-info-app.js"></script>
 </body>
 </html>
