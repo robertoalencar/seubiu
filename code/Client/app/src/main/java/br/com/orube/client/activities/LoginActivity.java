@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
                 if (response.isSuccessful()) {
                     SeuBiuRequest.getInstance().setToken(response.body());
-                    sendDevice();
+                  //  sendDevice();
                     Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                     startActivityForResult(intent, REQUEST_SIGNUP);
                 } else {

@@ -40,7 +40,9 @@ public class DashBoardActivity extends AppCompatActivity implements View.OnClick
         if( v == btnSolicitar ){
             intent = new Intent(this, JobTypeActivity.class);
             startActivity(intent);
+        }else if( v == btnSolicitados ) {
+            intent = new Intent(this, SideMenuActivity.class);
+            startActivity(intent);
         }
-
     }
 }
