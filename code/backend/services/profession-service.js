@@ -2,6 +2,7 @@ var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 var getServicesByProfession = function(id) {
 
@@ -12,7 +13,7 @@ var getServicesByProfession = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('Profession ID is required');
+                errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -60,7 +61,7 @@ var getById = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('PROFESSION_ID_IS_REQUIRED');
+                errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {

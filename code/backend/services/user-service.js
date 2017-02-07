@@ -4,6 +4,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var md5 = require('md5');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 var MINIMUM_PASSWORD_SIZE = 8;
 
@@ -25,11 +26,11 @@ var getByEmailAndPassword = function(email, password) {
             var errors = [];
 
             if (_.isEmpty(email)) {
-                errors.push('EMAIL_IS_REQUIRED');
+                errors.push(ERROR.User.EMAIL_IS_REQUIRED);
             }
 
             if (_.isEmpty(password)) {
-                errors.push('PASSOWRD_IS_REQUIRED');
+                errors.push(ERROR.User.PASSOWRD_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -58,7 +59,7 @@ var getById = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -122,29 +123,29 @@ var create = function(user) {
         var errors = [];
 
         if (_.isEmpty(user.name)) {
-            errors.push('NAME_IS_REQUIRED');
+            errors.push(ERROR.Common.NAME_IS_REQUIRED);
         }
 
         if (_.isEmpty(user.surname)) {
-            errors.push('SURNAME_IS_REQUIRED');
+            errors.push(ERROR.User.SURNAME_IS_REQUIRED);
         }
 
         if (_.isEmpty(user.phone)) {
-            errors.push('PHONE_IS_REQUIRED');
+            errors.push(ERROR.User.PHONE_IS_REQUIRED);
         } else if (phoneAlreadyInUse(user.phone, db)) {
-            errors.push('PHONE_ALREADY_IN_USE');
+            errors.push(ERROR.User.PHONE_ALREADY_IN_USE);
         }
 
         if (_.isEmpty(user.email)) {
-            errors.push('EMAIL_IS_REQUIRED');
+            errors.push(ERROR.User.EMAIL_IS_REQUIRED);
         } else if (emailAlreadyInUse(user.email, db)) {
-            errors.push('EMAIL_ALREADY_IN_USE');
+            errors.push(ERROR.User.EMAIL_ALREADY_IN_USE);
         }
 
         if (_.isEmpty(user.password)) {
-            errors.push('PASSOWRD_IS_REQUIRED');
+            errors.push(ERROR.User.PASSOWRD_IS_REQUIRED);
         } else if (user.password.length < MINIMUM_PASSWORD_SIZE) {
-            errors.push('PASSOWRD_IS_TOO_SHORT');
+            errors.push(ERROR.User.PASSOWRD_IS_TOO_SHORT);
         }
 
         if (!_.isEmpty(errors)) {
@@ -187,7 +188,7 @@ var remove = function(id) {
             var errors = [];
 
             if (!id) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -227,7 +228,7 @@ var checkSecurityForPatches = function(patches, isAdmin){
     });
 
     if (hasPathAllowedOnlyForAdmin && !isAdmin) {
-        errors.push('PATH_ALLOWED_ONLY_FOR_ADMIN');
+        errors.push(ERROR.Common.PATH_ALLOWED_ONLY_FOR_ADMIN);
     }
 
     return errors;
@@ -314,11 +315,11 @@ var update = function(userId, patches, isAdmin) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(patches)) {
-                errors.push('PATCHES_ARE_REQUIRED');
+                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
             }
 
             errors = _.concat(errors, checkSecurityForPatches(patches, Boolean(isAdmin)));

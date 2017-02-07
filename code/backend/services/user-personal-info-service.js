@@ -3,6 +3,7 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
+var ERROR = require('../utils/service-error-constants');
 
 
 var getById = function(userId) {
@@ -14,7 +15,7 @@ var getById = function(userId) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
@@ -94,11 +95,11 @@ var update = function(userId, patches) {
             var errors = [];
 
             if (!userId) {
-                errors.push('USER_ID_IS_REQUIRED');
+                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
             }
 
             if (_.isEmpty(patches)) {
-                errors.push('PATCHES_ARE_REQUIRED');
+                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
             }
 
             if (!_.isEmpty(errors)) {
