@@ -90,8 +90,8 @@ var create = function(userId, ip, data) {
             errors.push(ERROR.Request.SERVICE_IDS_ARE_REQUIRED);
         }
 
-        if (_.isNil(data.candidateIds) || _.isEmpty(data.candidateIds)) {
-            errors.push(ERROR.Request.CANDIDATE_IDS_ARE_REQUIRED);
+        if (_.isNil(data.professionalIds) || _.isEmpty(data.professionalIds)) {
+            errors.push(ERROR.Request.PROFESSIONAL_IDS_ARE_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
@@ -121,36 +121,38 @@ var create = function(userId, ip, data) {
                     if (err) {
                         reject(err);
                     } else {
-
                         request.setServices(services, function(err) {
                             if (err) reject(err);
                             resolve(true);
                         });
-
                     }
 
                 });
 
             }));
 
-            await (new Promise(function (resolve, reject) {
+            var professionals = await (new Promise(function (resolve, reject) {
 
-                db.models.User.find({'id': data.candidateIds}, function(err, users) {
-                    if (err) {
-                        reject(err);
-                    } else {
-
-                        request.setCandidates(users, function(err) {
-                            if (err) reject(err);
-                            resolve(true);
-                        });
-
-                    }
-
+                db.models.User.find({'id': data.professionalIds}, function(err, users) {
+                    if (err) reject(err);
+                    resolve(users);
                 });
 
             }));
 
+            _.forEach(professionals, function(professional) {
+
+                await(new Promise(function (resolve, reject) {
+                    db.models.RequestProfessional.create({
+                        'request_id': request.id,
+                        'professional_id': professional.id
+                    }, function(err, savedRequestProfessional) {
+                        if (err) reject(err);
+                        resolve(true);
+                    });
+                }));
+
+            });
 
             return request;
         }
