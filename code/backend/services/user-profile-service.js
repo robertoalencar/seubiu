@@ -6,36 +6,24 @@ var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
 
 var getById = function(userId) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
-
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) reject(err);
-                    resolve(profile);
-                });
-
-            }
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            return _.first(await(userProfileFind({'user_id': userId})));
+        }
 
     });
 };
 
-var applyPatchesForUpdate = function (profile, patches, db) {
+var applyPatchesForUpdate = function (userProfile, patches, db) {
 
     _(patches).forEach(function(patchOp) {
 
@@ -44,9 +32,9 @@ var applyPatchesForUpdate = function (profile, patches, db) {
             case  '/displayName':
 
                 if (patchOp.op == 'replace') {
-                    profile.displayName = patchOp.value;
+                    userProfile.displayName = patchOp.value;
                 } else if (patchOp.op == 'remove') {
-                    profile.displayName = null;
+                    userProfile.displayName = null;
                 }
 
             break;
@@ -54,9 +42,9 @@ var applyPatchesForUpdate = function (profile, patches, db) {
             case  '/about':
 
                 if (patchOp.op == 'replace') {
-                    profile.about = patchOp.value;
+                    userProfile.about = patchOp.value;
                 } else if (patchOp.op == 'remove') {
-                    profile.about = null;
+                    userProfile.about = null;
                 }
 
             break;
@@ -64,9 +52,9 @@ var applyPatchesForUpdate = function (profile, patches, db) {
             case  '/otherServices':
 
                 if (patchOp.op == 'replace') {
-                    profile.otherServices = patchOp.value;
+                    userProfile.otherServices = patchOp.value;
                 } else if (patchOp.op == 'remove') {
-                    profile.otherServices = false;
+                    userProfile.otherServices = false;
                 }
 
             break;
@@ -77,464 +65,294 @@ var applyPatchesForUpdate = function (profile, patches, db) {
 };
 
 var update = function(userId, patches) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(patches)) {
+            errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+
+            if (_.isNil(userProfile)) {
+                userProfile = new db.models.UserProfile({'user_id': userId});
             }
 
-            if (_.isEmpty(patches)) {
-                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
-            }
+            applyPatchesForUpdate(userProfile, patches, db);
 
-            if (!_.isEmpty(errors)) {
-
-                reject(_.join(errors, ', '));
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else {
-
-                        if (_.isNil(profile)) {
-                            profile = new db.models.UserProfile({'user_id': userId});
-                        }
-
-                        applyPatchesForUpdate(profile, patches, db);
-
-                        profile.save(function(err) {
-                            if (err) reject(err);
-                            resolve(profile);
-                        });
-
-                    }
-
-
-                });
-
-            }
-
-        }));
+            var userProfileSave = Promise.promisify(userProfile.save);
+            return await(userProfileSave());
+        }
 
     });
 
 };
 
 var setCities = function(userId, cityIds) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(cityIds)) {
+            errors.push(ERROR.UserProfile.CITY_IDS_ARE_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+
+            if (_.isNil(userProfile)) {
+                throw [ERROR.UserProfile.USER_PROFILE_NOT_FOUND];
             }
 
-            if (_.isEmpty(cityIds)) {
-                errors.push(ERROR.UserProfile.CITY_IDS_ARE_REQUIRED);
-            }
+            var cityFind = Promise.promisify(db.models.City.find);
+            var cities = await(cityFind({'id': cityIds}));
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else {
-
-                        db.models.City.find({'id': cityIds}, function(err, cities) {
-                            if (err) {
-                                reject(err);
-                            } else {
-
-                                 profile.setCities(cities, function(err) {
-                                    if (err) reject(err);
-                                    resolve(true);
-                                });
-
-                            }
-
-                        });
-                    }
-
-                });
-
-            }
-
-        }));
+            var userProfileSetCities = Promise.promisify(userProfile.setCities);
+            return await (userProfileSetCities(cities));
+        }
 
     });
 };
 
 var getCities = function(userId) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+            if (_.isNil(userProfile)) {
+                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
             }
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else {
-                        profile.getCities(function(err, cities) {
-                            if (err) reject(err);
-                            resolve(cities);
-                        });
-
-                    }
-
-                });
-
-            }
-
-        }));
+            var userProfileGetCities = Promise.promisify(userProfile.getCities);
+            return await (userProfileGetCities());
+        }
 
     });
 };
 
 var setProfessions = function(userId, professionIds) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(professionIds)) {
+            errors.push(ERROR.UserProfile.PROFESSION_IDS_ARE_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+
+            if (_.isNil(userProfile)) {
+                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
             }
 
-            if (_.isEmpty(professionIds)) {
-                errors.push(ERROR.UserProfile.PROFESSION_IDS_ARE_REQUIRED);
-            }
+            var professionFind = Promise.promisify(db.models.Profession.find);
+            var professions = await (professionFind({'id': professionIds}));
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else {
-
-                        db.models.Profession.find({'id': professionIds}, function(err, professions) {
-                            if (err) {
-                                reject(err);
-                            } else {
-
-                                profile.setProfessions(professions, function(err) {
-                                    if (err) reject(err);
-                                    resolve(true);
-                                });
-
-                            }
-
-                        });
-
-                    }
-                });
-
-            }
-
-        }));
+            var userProfileSetProfessions = Promise.promisify(userProfile.setProfessions);
+            return await (userProfileSetProfessions(professions));
+        }
 
     });
 };
 
 var getProfessions = function(userId) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+            if (_.isNil(userProfile)) {
+                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
             }
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else {
-                        profile.getProfessions(function(err, professions) {
-                            if (err) reject(err);
-                            resolve(professions);
-                        });
-                    }
-
-                });
-
-            }
-
-        }));
+            var userProfileGetProfessions = Promise.promisify(userProfile.getProfessions);
+            return await (userProfileGetProfessions());
+        }
 
     });
 };
 
 var setServices = function(userId, servicesIds) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(servicesIds)) {
+            errors.push(ERROR.UserProfile.SERVICE_IDS_ARE_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+
+            if (_.isNil(userProfile)) {
+                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
             }
 
-            if (_.isEmpty(servicesIds)) {
-                errors.push(ERROR.UserProfile.SERVICE_IDS_ARE_REQUIRED);
-            }
+            var servicesFind = Promise.promisify(db.models.Service.find);
+            var services = await (servicesFind({'id': servicesIds}));
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else {
-
-                        db.models.Service.find({'id': servicesIds}, function(err, services) {
-                            if (err) {
-                                reject(err);
-                            } else {
-
-                                profile.setServices(services, function(err) {
-                                    if (err) reject(err);
-                                    resolve(true);
-                                });
-
-                            }
-
-                        });
-
-                    }
-
-                });
-
-            }
-
-        }));
+            var userProfileSetServices = Promise.promisify(userProfile.setServices);
+            return await (userProfileSetServices(services));
+        }
 
     });
 };
 
 var getServices = function(userId) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+            if (_.isNil(userProfile)) {
+                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
             }
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else {
-
-                        profile.getServices(function(err, services) {
-                            if (err) reject(err);
-                            resolve(services);
-                        });
-
-                    }
-
-                });
-
-            }
-
-        }));
+            var userProfileGetServices = Promise.promisify(userProfile.getServices);
+            return await (userProfileGetServices());
+        }
 
     });
 };
 
 var updateDisplayImage = function(userId, name, size, type, data, ip) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(name)) {
+            errors.push(ERROR.Common.NAME_IS_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        if (!size || size  <= 0) {
+            errors.push(ERROR.UserProfile.DisplayImage.SIZE_IS_REQUIRED);
+        }
+
+        if (_.isEmpty(type)) {
+            errors.push(ERROR.UserProfile.DisplayImage.TYPE_IS_REQUIRED);
+        }
+
+        if (_.isEmpty(data)) {
+            errors.push(ERROR.UserProfile.DisplayImage.DATA_IS_REQUIRED);
+        }
+
+        if (_.isEmpty(ip)) {
+            errors.push(ERROR.Common.IP_IS_REQUIRED);
+        }
+
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+
+            if (_.isNil(userProfile)) {
+                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
             }
 
-            if (_.isEmpty(name)) {
-                errors.push(ERROR.Common.NAME_IS_REQUIRED);
-            }
+            await (new Promise(function (resolve, reject) {
 
-            if (!size  || size  <= 0) {
-                errors.push(ERROR.UserProfile.DisplayImage.SIZE_IS_REQUIRED);
-            }
-
-            if (_.isEmpty(type)) {
-                errors.push(ERROR.UserProfile.DisplayImage.TYPE_IS_REQUIRED);
-            }
-
-            if (_.isEmpty(data)) {
-                errors.push(ERROR.UserProfile.DisplayImage.DATA_IS_REQUIRED);
-            }
-
-            if (_.isEmpty(ip)) {
-                errors.push(ERROR.Common.IP_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else {
-
-                        db.models.File.find({'id': profile.displayimage_id}).remove(function (err) {
-                            if (err) {
-                                reject(err);
-                            } else {
-
-                                var newFile = new db.models.File({
-                                    'name' : name,
-                                    'size' : size,
-                                    'type' : type,
-                                    'data' : data,
-                                    'ip'   : ip
-                                });
-
-                                db.models.File.create(newFile, function(err, savedFile) {
-                                    if (err) {
-                                        reject(err);
-                                    } else {
-
-                                        profile.setDisplayImage(savedFile, function(err) {
-                                            if (err) reject(err);
-                                            resolve(true);
-                                        });
-
-                                    }
-
-
-                                });
-
-                            }
-
-                        });
-                    }
-
+                db.models.File.find({'id': userProfile.displayimage_id}).remove(function (err) {
+                    if (err) reject(err);
+                    resolve(true);
                 });
 
-            }
+            }));
 
-        }));
+            var fileCreate = Promise.promisify(db.models.File.create);
+            var file = await (fileCreate({
+                            'name' : name,
+                            'size' : size,
+                            'type' : type,
+                            'data' : data,
+                            'ip'   : ip
+            }));
+
+            var profileSetDisplayImage = Promise.promisify(userProfile.setDisplayImage);
+            return await(profileSetDisplayImage(file));
+        }
 
     });
-
 };
 
-
 var getDisplayImage = function(userId) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+            if (_.isNil(userProfile)) {
+                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+            } else if (userProfile.displayimage_id) {
+                throw([ERROR.UserProfile.DISPLAY_IMAGE_NOT_FOUND]);
             }
 
-            if (!_.isEmpty(errors)) {
-
-                reject(_.join(errors, ', '));
-
-            } else {
-
-                db.models.UserProfile.find({'user_id': userId}).first(function (err, profile) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(profile)) {
-                        reject([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
-                    } else if (_.isNil(profile.displayimage_id)) {
-                        reject([ERROR.UserProfile.DISPLAY_IMAGE_NOT_FOUND]);
-                    } else {
-
-                        db.models.File.get(profile.displayimage_id, function(err, file) {
-                            if (err) reject(err);
-                            resolve(file);
-                        });
-
-                    }
-
-                });
-
-            }
-
-        }));
+            var fileGet = Promise.promisify(db.models.File.get);
+            return await(fileGet(userProfile.displayimage_id));
+        }
 
     });
 
@@ -542,7 +360,6 @@ var getDisplayImage = function(userId) {
 
 
 module.exports = {
-
     getById: getById,
     update: update,
     setCities: setCities,
@@ -555,5 +372,4 @@ module.exports = {
 
     updateDisplayImage: updateDisplayImage,
     getDisplayImage: getDisplayImage
-
 };

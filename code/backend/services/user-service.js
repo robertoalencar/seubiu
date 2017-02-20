@@ -8,118 +8,76 @@ var ERROR = require('../utils/service-error-constants');
 
 var MINIMUM_PASSWORD_SIZE = 8;
 
+var getByFilter = function(filter, db) {
+    var userFind = Promise.promisify(db.models.User.find);
+    return userFind(filter, [ 'name', 'A' ]);
+};
+
+var getAll = function() {
+    return transaction.doReadOnly(function(db) {
+        return await (getByFilter({}, db));
+    });
+};
+
 var getTotalUsers = function(db) {
-    return await (new Promise(function (resolve, reject) {
-        db.models.User.count({}, function (err, count) {
-            if (err) reject(err);
-            resolve(count);
-        });
-    }));
+    var userCount = Promise.promisify(db.models.User.count);
+    return await (userCount());
 };
 
 var getByEmailAndPassword = function(email, password) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (_.isEmpty(email)) {
+            errors.push(ERROR.User.EMAIL_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(password)) {
+            errors.push(ERROR.User.PASSOWRD_IS_REQUIRED);
+        }
 
-            if (_.isEmpty(email)) {
-                errors.push(ERROR.User.EMAIL_IS_REQUIRED);
-            }
-
-            if (_.isEmpty(password)) {
-                errors.push(ERROR.User.PASSOWRD_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-                reject(errors);
-            } else {
-                //TODO: Add this filter when the email verification was implemented: , 'emailVerified': true
-                db.models.User.find({'password': md5(password), 'email': email}, 1, function (err, users) {
-                    if (err) reject(err);
-                    resolve(_.first(users));
-                });
-
-            }
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            //TODO: Add this filter when the email verification was implemented: , 'emailVerified': true
+            return _.first(await (getByFilter({'password': md5(password), 'email': email}, db)));
+        }
 
     });
 
 };
 
 var getById = function(id) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!id) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
-
-            if (!id) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.User.get(id, function(err, user) {
-                    if (err) reject(err);
-                    resolve(user);
-                });
-
-            }
-
-        }));
-
-    });
-
-};
-
-var getAll = function() {
-
-    return transaction.doReadOnly(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            db.models.User.find({}, [ 'name', 'A' ], function (err, users) {
-                if (err) reject(err);
-                resolve(users);
-            });
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userGet = Promise.promisify(db.models.User.get);
+            return await (userGet(id));
+        }
 
     });
 
 };
 
 var phoneAlreadyInUse = function(phone, db) {
-    return await (new Promise(function (resolve, reject) {
-        db.models.User.exists({ 'phone': phone }, function (err, exists) {
-            if (err) reject(err);
-            resolve(exists);
-        });
-    }));
+    var userExists = Promise.promisify(db.models.User.exists);
+    return await (userExists({'phone': phone}));
 };
 
 var emailAlreadyInUse = function(email, db) {
-    return await (new Promise(function (resolve, reject) {
-        db.models.User.exists({ 'email': email }, function (err, exists) {
-            if (err) reject(err);
-            resolve(exists);
-        });
-    }));
+    var userExists = Promise.promisify(db.models.User.exists);
+    return await (userExists({'email': email}));
 };
 
 var create = function(user) {
-
-    var task = function(db) {
-
+    return transaction.doReadWrite(function(db) {
         var errors = [];
 
         if (_.isEmpty(user.name)) {
@@ -154,8 +112,8 @@ var create = function(user) {
 
             var isBootStrap = (getTotalUsers(db) === 0);
 
-            var newUser = await (new Promise(function (resolve, reject) {
-                db.models.User.create({
+            var userCreate = Promise.promisify(db.models.User.create);
+            return await (userCreate({
                     'name': user.name,
                     'surname': user.surname,
                     'phone': user.phone,
@@ -164,47 +122,31 @@ var create = function(user) {
                     'status_id': isBootStrap ? db.models.UserStatus.ACTIVE : db.models.UserStatus.NEW,
                     'admin': isBootStrap,
                     'emailVerified': isBootStrap
-                }, function(err, newUser) {
-                    if (err) reject(err);
-                    resolve(newUser);
-                });
             }));
-
-            return newUser;
         }
 
-    };
-
-    return transaction.doReadWrite(task);
-
+    });
 };
 
 var remove = function(id) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!id) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
-
-            if (!id) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            return await (new Promise(function (resolve, reject) {
                 db.models.User.find({ 'id': id }).remove(function (err) {
                     if (err) reject(err);
                     resolve(true);
                 });
+            }));
 
-            }
-
-        }));
+        }
 
     });
 
@@ -307,61 +249,40 @@ var applyPatchesForUser = function(user, patches) {
 };
 
 var update = function(userId, patches, isAdmin) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(patches)) {
+            errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
+        errors = _.concat(errors, checkSecurityForPatches(patches, Boolean(isAdmin)));
 
-            if (_.isEmpty(patches)) {
-                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
-            }
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userGet = Promise.promisify(db.models.User.get);
+            var user = await (userGet(userId));
 
-            errors = _.concat(errors, checkSecurityForPatches(patches, Boolean(isAdmin)));
+            applyPatchesForUser(user, patches);
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.User.get(userId, function(err, user) {
-                    if (err) {
-                        reject(err);
-                    } else {
-
-                        applyPatchesForUser(user, patches);
-
-                        user.save(function(err) {
-                            if (err) reject(err);
-                            resolve(user);
-                        });
-
-                    }
-
-                });
-
-            }
-
-        }));
+            var userSave = Promise.promisify(user.save);
+            return await(userSave());
+        }
 
     });
 
 };
 
-
 module.exports = {
-
     getByEmailAndPassword: getByEmailAndPassword,
     getById: getById,
     getAll: getAll,
     create: create,
     remove: remove,
     update: update
-
 };

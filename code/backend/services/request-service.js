@@ -4,54 +4,36 @@ var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
 
-var getByFilter = function(filter, db, reject, resolve) {
-
-    db.models.Request.find(filter, [ 'description', 'A' ], function (err, requests) {
-        if (err) reject(err);
-        resolve(requests);
-    });
-
+var getByFilter = function(filter, db) {
+    var requestFind = Promise.promisify(db.models.Request.find);
+    return requestFind(filter, [ 'description', 'A' ]);
 };
 
 var getAll = function(filter) {
     return transaction.doReadOnly(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            getByFilter(filter, db, reject, resolve);
-
-        }));
-
+        return await (getByFilter(filter, db));
     });
 };
 
 var getByOwner = function(userId) {
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
-
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-                getByFilter({'owner_id':userId}, db, reject, resolve);
-            }
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            return await (getByFilter({'owner_id':userId}, db));
+        }
 
     });
 };
 
 var create = function(userId, ip, data) {
-    var task = function(db) {
-
+    return transaction.doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -98,8 +80,8 @@ var create = function(userId, ip, data) {
             throw errors;
         } else {
 
-            var request = await (new Promise(function (resolve, reject) {
-                db.models.Request.create({
+            var requestCreate = Promise.promisify(db.models.Request.create);
+            var request = await (requestCreate({
                     'description': data.description,
                     'ip': ip,
                     'address': data.address,
@@ -109,47 +91,23 @@ var create = function(userId, ip, data) {
                     'city_id': data.cityId,
                     'profession_id': data.professionId,
                     'status_id': db.models.RequestStatus.NEW
-                }, function(err, savedRequest) {
-                    if (err) reject(err);
-                    resolve(savedRequest);
-                });
             }));
 
-            await (new Promise(function (resolve, reject) {
+            var serviceFind = Promise.promisify(db.models.Service.find);
+            var services = await (serviceFind({'id': data.serviceIds}));
 
-                db.models.Service.find({'id': data.serviceIds}, function(err, services) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        request.setServices(services, function(err) {
-                            if (err) reject(err);
-                            resolve(true);
-                        });
-                    }
+            var requestSetService = Promise.promisify(request.setServices);
+            await (requestSetService(services));
 
-                });
+            var professionalFind = Promise.promisify(db.models.User.find);
+            var professionals = await (professionalFind({'id': data.professionalIds}));
 
-            }));
-
-            var professionals = await (new Promise(function (resolve, reject) {
-
-                db.models.User.find({'id': data.professionalIds}, function(err, users) {
-                    if (err) reject(err);
-                    resolve(users);
-                });
-
-            }));
-
+            var requestProfessionalCreate = Promise.promisify(db.models.RequestProfessional.create);
             _.forEach(professionals, function(professional) {
 
-                await(new Promise(function (resolve, reject) {
-                    db.models.RequestProfessional.create({
-                        'request_id': request.id,
-                        'professional_id': professional.id
-                    }, function(err, savedRequestProfessional) {
-                        if (err) reject(err);
-                        resolve(true);
-                    });
+                await (requestProfessionalCreate({
+                    'request_id': request.id,
+                    'professional_id': professional.id
                 }));
 
             });
@@ -157,16 +115,12 @@ var create = function(userId, ip, data) {
             return request;
         }
 
-    };
-
-    return transaction.doReadWrite(task);
+    });
 
 };
 
 module.exports = {
-
     getAll: getAll,
     getByOwner: getByOwner,
     create: create
-
 };

@@ -16,13 +16,13 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
         });
 
-    router.route('/states/:idState/cities')
+    router.route('/states/:stateId/cities')
 
         .get(function(req, res) {
 
-            var idState = req.params.idState;
+            var stateId = req.params.stateId;
 
-            cityService.getCitiesByState(idState).then(function(cities){
+            cityService.getCitiesByState(stateId).then(function(cities){
                 res.json(cities);
             }, function(err) {
                 routeUtil.handleException(res, err);
