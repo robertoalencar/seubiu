@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 var searchByProfessionServicesAndCity = function (professionId, servicesIds, cityId, db) {
 
@@ -36,7 +37,5 @@ var searchByProfessionServicesAndCity = function (professionId, servicesIds, cit
 };
 
 module.exports = {
-
     searchByProfessionServicesAndCity: searchByProfessionServicesAndCity
-
 };

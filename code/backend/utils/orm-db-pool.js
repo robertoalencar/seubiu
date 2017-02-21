@@ -38,6 +38,7 @@ var pool = new Pool({
         db.use(transaction);
 
         db.settings.set('instance.returnAllErrors', true);
+        db.settings.set('instance.cache', false);
 
         defineModels(db);
 

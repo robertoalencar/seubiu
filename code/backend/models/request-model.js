@@ -12,12 +12,10 @@ module.exports = function (orm, db) {
         timestamp: true
     });
 
-    Request.hasOne('owner', db.models.User, { required: true, reverse: 'requests' });
+    Request.hasOne('owner', db.models.User, { required: true, reverse: 'ownerRequests' });
     Request.hasOne('city', db.models.City, {}, { required: true });
     Request.hasOne('profession', db.models.Profession, { required: true });
-    Request.hasOne('professional', db.models.User, { reverse: 'matchedRequests' });
+    Request.hasOne('professional', db.models.User, { reverse: 'professionalRequests' });
     Request.hasOne('status', db.models.RequestStatus, { required: true });
-    Request.hasMany('services', db.models.Service, {}, { key: true });
-    Request.hasMany('candidates', db.models.User, {}, { key: true });
-
+    Request.hasMany('services', db.models.Service, {}, { key: true, mergeTable: 'request_service', mergeAssocId: 'service_id' });
 };

@@ -5,43 +5,31 @@ var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
 
-
 var getById = function(userId) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
+            var userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+            if (_.isNil(userPersonalInfo)) {
+                throw ['USER_PERSONAL_INFO_NOT_FOUND'];
             }
 
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserPersonalInfo.find({'user_id': userId}).first(function (err, personalInfo) {
-                    if (err) {
-                        reject(err);
-                    } else if (_.isNil(personalInfo)) {
-                        reject(['USER_PERSONAL_INFO_NOT_FOUND']);
-                    } else {
-                        resolve(personalInfo);
-                    }
-                });
-
-            }
-
-        }));
+            return userPersonalInfo;
+        }
 
     });
 };
 
-var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
+var applyPatchesForUserPersonalInfo = function (userPersonalInfo, patches, db) {
 
     _(patches).forEach(function(patchOp) {
 
@@ -50,9 +38,9 @@ var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
             case  '/birthDate':
 
                 if (patchOp.op == 'replace') {
-                    personalInfo.birthDate = patchOp.value;
+                    userPersonalInfo.birthDate = patchOp.value;
                 } else if (patchOp.op == 'remove') {
-                    personalInfo.birthDate = null;
+                    userPersonalInfo.birthDate = null;
                 }
 
             break;
@@ -60,7 +48,7 @@ var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
             case  '/rg':
 
                 if (patchOp.op == 'replace') {
-                    personalInfo.rg = patchOp.value;
+                    userPersonalInfo.rg = patchOp.value;
                 }
 
             break;
@@ -68,7 +56,7 @@ var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
             case  '/rgOrgIssuer':
 
                 if (patchOp.op == 'replace') {
-                    personalInfo.rgOrgIssuer = patchOp.value;
+                    userPersonalInfo.rgOrgIssuer = patchOp.value;
                 }
 
             break;
@@ -76,7 +64,7 @@ var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
             case  '/cpf':
 
                 if (patchOp.op == 'replace') {
-                    personalInfo.cpf = patchOp.value;
+                    userPersonalInfo.cpf = patchOp.value;
                 }
 
             break;
@@ -87,56 +75,39 @@ var applyPatchesForUserPersonalInfo = function (personalInfo, patches, db) {
 };
 
 var update = function(userId, patches) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(patches)) {
+            errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
+            var userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
+
+            if (_.isNil(userPersonalInfo)) {
+                userPersonalInfo = new db.models.UserPersonalInfo({'user_id': userId});
             }
 
-            if (_.isEmpty(patches)) {
-                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
-            }
+            applyPatchesForUserPersonalInfo(userPersonalInfo, patches, db);
 
-            if (!_.isEmpty(errors)) {
+            var userPersonalInfoSave = Promise.promisify(userPersonalInfo.save);
+            return await(userPersonalInfoSave());
 
-                reject(errors);
-
-            } else {
-
-                db.models.UserPersonalInfo.find({'user_id': userId}).first(function (err, personalInfo) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        if (_.isNil(personalInfo)) {
-                            personalInfo = new db.models.UserPersonalInfo({'user_id': userId});
-                        }
-
-                        applyPatchesForUserPersonalInfo(personalInfo, patches, db);
-
-                        personalInfo.save(function(err) {
-                            if (err) reject(err);
-                            resolve(personalInfo);
-                        });
-                    }
-
-                });
-
-            }
-
-        }));
+        }
 
     });
 
 };
 
 module.exports = {
-
     getById: getById,
     update: update
-
 };
