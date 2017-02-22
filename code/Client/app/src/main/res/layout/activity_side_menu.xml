@@ -8,10 +8,7 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <include
-        layout="@layout/app_bar_side_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -21,5 +18,94 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_side_menu"
         app:menu="@menu/activity_side_menu_drawer" />
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="30px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/bem_vindo"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+
+            <ImageButton
+
+                android:id="@+id/btnSolicitar"
+                android:src="@mipmap/botao1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:padding="10dp"
+                android:scaleType="fitCenter" />
+            />
+
+            <ImageButton
+
+                android:id="@+id/btnSolicitados"
+                android:src="@mipmap/botao1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:padding="10dp"
+                android:scaleType="fitCenter" />
+            />
+            <ImageButton
+
+                android:id="@+id/btnRealizados"
+                android:src="@mipmap/botao1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:padding="10dp"
+                android:scaleType="fitCenter" />
+            />
+
+
+
+
+
+
+
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:layout_gravity="center_horizontal" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+
 
 </android.support.v4.widget.DrawerLayout>

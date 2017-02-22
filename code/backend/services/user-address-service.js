@@ -4,184 +4,149 @@ var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
 
+var getByFilter = function(filter, db) {
+    var userAddressFind = Promise.promisify(db.models.UserAddress.find);
+    return userAddressFind(filter, [ 'description', 'A' ]);
+};
+
+
 var getAllByUserId = function(id) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!id) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
-
-            if (!id) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserAddress.find({'user_id': id}, [ 'description', 'A' ], function (err, addresses) {
-                    if (err) reject(err);
-                    resolve(addresses);
-                });
-
-            }
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            return await(getByFilter({'user_id': id}, db));
+        }
 
     });
 
 };
 
 var getById = function(userId, addressId) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!addressId) {
+            errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
-
-            if (!addressId) {
-                errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
-                    if (err) reject(err);
-                    resolve(_.first(addresses));
-                });
-
-            }
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var userAddresses = await(getByFilter({'user_id': userId, 'id': addressId}, db));
+            return _.first(userAddresses);
+        }
 
     });
 
 };
 
 var remove = function(userId, addressId) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!addressId) {
+            errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
 
-            if (!addressId) {
-                errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
+            await (new Promise(function (resolve, reject) {
 
                 db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
                     if (err) reject(err);
                     resolve(true);
                 });
 
-            }
+            }));
 
-        }));
+        }
 
     });
 
 };
 
 var create = function(userId, addr) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(addr.description)) {
+            errors.push(ERROR.UserAddress.DESCRIPTION_IS_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
+        if (_.isEmpty(addr.main)) {
+           errors.push(ERROR.UserAddress.MAIN_IS_REQUIRED);
+        }
 
-            if (_.isEmpty(addr.description)) {
-                errors.push(ERROR.UserAddress.DESCRIPTION_IS_REQUIRED);
-            }
+        if (!addr.zipCode) {
+            errors.push(ERROR.UserAddress.ZIPCODE_IS_REQUIRED);
+        }
 
-            if (_.isEmpty(addr.main)) {
-                errors.push(ERROR.UserAddress.MAIN_IS_REQUIRED);
-            }
+        if (_.isEmpty(addr.address)) {
+            errors.push(ERROR.UserAddress.ADDRESS_IS_REQUIRED);
+        }
 
-            if (!addr.zipCode) {
-                errors.push(ERROR.UserAddress.ZIPCODE_IS_REQUIRED);
-            }
+        if (!addr.number) {
+            errors.push(ERROR.UserAddress.NUMBER_IS_REQUIRED);
+        }
 
-            if (_.isEmpty(addr.address)) {
-                errors.push(ERROR.UserAddress.ADDRESS_IS_REQUIRED);
-            }
+        if (_.isEmpty(addr.district)) {
+            errors.push(ERROR.UserAddress.DISTRICT_IS_REQUIRED);
+        }
 
-            if (!addr.number) {
-                errors.push(ERROR.UserAddress.NUMBER_IS_REQUIRED);
-            }
+        if (!addr.cityId) {
+            errors.push(ERROR.City.CITY_ID_IS_REQUIRED);
+        }
 
-            if (_.isEmpty(addr.district)) {
-                errors.push(ERROR.UserAddress.DISTRICT_IS_REQUIRED);
-            }
+        if (!addr.stateId) {
+            errors.push(ERROR.State.STATE_ID_IS_REQUIRED);
+        }
 
-            if (!addr.cityId) {
-                errors.push(ERROR.City.CITY_ID_IS_REQUIRED);
-            }
+        if (!addr.countryId) {
+            errors.push(ERROR.Country.COUNTRY_ID_IS_REQUIRED);
+        }
 
-            if (!addr.stateId) {
-                errors.push(ERROR.State.STATE_ID_IS_REQUIRED);
-            }
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
 
-            if (!addr.countryId) {
-                errors.push(ERROR.Country.COUNTRY_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.UserAddress.create(
-                {
-                    'description': addr.description,
-                    'main': Boolean(addr.main),
-                    'zipCode': addr.zipCode,
-                    'address': addr.address,
-                    'number': addr.number,
-                    'complement': addr.complement,
-                    'district': addr.district,
-                    'reference': addr.reference,
-                    'user_id': addr.userId,
-                    'city_id': addr.cityId,
-                    'state_id': addr.stateId,
-                    'country_id': addr.countryId
-
-                }, function(err, newAddress) {
-                    if (err) reject(err);
-                    resolve(newAddress);
-                });
-
-            }
-
-        }));
+            var userAddressCreate = Promise.promisify(db.models.UserAddress.create);
+            return await (userAddressCreate(
+            {
+                'description': addr.description,
+                'main': Boolean(addr.main),
+                'zipCode': addr.zipCode,
+                'address': addr.address,
+                'number': addr.number,
+                'complement': addr.complement,
+                'district': addr.district,
+                'reference': addr.reference,
+                'user_id': addr.userId,
+                'city_id': addr.cityId,
+                'state_id': addr.stateId,
+                'country_id': addr.countryId
+            }));
+        }
 
     });
 
@@ -294,52 +259,33 @@ var applyPatchesForAddress = function(address, patches) {
 };
 
 var update = function(userId, addressId, patches) {
-
     return transaction.doReadWrite(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!userId) {
+            errors.push(ERROR.User.USER_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (!addressId) {
+            errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
+        }
 
-            if (!userId) {
-                errors.push(ERROR.User.USER_ID_IS_REQUIRED);
-            }
+        if (_.isEmpty(patches)) {
+            errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
+        }
 
-            if (!addressId) {
-                errors.push(ERROR.UserAddress.ADDRESS_ID_IS_REQUIRED);
-            }
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
 
-            if (_.isEmpty(patches)) {
-                errors.push(ERROR.Common.PATCHES_ARE_REQUIRED);
-            }
+            var userAddresses = await (getByFilter({'user_id': userId, 'id': addressId}, db));
+            var userAddress = _.first(userAddresses);
 
-            if (!_.isEmpty(errors)) {
+            applyPatchesForAddress(userAddress, patches);
 
-                reject(errors);
-
-            } else {
-
-                db.models.UserAddress.find({'user_id': userId, 'id': addressId}, 1, function (err, addresses) {
-                    if (err) {
-                        reject(err);
-                    } else {
-
-                        var address = _.first(addresses);
-
-                        applyPatchesForAddress(address, patches);
-
-                        address.save(function(err) {
-                            if (err) reject(err);
-                            resolve(address);
-                        });
-
-                    }
-
-                });
-
-            }
-
-        }));
+            var userAddressSave = Promise.promisify(userAddress.save);
+            return await(userAddressSave());
+        }
 
     });
 
@@ -347,11 +293,9 @@ var update = function(userId, addressId, patches) {
 
 
 module.exports = {
-
     create: create,
     getAllByUserId: getAllByUserId,
     getById: getById,
     remove: remove,
     update: update
-
 };

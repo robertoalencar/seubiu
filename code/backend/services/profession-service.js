@@ -4,89 +4,57 @@ var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
 
-var getServicesByProfession = function(id) {
-
-    return transaction.doReadOnly(function(db) {
-
-        return await (new Promise(function (resolve, reject) {
-
-            var errors = [];
-
-            if (!id) {
-                errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.Service.find({'profession_id': id}, [ 'description', 'A' ], function (err, services) {
-                    if (err) reject(err);
-                    resolve(services);
-                });
-
-            }
-
-        }));
-
-    });
-
+var getByFilter = function(filter, db) {
+    var professionFind = Promise.promisify(db.models.Profession.find);
+    return professionFind(filter, [ 'description', 'A' ]);
 };
 
 var getAll = function() {
-
     return transaction.doReadOnly(function(db) {
+        return await (getByFilter({}, db));
+    });
+};
 
-        return await (new Promise(function (resolve, reject) {
+var getServicesByProfession = function(id) {
+    return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-            db.models.Profession.find({}, [ 'description', 'A' ], function (err, professions) {
-                if (err) reject(err);
-                resolve(professions);
-            });
+        if (!id) {
+            errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
+        }
 
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var serviceFind = Promise.promisify(db.models.Service.find);
+            return await (serviceFind({'profession_id':id}));
+        }
 
     });
 
 };
 
 var getById = function(id) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!id) {
+            errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
-
-            if (!id) {
-                errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                db.models.Profession.get(id, function(err, profession) {
-                    if (err) reject(err);
-                    resolve(profession);
-                });
-
-            }
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            var professionGet = Promise.promisify(db.models.Profession.get);
+            return await (professionGet(id));
+        }
 
     });
 
 };
 
 module.exports = {
-
     getAll: getAll,
     getById: getById,
     getServicesByProfession: getServicesByProfession
-
 };

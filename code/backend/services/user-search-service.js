@@ -7,45 +7,30 @@ var ERROR = require('../utils/service-error-constants');
 
 
 var searchByProfessionServicesAndCity = function(professionId, servicesIds, cityId) {
-
     return transaction.doReadOnly(function(db) {
+        var errors = [];
 
-        return await (new Promise(function (resolve, reject) {
+        if (!professionId) {
+            errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
+        }
 
-            var errors = [];
+        if (_.isEmpty(servicesIds)) {
+            errors.push(ERROR.Service.SERVICES_IDS_ARE_REQUIRED);
+        }
 
-            if (!professionId) {
-                errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
-            }
+        if (!cityId) {
+            errors.push(ERROR.City.CITY_ID_IS_REQUIRED);
+        }
 
-            if (_.isEmpty(servicesIds)) {
-                errors.push(ERROR.Service.SERVICES_IDS_ARE_REQUIRED);
-            }
-
-            if (!cityId) {
-                errors.push(ERROR.City.CITY_ID_IS_REQUIRED);
-            }
-
-            if (!_.isEmpty(errors)) {
-
-                reject(errors);
-
-            } else {
-
-                DAO.getUserSearchDAO().searchByProfessionServicesAndCity(professionId, servicesIds, cityId, db).then(function(data){
-                    resolve(data);
-                }, function(err) {
-                    reject(err);
-                });
-
-            }
-
-        }));
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+            return await (DAO.getUserSearchDAO().searchByProfessionServicesAndCity(professionId, servicesIds, cityId, db));
+        }
 
     });
 
 };
-
 
 module.exports = {
 
