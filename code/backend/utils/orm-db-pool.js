@@ -48,7 +48,7 @@ var pool = new Pool({
 
     },
     destroy  : function(db) { db.close(); },
-    max      : 50,
+    max      : process.env.DB_POOL_MAX,
     log      : false
 });
 

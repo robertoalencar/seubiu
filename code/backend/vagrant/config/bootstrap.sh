@@ -147,6 +147,7 @@ then
     echo "DB_HOST=localhost" >> $ENV_FILE
     echo "DB_PORT=5432" >> $ENV_FILE
     echo "DB_DEBUG=true" >> $ENV_FILE
+    echo "DB_POOL_MAX=50" >> $ENV_FILE
     echo "REDIS_HOST=localhost" >> $ENV_FILE
     echo "REDIS_PORT=6379" >> $ENV_FILE
     echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE

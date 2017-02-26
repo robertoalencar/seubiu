@@ -14,7 +14,9 @@ var doInTransaction = async (function (task, readOnly) {
 
     try {
 
-        debug('Acquire database connection for transaction: ' + transactionId);
+        debug('### New transaction: ' + transactionId);
+
+        debug('### Acquire database connection for transaction: ' + transactionId);
         db = await (new Promise(function (resolve, reject) {
 
             pool.acquire(function(err, db) {
@@ -24,7 +26,7 @@ var doInTransaction = async (function (task, readOnly) {
 
         }));
 
-        debug('Start ' + (readOnly ? 'read-only':'read-write') +  ' transaction: ' + transactionId);
+        debug('### Start ' + (readOnly ? 'read-only':'read-write') +  ' transaction: ' + transactionId);
         transaction = await (new Promise(function (resolve, reject) {
 
             db.transaction(function (err, t) {
@@ -37,7 +39,7 @@ var doInTransaction = async (function (task, readOnly) {
         result = task(db);
 
         if (readOnly) {
-            debug('Rollback transaction: ' + transactionId);
+            debug('### Rollback transaction: ' + transactionId);
             await (new Promise(function (resolve, reject) {
 
                 transaction.rollback(function(err) {
@@ -48,7 +50,7 @@ var doInTransaction = async (function (task, readOnly) {
             }));
 
         } else {
-            debug('Commit transaction: ' + transactionId);
+            debug('### Commit transaction: ' + transactionId);
             await (new Promise(function (resolve, reject) {
 
                 transaction.commit(function(err) {
@@ -65,7 +67,7 @@ var doInTransaction = async (function (task, readOnly) {
     } catch(err) {
 
         if (transaction) {
-            debug('Rollback transaction: ' + transactionId);
+            debug('### Rollback transaction: ' + transactionId);
             await (new Promise(function (resolve, reject) {
 
                 transaction.rollback(function(err) {
@@ -80,7 +82,7 @@ var doInTransaction = async (function (task, readOnly) {
         throw err;
 
     } finally {
-        debug('Release database connection for transaction: ' + transactionId);
+        debug('### Release database connection from transaction: ' + transactionId);
         if (db) pool.release(db);
     }
 
