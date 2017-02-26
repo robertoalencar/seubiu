@@ -16,6 +16,9 @@ module.exports = function(grunt) {
       jasmine: {
         command: 'jasmine'
       },
+      mocha: {
+        command: 'mocha'
+      },
       orm_db_sync: {
         command: 'node utils/orm-db-sync.js'
       },
@@ -32,7 +35,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask('start', ['shell:supervisor']);
-  grunt.registerTask('test', ['shell:jasmine']);
+  grunt.registerTask('test', ['shell:jasmine', 'shell:mocha']);
   grunt.registerTask('initdb', ['shell:redis_flush_all', 'shell:orm_db_sync', 'shell:bootstrap_db']);
 
 };

@@ -37,6 +37,8 @@
     "uuid": "^2.0.2"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-shell": "^2.0.0"
