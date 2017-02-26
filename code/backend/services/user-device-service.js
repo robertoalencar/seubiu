@@ -31,8 +31,7 @@ var add = function(userId, deviceToken, deviceTypeId) {
             errors.push(ERROR.DeviceType.DEVICE_TYPE_IS_REQUIRED);
         }
 
-        if (userId && !_.isEmpty(deviceToken) && !_.isEmpty(deviceTypeId)
-            && tokenAlreadyExists(userId, deviceToken, deviceTypeId, db)) {
+        if (userId && !_.isEmpty(deviceToken) && !_.isEmpty(deviceTypeId) && tokenAlreadyExists(userId, deviceToken, deviceTypeId, db)) {
             errors.push(ERROR.UserDevice.DEVICE_TOKEN_ALREADY_EXISTS);
         }
 

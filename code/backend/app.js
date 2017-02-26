@@ -14,7 +14,7 @@ var responseTime = require('response-time');
 var cryptoUtil = require('./utils/crypto-util');
 var userService = require('./services/user-service');
 
-var opts = {}
+var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
 opts.secretOrKey = process.env.SESSION_SECRET;
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
