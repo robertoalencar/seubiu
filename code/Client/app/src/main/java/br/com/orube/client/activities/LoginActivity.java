@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void doLogin(final ProgressDialog progressDialog, String email, String password) {
+
         SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class);
 
         Call<AuthToken> auth = rest.authenticate(email, password);

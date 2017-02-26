@@ -1,0 +1,61 @@
+Geral:
+
+ - (Arthur) Modificar as imagens do app para as imagens enviadas por Tuca;
+
+
+Login:
+
+ -  (Arthur) Tratar as mensagens que vem do servidor (login e tela de criar conta);
+
+
+APP Cliente: Tela de Solicitação do Serviço:
+
+ - (Arthur) Implementar a tela de solicitação de serviço para refletir o especificado no protótipo (página: 06)
+ - (Arthur) (Feature 01.02) Implementar o Clique aqui de sugestões de serviço
+ - (Arthur) Implementar a tela de solicitação de serviço para refletir o especificado no protótipo (páginas: 07 e 08)
+
+
+API: 	
+
+ - (Gilberto) (Feature 01.01) Implementar o serviço que irá cadastrar as sugestões de serviço;
+ - (Gilberto) Implementar serviço do aceite dos profissionais;
+ - (Gilberto) Implementar serviço da escolha do profissional pelo cliente;
+ 
+
+Front-end:
+
+ - (Everton) Montar o ambiente de Everton
+ - (Everton) (Feature 01.03) Implementar a tela que irá aprovar ou não as sugestões de serviço;
+
+
+
+(FEATURE 01)
+
+Entidade de Sugestão de Serviço:
+
+ - cliente:Cliente;
+ - dataSugestão:Date;
+ - sugestão:String
+ - aprovada:Boolean;
+
+Campos exibidos na tela:
+
+ - nome do cliente;
+ - data da sugestão;
+ - sugestão;
+ - aprovada (sim, não e todas);
+
+Filtro na tela:
+
+ - nome do cliente;
+ - data da sugestão;
+ - sugestão;
+ - aprovada (sim, não e todas);
+
+Serviço:
+
+ - Deverá pegar a sugestão e a partir dela cadastar um novo serviço no banco;
+
+
+
+
