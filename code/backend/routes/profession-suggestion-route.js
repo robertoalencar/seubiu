@@ -19,7 +19,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
         })
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, isAdmin, function(req, res) {
 
             professionSuggestionService.getAll(req.query).then(function(suggestions){
                 res.json(suggestions);
@@ -31,7 +31,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/professionsuggestions/:id')
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, isAdmin, function(req, res) {
 
             var id = req.params.id;
 
@@ -44,7 +44,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
         })
 
-        .put(isAuthenticated, userHasAccess, function(req, res) {
+        .put(isAuthenticated, isAdmin, function(req, res) {
 
             var id = req.params.id;
 
@@ -56,11 +56,25 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
         })
 
-        .delete(isAuthenticated, userHasAccess, function(req, res) {
+        .delete(isAuthenticated, isAdmin, function(req, res) {
 
             var id = req.params.id;
 
             professionSuggestionService.remove(id).then(function(success){
+                res.send(success);
+            }, function(err) {
+                routeUtil.handleException(res, err);
+            });
+
+        });
+
+    router.route('/professionsuggestions/:id/approve')
+
+        .post(isAuthenticated, isAdmin, function(req, res) {
+
+            var id = req.params.id;
+
+            professionSuggestionService.approve(id).then(function(success){
                 res.send(success);
             }, function(err) {
                 routeUtil.handleException(res, err);

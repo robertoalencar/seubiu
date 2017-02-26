@@ -109,16 +109,6 @@ var applyPatchesForProfessionSuggestion = function(professionSuggestion, patches
 
             break;
 
-            case  '/approved':
-
-                if (patchOp.op == 'replace') {
-                    professionSuggestion.approved = patchOp.value;
-                } else if (patchOp.op == 'remove') {
-                    professionSuggestion.approved = false;
-                }
-
-            break;
-
         }
 
     });
@@ -154,10 +144,53 @@ var update = function(professionSuggestionId, patches) {
 
 };
 
+var alreadyApproved = function(id, db) {
+    var exists = Promise.promisify(db.models.ProfessionSuggestion.exists);
+    return await (exists({'id': id, 'approved': true}));
+};
+
+var approve = function(id) {
+    return transaction.doReadWrite(function(db) {
+        var errors = [];
+
+        if (!id) {
+            errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ID_IS_REQUIRED);
+        } else if (alreadyApproved(id, db)) {
+            errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ALREADY_APPROVED);
+        }
+
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+
+            var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
+            var professionSuggestion = await (professionSuggestionGet(id));
+
+            professionSuggestion.approved = true;
+
+            var professionSuggestionSave = Promise.promisify(professionSuggestion.save);
+            professionSuggestion = await (professionSuggestionSave());
+
+            var professionCreate = Promise.promisify(db.models.Profession.create);
+            var newProfession = await (professionCreate(
+            {
+                'description': professionSuggestion.profession,
+                'active': true
+            }));
+
+            return professionSuggestion;
+        }
+
+    });
+
+};
+
+
 module.exports = {
     getAll: getAll,
     getById: getById,
     create: create,
     remove: remove,
-    update: update
+    update: update,
+    approve: approve
 };
