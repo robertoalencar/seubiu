@@ -5,6 +5,7 @@ var modts = require('orm-timestamps');
 var opts = {
   host:     process.env.DB_HOST,
   database: process.env.DB_NAME,
+  pathname: process.env.DB_PATH_NAME,
   protocol: process.env.DB_PROTOCOL,
   user:     process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,

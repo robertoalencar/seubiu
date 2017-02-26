@@ -33,6 +33,7 @@
     "redis": "^2.6.2",
     "response-time": "^2.3.1",
     "serve-favicon": "~2.3.0",
+    "sqlite3": "^3.1.8",
     "uuid": "^2.0.2"
   },
   "devDependencies": {
