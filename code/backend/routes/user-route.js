@@ -67,49 +67,6 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
         });
 
-
-/*
-
-    router.route('/users/:userId/profile')
-
-        .get(isAuthenticated, userHasAccess, function(req, res) {
-
-            var userId = req.params.userId;
-
-            //TODO: Implement this
-            res.status(200).send('OK');
-
-        })
-
-        .put(isAuthenticated, userHasAccess, function(req, res) {
-
-            var userId = req.params.userId;
-
-            //TODO: Implement this
-            res.status(200).send('OK');
-
-        });
-
-    router.route('/users/:userId/personal')
-
-        .get(isAuthenticated, userHasAccess, function(req, res) {
-
-            var userId = req.params.userId;
-
-            //TODO: Implement this
-            res.status(200).send('OK');
-
-        })
-
-        .put(isAuthenticated, userHasAccess, function(req, res) {
-
-            var userId = req.params.userId;
-
-            //TODO: Implement this
-            res.status(200).send('OK');
-
-        });
-*/
     /*
             //Patch/put operations
             //http://tools.ietf.org/html/rfc6902

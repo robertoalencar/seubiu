@@ -141,7 +141,7 @@ var create = function(userId, addr) {
                 'complement': addr.complement,
                 'district': addr.district,
                 'reference': addr.reference,
-                'user_id': addr.userId,
+                'user_id': userId,
                 'city_id': addr.cityId,
                 'state_id': addr.stateId,
                 'country_id': addr.countryId

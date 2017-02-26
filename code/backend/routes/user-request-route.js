@@ -29,7 +29,6 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
                 routeUtil.handleException(res, err);
             });
 
-
         });
 
 };
