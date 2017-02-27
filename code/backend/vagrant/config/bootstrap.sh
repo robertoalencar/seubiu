@@ -162,7 +162,7 @@ npm install
 # NODE_ENV=development db-migrate up
 
 # Sync database
-#NODE_ENV=development && node utils/orm-db-sync.js
+#NODE_ENV=development && node utils/sync-db.js
 
 # Bootstrap database
 #NODE_ENV=development && node utils/bootstrap-db.js
