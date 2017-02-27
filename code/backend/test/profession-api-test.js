@@ -46,7 +46,7 @@ describe('Profession API', function() {
         });
     });
 
-    it('should get a profession by id on GET /api/professions/:id ', function(done) {
+    it('should get a profession by id on GET /api/professions/:id', function(done) {
         chai.request(server)
         .get('/api/professions/1')
         .end(function(err, res){
@@ -66,7 +66,7 @@ describe('Profession API', function() {
         });
     });
 
-    it('should get all services by profession on GET /api/professions/:id/services ', function(done) {
+    it('should get all services by profession on GET /api/professions/:id/services', function(done) {
         chai.request(server)
         .get('/api/professions/1/services')
         .end(function(err, res){

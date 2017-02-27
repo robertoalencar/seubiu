@@ -133,6 +133,9 @@ npm install -g supervisor
 # Install Jasmine
 npm install -g jasmine
 
+# Install Mocha
+npm install -g mocha
+
 # App dir
 APP_DIR=/seubiu
 
