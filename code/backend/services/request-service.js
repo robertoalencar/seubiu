@@ -119,8 +119,48 @@ var create = function(userId, ip, data) {
 
 };
 
+var professioalAccept = function(requestId, professionalId) {
+    return transaction.doReadWrite(function(db) {
+
+        var errors = [];
+
+        if (!requestId) {
+            errors.push(ERROR.Request.REQUEST_ID_IS_REQUIRED);
+        }
+
+        if (!professionalId) {
+            errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
+        }
+
+        if (!_.isEmpty(errors)) {
+            throw errors;
+        } else {
+
+            var requestProfessionalFind = Promise.promisify(db.models.RequestProfessional.find);
+            var requestProfessional = _.first(await (requestProfessionalFind({'request_id': requestId, 'professional_id': professionalId})));
+
+            if (_.isNil(requestProfessional)) {
+                throw {
+                    'message': ERROR.RequestProfessional.REQUEST_PROFESSIONAL_NOT_FOUND,
+                    'literalCode': ERROR.Common.NOT_FOUND
+                };
+            } else if (requestProfessional.accepted) {
+                throw [ERROR.RequestProfessional.REQUEST_PROFESSIONAL_ALREADY_ACCEPTED];
+            } else {
+
+                requestProfessional.accepted = true;
+                var requestProfessionalSave = Promise.promisify(requestProfessional.save);
+                return await(requestProfessionalSave());
+
+            }
+
+        }
+    });
+};
+
 module.exports = {
     getAll: getAll,
     getByOwner: getByOwner,
-    create: create
+    create: create,
+    professioalAccept
 };

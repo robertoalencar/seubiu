@@ -144,19 +144,12 @@ var update = function(professionSuggestionId, patches) {
 
 };
 
-var alreadyApproved = function(id, db) {
-    var exists = Promise.promisify(db.models.ProfessionSuggestion.exists);
-    return await (exists({'id': id, 'approved': true}));
-};
-
 var approve = function(id) {
     return transaction.doReadWrite(function(db) {
         var errors = [];
 
         if (!id) {
             errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ID_IS_REQUIRED);
-        } else if (alreadyApproved(id, db)) {
-            errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ALREADY_APPROVED);
         }
 
         if (!_.isEmpty(errors)) {
@@ -165,6 +158,10 @@ var approve = function(id) {
 
             var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
             var professionSuggestion = await (professionSuggestionGet(id));
+
+            if (professionSuggestion.approved) {
+                throw [ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ALREADY_APPROVED];
+            }
 
             professionSuggestion.approved = true;
 

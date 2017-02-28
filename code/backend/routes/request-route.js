@@ -15,4 +15,18 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
         });
 
+    router.route('/requests/:requestId/professional/accept')
+
+        .post(isAuthenticated, function(req, res) {
+            var requestId = req.params.requestId;
+            var professionalId = req.user.id;
+
+            requestService.professioalAccept(requestId, professionalId).then(function(success){
+                res.json(success);
+            }, function(err) {
+                routeUtil.handleException(res, err);
+            });
+
+        });
+
 };
