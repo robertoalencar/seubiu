@@ -103,15 +103,19 @@ var create = function(userId, ip, data) {
             var professionalFind = Promise.promisify(db.models.User.find);
             var professionals = await (professionalFind({'id': data.professionalIds}));
 
-            var requestProfessionalCreate = Promise.promisify(db.models.RequestProfessional.create);
+            var requestProfessionals = [];
+
             _.forEach(professionals, function(professional) {
 
-                await (requestProfessionalCreate({
+                requestProfessionals.push({
                     'request_id': request.id,
                     'professional_id': professional.id
-                }));
+                });
 
             });
+
+            var requestProfessionalCreate = Promise.promisify(db.models.RequestProfessional.create);
+            await (requestProfessionalCreate(requestProfessionals));
 
             return request;
         }
