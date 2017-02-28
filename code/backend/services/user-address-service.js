@@ -3,6 +3,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var getByFilter = function(filter, db) {
     var userAddressFind = Promise.promisify(db.models.UserAddress.find);
@@ -19,7 +20,7 @@ var getAllByUserId = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             return await(getByFilter({'user_id': id}, db));
         }
@@ -41,7 +42,7 @@ var getById = function(userId, addressId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var userAddresses = await(getByFilter({'user_id': userId, 'id': addressId}, db));
             return _.first(userAddresses);
@@ -64,7 +65,7 @@ var remove = function(userId, addressId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             await (new Promise(function (resolve, reject) {
@@ -127,7 +128,7 @@ var create = function(userId, addr) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var userAddressCreate = Promise.promisify(db.models.UserAddress.create);
@@ -275,7 +276,7 @@ var update = function(userId, addressId, patches) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var userAddresses = await (getByFilter({'user_id': userId, 'id': addressId}, db));

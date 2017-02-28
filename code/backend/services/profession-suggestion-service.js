@@ -3,6 +3,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var getByFilter = function(filter, db) {
     var professionSuggestionFind = Promise.promisify(db.models.ProfessionSuggestion.find);
@@ -24,7 +25,7 @@ var getById = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
             return await (professionSuggestionGet(id));
@@ -43,7 +44,7 @@ var remove = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             await (new Promise(function (resolve, reject) {
@@ -78,7 +79,7 @@ var create = function(userId, data, ip) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var professionSuggestionCreate = Promise.promisify(db.models.ProfessionSuggestion.create);
@@ -128,7 +129,7 @@ var update = function(professionSuggestionId, patches) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
@@ -153,14 +154,14 @@ var approve = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
             var professionSuggestion = await (professionSuggestionGet(id));
 
             if (professionSuggestion.approved) {
-                throw [ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ALREADY_APPROVED];
+                throw ServiceException([ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ALREADY_APPROVED]);
             }
 
             professionSuggestion.approved = true;

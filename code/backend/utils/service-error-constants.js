@@ -1,5 +1,10 @@
 module.exports = {
 
+    Types: {
+        NOT_FOUND: 'NOT_FOUND',
+        BUSINESS: 'BUSINESS'
+    },
+
     DeviceType: {
         DEVICE_TYPE_IS_REQUIRED: 'DEVICE_TYPE_IS_REQUIRED'
     },
@@ -39,6 +44,10 @@ module.exports = {
             TYPE_IS_REQUIRED: 'TYPE_IS_REQUIRED',
             DATA_IS_REQUIRED: 'DATA_IS_REQUIRED'
         }
+    },
+
+    UserPersonalInfo: {
+        USER_PERSONAL_INFO_NOT_FOUND: 'USER_PERSONAL_INFO_NOT_FOUND'
     },
 
     UserAddress: {
@@ -89,8 +98,6 @@ module.exports = {
         PATCHES_ARE_REQUIRED: 'PATCHES_ARE_REQUIRED',
         IP_IS_REQUIRED: 'IP_IS_REQUIRED',
         NAME_IS_REQUIRED: 'NAME_IS_REQUIRED',
-        PATH_ALLOWED_ONLY_FOR_ADMIN: 'PATH_ALLOWED_ONLY_FOR_ADMIN',
-        NOT_FOUND: 'NOT_FOUND'
+        PATH_ALLOWED_ONLY_FOR_ADMIN: 'PATH_ALLOWED_ONLY_FOR_ADMIN'
     }
-
 };

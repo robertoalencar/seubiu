@@ -4,6 +4,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var getById = function(userId) {
     return transaction.doReadOnly(function(db) {
@@ -14,13 +15,13 @@ var getById = function(userId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
             var userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
 
             if (_.isNil(userPersonalInfo)) {
-                throw ['USER_PERSONAL_INFO_NOT_FOUND'];
+                throw ServiceException(ERROR.UserPersonalInfo.USER_PERSONAL_INFO_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
             return userPersonalInfo;
@@ -87,7 +88,7 @@ var update = function(userId, patches) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
             var userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));

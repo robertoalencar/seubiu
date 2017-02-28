@@ -3,6 +3,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var _searchByProfessionServicesAndCity = function (professionId, servicesIds, cityId, db) {
 
@@ -56,7 +57,7 @@ var searchByProfessionServicesAndCity = function(professionId, servicesIds, city
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             return await (_searchByProfessionServicesAndCity(professionId, servicesIds, cityId, db));
         }

@@ -3,6 +3,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var getByFilter = function(filter, db) {
     var professionFind = Promise.promisify(db.models.Profession.find);
@@ -24,7 +25,7 @@ var getServicesByProfession = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var serviceFind = Promise.promisify(db.models.Service.find);
             return await (serviceFind({'profession_id':id}));
@@ -43,7 +44,7 @@ var getById = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var professionGet = Promise.promisify(db.models.Profession.get);
             return await (professionGet(id));

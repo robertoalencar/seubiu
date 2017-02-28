@@ -1,13 +1,15 @@
 var _ = require('lodash');
 
 var handleException = function(res, err) {
-    if (_.isArray(err)) {
-        res.status(400).json(err);
-    } else if (err.literalCode && err.literalCode == 'NOT_FOUND') {
-        res.status(404).json(err.message || err);
-    } else {
-        res.status(500).send(err.message || err);
+    var statusCode = 500;
+
+    if (err.type && err.type == 'BUSINESS') {
+        statusCode = 400;
+    } else if (err.type && err.type == 'NOT_FOUND' || (err.literalCode && err.literalCode == 'NOT_FOUND')) {
+        statusCode = 404;
     }
+
+    res.status(statusCode).send(err.message || err);
 
 };
 

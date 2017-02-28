@@ -5,6 +5,7 @@ var Promise = require('bluebird');
 var md5 = require('md5');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var MINIMUM_PASSWORD_SIZE = 8;
 
@@ -37,7 +38,7 @@ var getByEmailAndPassword = function(email, password) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             //TODO: Add this filter when the email verification was implemented: , 'emailVerified': true
             return _.first(await (getByFilter({'password': md5(password), 'email': email}, db)));
@@ -56,7 +57,7 @@ var getById = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var userGet = Promise.promisify(db.models.User.get);
             return await (userGet(id));
@@ -107,7 +108,7 @@ var create = function(user) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var isBootStrap = (getTotalUsers(db) === 0);
@@ -137,7 +138,7 @@ var remove = function(id) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             return await (new Promise(function (resolve, reject) {
                 db.models.User.find({ 'id': id }).remove(function (err) {
@@ -263,7 +264,7 @@ var update = function(userId, patches, isAdmin) {
         errors = _.concat(errors, checkSecurityForPatches(patches, Boolean(isAdmin)));
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var userGet = Promise.promisify(db.models.User.get);
             var user = await (userGet(userId));

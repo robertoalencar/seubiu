@@ -4,6 +4,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var getByFilter = function(filter, db) {
     var userDeviceFind = Promise.promisify(db.models.UserDevice.find);
@@ -36,7 +37,7 @@ var add = function(userId, deviceToken, deviceTypeId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var deviceCreate = Promise.promisify(db.models.UserDevice.create);
             return await (deviceCreate({'user_id': userId, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId}));
@@ -55,7 +56,7 @@ var getAllByUserId = function(userId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             return await (getByFilter({'user_id': userId}, db));
         }
@@ -76,7 +77,7 @@ var getByToken = function(userId, deviceToken) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             var devices = await (getByFilter({'user_id': userId, 'deviceToken': deviceToken}, db));
             return _.first(devices);

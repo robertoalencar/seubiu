@@ -3,6 +3,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var getByFilter = function(filter, db) {
     var stateFind = Promise.promisify(db.models.State.find);
@@ -24,7 +25,7 @@ var getStatesByCountry = function(countryId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             return await (getByFilter({'country_id':countryId}, db));
         }

@@ -3,6 +3,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
+var ServiceException = require('../utils/service-exception');
 
 var getByFilter = function(filter, db) {
     var requestFind = Promise.promisify(db.models.Request.find);
@@ -24,7 +25,7 @@ var getByOwner = function(userId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             return await (getByFilter({'owner_id':userId}, db));
         }
@@ -77,7 +78,7 @@ var create = function(userId, ip, data) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var requestCreate = Promise.promisify(db.models.Request.create);
@@ -133,19 +134,16 @@ var professioalAccept = function(requestId, professionalId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
             var requestProfessionalFind = Promise.promisify(db.models.RequestProfessional.find);
             var requestProfessional = _.first(await (requestProfessionalFind({'request_id': requestId, 'professional_id': professionalId})));
 
             if (_.isNil(requestProfessional)) {
-                throw {
-                    'message': ERROR.RequestProfessional.REQUEST_PROFESSIONAL_NOT_FOUND,
-                    'literalCode': ERROR.Common.NOT_FOUND
-                };
+                throw ServiceException(ERROR.RequestProfessional.REQUEST_PROFESSIONAL_NOT_FOUND, ERROR.Types.NOT_FOUND);
             } else if (requestProfessional.accepted) {
-                throw [ERROR.RequestProfessional.REQUEST_PROFESSIONAL_ALREADY_ACCEPTED];
+                throw ServiceException([ERROR.RequestProfessional.REQUEST_PROFESSIONAL_ALREADY_ACCEPTED]);
             } else {
 
                 requestProfessional.accepted = true;
