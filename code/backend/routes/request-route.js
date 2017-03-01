@@ -21,7 +21,7 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
             var requestId = req.params.requestId;
             var professionalId = req.user.id;
 
-            requestService.professioalAccept(requestId, professionalId).then(function(success){
+            requestService.professionalAccept(requestId, professionalId).then(function(success){
                 res.json(success);
             }, function(err) {
                 routeUtil.handleException(res, err);

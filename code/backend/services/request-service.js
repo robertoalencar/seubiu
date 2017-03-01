@@ -124,7 +124,7 @@ var create = function(userId, ip, data) {
 
 };
 
-var professioalAccept = function(requestId, professionalId) {
+var professionalAccept = function(requestId, professionalId) {
     return transaction.doReadWrite(function(db) {
 
         var errors = [];
@@ -164,5 +164,5 @@ module.exports = {
     getAll: getAll,
     getByOwner: getByOwner,
     create: create,
-    professioalAccept
+    professionalAccept: professionalAccept
 };
