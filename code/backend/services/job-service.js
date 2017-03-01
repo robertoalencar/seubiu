@@ -1,5 +1,14 @@
+var _ = require('lodash');
 var kue = require('kue');
-var queue = kue.createQueue();
+
+var queue = kue.createQueue({
+  prefix: 'q',
+  redis: {
+    port: process.env.REDIS_PORT,
+    host: process.env.REDIS_HOST,
+    db: 3
+  }
+});
 
 var TYPES = {
     SEND_NEW_USER_EMAIL: 'SEND_NEW_USER_EMAIL',
@@ -13,8 +22,9 @@ process.once('SIGTERM', function(sig) {
 });
 
 var createJob = function(jobType, title, data) {
-    data.title = title;
-    return queue.create(jobType, data).attempts(3).removeOnComplete(true);
+    var clonedData = _.cloneDeep(data);
+    clonedData.title = title;
+    return queue.create(jobType, clonedData).attempts(3).removeOnComplete(true);
 };
 
 module.exports = {
