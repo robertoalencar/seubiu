@@ -6,6 +6,7 @@ var md5 = require('md5');
 var transaction = require('../utils/orm-db-transaction');
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
+var jobService = require('./job-service');
 
 var MINIMUM_PASSWORD_SIZE = 8;
 
@@ -114,7 +115,8 @@ var create = function(user) {
             var isBootStrap = (getTotalUsers(db) === 0);
 
             var userCreate = Promise.promisify(db.models.User.create);
-            return await (userCreate({
+
+            var newUser = await (userCreate({
                     'name': user.name,
                     'surname': user.surname,
                     'phone': user.phone,
@@ -124,6 +126,10 @@ var create = function(user) {
                     'admin': isBootStrap,
                     'emailVerified': isBootStrap
             }));
+
+            await (jobService.createJob(jobService.TYPES.SEND_NEW_USER_EMAIL, 'Send new user e-mail', newUser).save());
+
+            return newUser;
         }
 
     });

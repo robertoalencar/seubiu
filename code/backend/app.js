@@ -87,7 +87,11 @@ app.post('/api/authenticate', function(req, res) {
 
 });
 
+//Routes
 app.use('/api', require('./routes/'));
+
+//Jobs
+require('./jobs')();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
