@@ -36,7 +36,7 @@ var doInTransaction = async (function (task, readOnly) {
 
         }));
 
-        result = task(db);
+        result = await (task(db));
 
         if (readOnly) {
             debug('### Rollback transaction: ' + transactionId);

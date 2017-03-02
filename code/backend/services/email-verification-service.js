@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var uuid = require('uuid');
 var await = require('asyncawait/await');
 var useRedis = require('../utils/redis-client-use').use;

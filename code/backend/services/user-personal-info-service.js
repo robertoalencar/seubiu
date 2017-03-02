@@ -2,12 +2,13 @@ var _ = require('lodash');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
 var getById = function(userId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -76,7 +77,7 @@ var applyPatchesForUserPersonalInfo = function (userPersonalInfo, patches, db) {
 };
 
 var update = function(userId, patches) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -100,7 +101,7 @@ var update = function(userId, patches) {
             applyPatchesForUserPersonalInfo(userPersonalInfo, patches, db);
 
             var userPersonalInfoSave = Promise.promisify(userPersonalInfo.save);
-            return await(userPersonalInfoSave());
+            return userPersonalInfoSave();
 
         }
 

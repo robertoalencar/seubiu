@@ -2,7 +2,8 @@ var _ = require('lodash');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
@@ -17,7 +18,7 @@ var tokenAlreadyExists = function(userId, deviceToken, deviceTypeId, db) {
 };
 
 var add = function(userId, deviceToken, deviceTypeId) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -40,7 +41,7 @@ var add = function(userId, deviceToken, deviceTypeId) {
             throw ServiceException(errors);
         } else {
             var deviceCreate = Promise.promisify(db.models.UserDevice.create);
-            return await (deviceCreate({'user_id': userId, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId}));
+            return deviceCreate({'user_id': userId, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId});
         }
 
     });
@@ -48,7 +49,7 @@ var add = function(userId, deviceToken, deviceTypeId) {
 };
 
 var getAllByUserId = function(userId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -58,14 +59,14 @@ var getAllByUserId = function(userId) {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            return await (getByFilter({'user_id': userId}, db));
+            return getByFilter({'user_id': userId}, db);
         }
 
     });
 };
 
 var getByToken = function(userId, deviceToken) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {

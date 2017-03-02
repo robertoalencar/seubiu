@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
@@ -11,13 +11,13 @@ var getByFilter = function(filter, db) {
 };
 
 var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+    return doReadOnly(function(db) {
+        return getByFilter({}, db);
     });
 };
 
 var getStatesByCountry = function(countryId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!countryId) {
@@ -27,7 +27,7 @@ var getStatesByCountry = function(countryId) {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            return await (getByFilter({'country_id':countryId}, db));
+            return getByFilter({'country_id':countryId}, db);
         }
 
     });

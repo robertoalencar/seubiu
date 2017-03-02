@@ -19,7 +19,7 @@ var use = async (function (task) {
 
         }));
 
-        return task(client);
+        return await (task(client));
 
     } catch(err) {
         throw err;

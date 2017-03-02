@@ -1,7 +1,8 @@
 var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
@@ -11,13 +12,13 @@ var getByFilter = function(filter, db) {
 };
 
 var getAll = function(filter) {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter(filter, db));
+    return doReadOnly(function(db) {
+        return getByFilter(filter, db);
     });
 };
 
 var getById = function(id) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!id) {
@@ -28,7 +29,7 @@ var getById = function(id) {
             throw ServiceException(errors);
         } else {
             var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
-            return await (professionSuggestionGet(id));
+            return professionSuggestionGet(id);
         }
 
     });
@@ -36,7 +37,7 @@ var getById = function(id) {
 };
 
 var remove = function(id) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!id) {
@@ -47,14 +48,14 @@ var remove = function(id) {
             throw ServiceException(errors);
         } else {
 
-            await (new Promise(function (resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 db.models.ProfessionSuggestion.find({'id': id}).remove(function (err) {
                     if (err) reject(err);
                     resolve(true);
                 });
 
-            }));
+            });
 
         }
 
@@ -63,7 +64,7 @@ var remove = function(id) {
 };
 
 var create = function(userId, data, ip) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -83,13 +84,13 @@ var create = function(userId, data, ip) {
         } else {
 
             var professionSuggestionCreate = Promise.promisify(db.models.ProfessionSuggestion.create);
-            return await (professionSuggestionCreate(
+            return professionSuggestionCreate(
             {
                 'profession': data.profession,
                 'approved': false,
                 'ip': ip,
                 'user_id': userId
-            }));
+            });
         }
 
     });
@@ -117,7 +118,7 @@ var applyPatchesForProfessionSuggestion = function(professionSuggestion, patches
 };
 
 var update = function(professionSuggestionId, patches) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!professionSuggestionId) {
@@ -138,7 +139,7 @@ var update = function(professionSuggestionId, patches) {
             applyPatchesForProfessionSuggestion(professionSuggestion, patches);
 
             var professionSuggestionSave = Promise.promisify(professionSuggestion.save);
-            return await(professionSuggestionSave());
+            return professionSuggestionSave();
         }
 
     });
@@ -146,7 +147,7 @@ var update = function(professionSuggestionId, patches) {
 };
 
 var approve = function(id) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!id) {

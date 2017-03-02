@@ -1,7 +1,6 @@
 var _ = require('lodash');
-var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
@@ -11,13 +10,13 @@ var getByFilter = function(filter, db) {
 };
 
 var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+    return doReadOnly(function(db) {
+        return getByFilter({}, db);
     });
 };
 
 var getServicesByProfession = function(id) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!id) {
@@ -28,7 +27,7 @@ var getServicesByProfession = function(id) {
             throw ServiceException(errors);
         } else {
             var serviceFind = Promise.promisify(db.models.Service.find);
-            return await (serviceFind({'profession_id':id}));
+            return serviceFind({'profession_id':id});
         }
 
     });
@@ -36,7 +35,7 @@ var getServicesByProfession = function(id) {
 };
 
 var getById = function(id) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!id) {
@@ -47,7 +46,7 @@ var getById = function(id) {
             throw ServiceException(errors);
         } else {
             var professionGet = Promise.promisify(db.models.Profession.get);
-            return await (professionGet(id));
+            return professionGet(id);
         }
 
     });

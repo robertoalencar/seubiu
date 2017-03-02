@@ -1,7 +1,8 @@
 var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
@@ -12,7 +13,7 @@ var getByFilter = function(filter, db) {
 
 
 var getAllByUserId = function(id) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!id) {
@@ -22,7 +23,7 @@ var getAllByUserId = function(id) {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            return await(getByFilter({'user_id': id}, db));
+            return getByFilter({'user_id': id}, db);
         }
 
     });
@@ -30,7 +31,7 @@ var getAllByUserId = function(id) {
 };
 
 var getById = function(userId, addressId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -53,7 +54,7 @@ var getById = function(userId, addressId) {
 };
 
 var remove = function(userId, addressId) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -68,14 +69,14 @@ var remove = function(userId, addressId) {
             throw ServiceException(errors);
         } else {
 
-            await (new Promise(function (resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
                     if (err) reject(err);
                     resolve(true);
                 });
 
-            }));
+            });
 
         }
 
@@ -84,7 +85,7 @@ var remove = function(userId, addressId) {
 };
 
 var create = function(userId, addr) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -132,7 +133,7 @@ var create = function(userId, addr) {
         } else {
 
             var userAddressCreate = Promise.promisify(db.models.UserAddress.create);
-            return await (userAddressCreate(
+            return  userAddressCreate(
             {
                 'description': addr.description,
                 'main': Boolean(addr.main),
@@ -146,7 +147,7 @@ var create = function(userId, addr) {
                 'city_id': addr.cityId,
                 'state_id': addr.stateId,
                 'country_id': addr.countryId
-            }));
+            });
         }
 
     });
@@ -260,7 +261,7 @@ var applyPatchesForAddress = function(address, patches) {
 };
 
 var update = function(userId, addressId, patches) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -285,7 +286,7 @@ var update = function(userId, addressId, patches) {
             applyPatchesForAddress(userAddress, patches);
 
             var userAddressSave = Promise.promisify(userAddress.save);
-            return await(userAddressSave());
+            return userAddressSave();
         }
 
     });

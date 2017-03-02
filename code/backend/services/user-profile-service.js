@@ -2,12 +2,13 @@ var _ = require('lodash');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
 var getById = function(userId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -66,7 +67,7 @@ var applyPatchesForUpdate = function (userProfile, patches, db) {
 };
 
 var update = function(userId, patches) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -90,7 +91,7 @@ var update = function(userId, patches) {
             applyPatchesForUpdate(userProfile, patches, db);
 
             var userProfileSave = Promise.promisify(userProfile.save);
-            return await(userProfileSave());
+            return userProfileSave();
         }
 
     });
@@ -98,7 +99,7 @@ var update = function(userId, patches) {
 };
 
 var setCities = function(userId, cityIds) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -123,14 +124,14 @@ var setCities = function(userId, cityIds) {
             var cities = await(cityFind({'id': cityIds}));
 
             var userProfileSetCities = Promise.promisify(userProfile.setCities);
-            return await (userProfileSetCities(cities));
+            return userProfileSetCities(cities);
         }
 
     });
 };
 
 var getCities = function(userId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -148,14 +149,14 @@ var getCities = function(userId) {
             }
 
             var userProfileGetCities = Promise.promisify(userProfile.getCities);
-            return await (userProfileGetCities());
+            return userProfileGetCities();
         }
 
     });
 };
 
 var setProfessions = function(userId, professionIds) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -180,14 +181,14 @@ var setProfessions = function(userId, professionIds) {
             var professions = await (professionFind({'id': professionIds}));
 
             var userProfileSetProfessions = Promise.promisify(userProfile.setProfessions);
-            return await (userProfileSetProfessions(professions));
+            return userProfileSetProfessions(professions);
         }
 
     });
 };
 
 var getProfessions = function(userId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -205,14 +206,14 @@ var getProfessions = function(userId) {
             }
 
             var userProfileGetProfessions = Promise.promisify(userProfile.getProfessions);
-            return await (userProfileGetProfessions());
+            return userProfileGetProfessions();
         }
 
     });
 };
 
 var setServices = function(userId, servicesIds) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -237,14 +238,14 @@ var setServices = function(userId, servicesIds) {
             var services = await (servicesFind({'id': servicesIds}));
 
             var userProfileSetServices = Promise.promisify(userProfile.setServices);
-            return await (userProfileSetServices(services));
+            return userProfileSetServices(services);
         }
 
     });
 };
 
 var getServices = function(userId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -262,14 +263,14 @@ var getServices = function(userId) {
             }
 
             var userProfileGetServices = Promise.promisify(userProfile.getServices);
-            return await (userProfileGetServices());
+            return userProfileGetServices();
         }
 
     });
 };
 
 var updateDisplayImage = function(userId, name, size, type, data, ip) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -325,14 +326,14 @@ var updateDisplayImage = function(userId, name, size, type, data, ip) {
             }));
 
             var profileSetDisplayImage = Promise.promisify(userProfile.setDisplayImage);
-            return await(profileSetDisplayImage(file));
+            return profileSetDisplayImage(file);
         }
 
     });
 };
 
 var getDisplayImage = function(userId) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -352,7 +353,7 @@ var getDisplayImage = function(userId) {
             }
 
             var fileGet = Promise.promisify(db.models.File.get);
-            return await(fileGet(userProfile.displayimage_id));
+            return fileGet(userProfile.displayimage_id);
         }
 
     });

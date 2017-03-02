@@ -1,7 +1,8 @@
 var _ = require('lodash');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
@@ -11,13 +12,13 @@ var getByFilter = function(filter, db) {
 };
 
 var getAll = function(filter) {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter(filter, db));
+    return doReadOnly(function(db) {
+        return getByFilter(filter, db);
     });
 };
 
 var getByOwner = function(userId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -27,14 +28,14 @@ var getByOwner = function(userId) {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            return await (getByFilter({'owner_id':userId}, db));
+            return getByFilter({'owner_id':userId}, db);
         }
 
     });
 };
 
 var create = function(userId, ip, data) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -125,7 +126,7 @@ var create = function(userId, ip, data) {
 };
 
 var professionalAccept = function(requestId, professionalId) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
 
         var errors = [];
 
@@ -152,7 +153,7 @@ var professionalAccept = function(requestId, professionalId) {
 
                 requestProfessional.accepted = true;
                 var requestProfessionalSave = Promise.promisify(requestProfessional.save);
-                return await(requestProfessionalSave());
+                return requestProfessionalSave();
 
             }
 

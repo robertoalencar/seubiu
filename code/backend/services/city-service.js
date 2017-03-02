@@ -1,7 +1,6 @@
 var _ = require('lodash');
-var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
@@ -11,13 +10,13 @@ var getByFilter = function(filter, db) {
 };
 
 var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+    return doReadOnly(function(db) {
+        return getByFilter({}, db);
     });
 };
 
 var getCitiesByState = function(stateId) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!stateId) {
@@ -27,7 +26,7 @@ var getCitiesByState = function(stateId) {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            return await(getByFilter({'state_id':stateId}, db));
+            return getByFilter({'state_id':stateId}, db);
         }
     });
 };

@@ -1,12 +1,10 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
 
 var getAll = function() {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var countryFind = Promise.promisify(db.models.Country.find);
-        return await (countryFind({}, [ 'description', 'A' ]));
+        return countryFind({}, [ 'description', 'A' ]);
     });
 };
 

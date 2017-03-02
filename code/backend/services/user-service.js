@@ -1,9 +1,9 @@
 var _ = require('lodash');
-var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var md5 = require('md5');
-var transaction = require('../utils/orm-db-transaction');
+var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 var jobService = require('./job-service');
@@ -16,8 +16,8 @@ var getByFilter = function(filter, db) {
 };
 
 var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+    return doReadOnly(function(db) {
+        return getByFilter({}, db);
     });
 };
 
@@ -27,7 +27,7 @@ var getTotalUsers = function(db) {
 };
 
 var getByEmailAndPassword = function(email, password) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (_.isEmpty(email)) {
@@ -50,7 +50,7 @@ var getByEmailAndPassword = function(email, password) {
 };
 
 var getById = function(id) {
-    return transaction.doReadOnly(function(db) {
+    return doReadOnly(function(db) {
         var errors = [];
 
         if (!id) {
@@ -61,7 +61,7 @@ var getById = function(id) {
             throw ServiceException(errors);
         } else {
             var userGet = Promise.promisify(db.models.User.get);
-            return await (userGet(id));
+            return userGet(id);
         }
 
     });
@@ -79,7 +79,7 @@ var emailAlreadyInUse = function(email, db) {
 };
 
 var create = function(user) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (_.isEmpty(user.name)) {
@@ -136,7 +136,7 @@ var create = function(user) {
 };
 
 var remove = function(id) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!id) {
@@ -146,12 +146,12 @@ var remove = function(id) {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            return await (new Promise(function (resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 db.models.User.find({ 'id': id }).remove(function (err) {
                     if (err) reject(err);
                     resolve(true);
                 });
-            }));
+            });
 
         }
 
@@ -256,7 +256,7 @@ var applyPatchesForUser = function(user, patches) {
 };
 
 var update = function(userId, patches, isAdmin) {
-    return transaction.doReadWrite(function(db) {
+    return doReadWrite(function(db) {
         var errors = [];
 
         if (!userId) {
@@ -278,7 +278,7 @@ var update = function(userId, patches, isAdmin) {
             applyPatchesForUser(user, patches);
 
             var userSave = Promise.promisify(user.save);
-            return await(userSave());
+            return userSave();
         }
 
     });
