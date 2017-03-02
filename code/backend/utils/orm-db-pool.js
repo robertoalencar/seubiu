@@ -53,5 +53,4 @@ var pool = new Pool({
     log      : false
 });
 
-
 module.exports = pool;

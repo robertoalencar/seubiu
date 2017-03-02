@@ -1,3 +1,4 @@
+var dotenv = require('dotenv').config();
 var _ = require('lodash');
 var kue = require('kue');
 

@@ -4,7 +4,7 @@ var uuid = require('uuid');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
-var pool = require('../utils/orm-db-pool');
+var pool = require('./orm-db-pool');
 
 var doInTransaction = async (function (task, readOnly) {
     var transactionId = uuid.v1();
