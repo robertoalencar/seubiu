@@ -13,6 +13,44 @@ apt-get install -y curl
 apt-get install -y git
 
 ################################################
+############## Java section ##############
+################################################
+add-apt-repository ppa:webupd8team/java -y
+apt-get update
+/bin/echo /usr/bin/debconf shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections;/bin/echo /usr/bin/debconf shared/accepted-oracle-license-v1-1 seen true | sudo /usr/bin/debconf-set-selections;
+apt-get install -y -q oracle-java8-installer
+apt-get install -y -q oracle-java8-set-default
+
+################################################
+############## Kafka section ##############
+################################################
+KAFKA_URL="http://ftp.unicamp.br/pub/apache/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz"
+KAFKA_DIR="/var/lib/kafka"
+KAFKA_DONWLOAD_DIR="/var/tmp"
+
+# Create donwload directory
+if [ ! -d "$KAFKA_DONWLOAD_DIR" ];
+then
+  mkdir -p $KAFKA_DONWLOAD_DIR
+fi
+
+# Install ZooKeeper
+apt-get install -y zookeeperd
+
+# Download and extract Kafka
+wget --quiet $KAFKA_URL -O $KAFKA_DONWLOAD_DIR/kafka.tgz
+
+mkdir -p $KAFKA_DIR && cd $KAFKA_DIR
+
+tar -xvzf $KAFKA_DONWLOAD_DIR/kafka.tgz --strip 1
+
+# Enable topic deletion
+sed -i "s/#delete.topic.enable=true/delete.topic.enable=true/" "$KAFKA_DIR/config/server.properties"
+
+# Start Kafka
+nohup $KAFKA_DIR/bin/kafka-server-start.sh $KAFKA_DIR/config/server.properties > $KAFKA_DIR/kafka.log 2>&1 &
+
+################################################
 ############## Redis section ##############
 ################################################
 
