@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "supervisor ./bin/www",
-    "test": "jasmine"
+    "test": "grunt test"
   },
   "dependencies": {
     "asyncawait": "^1.0.6",
@@ -34,7 +34,6 @@
     "redis": "^2.6.5",
     "response-time": "^2.3.1",
     "serve-favicon": "~2.3.0",
-    "sqlite3": "^3.1.8",
     "uuid": "^2.0.2"
   },
   "devDependencies": {

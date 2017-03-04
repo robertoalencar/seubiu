@@ -36,6 +36,7 @@ APP_DB_PASS=pass123@
 
 # Edit the following to change the name of the database that is created (defaults to the user name)
 APP_DB_NAME=$APP_DB_USER
+APP_DB_TEST_NAME="${APP_DB_NAME}_test"
 
 # Edit the following to change the version of PostgreSQL that is installed
 PG_VERSION=9.4
@@ -80,8 +81,15 @@ DROP DATABASE IF EXISTS $APP_DB_NAME;
 -- Create the database user:
 CREATE USER $APP_DB_USER WITH PASSWORD '$APP_DB_PASS';
 
--- Create the database:
+-- Create main database:
 CREATE DATABASE $APP_DB_NAME WITH OWNER=$APP_DB_USER
+                                  LC_COLLATE='en_US.utf8'
+                                  LC_CTYPE='en_US.utf8'
+                                  ENCODING='UTF8'
+                                  TEMPLATE=template0;
+
+-- Create test database:
+CREATE DATABASE $APP_DB_TEST_NAME WITH OWNER=$APP_DB_USER
                                   LC_COLLATE='en_US.utf8'
                                   LC_CTYPE='en_US.utf8'
                                   ENCODING='UTF8'
@@ -93,7 +101,8 @@ echo ""
 echo "Your PostgreSQL database has been setup and can be accessed on your local machine on the forwarded port (default: 15432)"
 echo "  Host: localhost"
 echo "  Port: 15432"
-echo "  Database: $APP_DB_NAME"
+echo "  Main Database: $APP_DB_NAME"
+echo "  Test Database: $APP_DB_TEST_NAME"
 echo "  Username: $APP_DB_USER"
 echo "  Password: $APP_DB_PASS"
 echo ""
@@ -115,7 +124,7 @@ echo ""
 
 # Install Node.js and NPM
 apt-get remove -y nodejs
-curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Install Grunt
@@ -144,6 +153,7 @@ ENV_FILE=$APP_DIR/.env
 if [ ! -f $ENV_FILE ]
 then
     echo "DB_NAME=$APP_DB_NAME" >> $ENV_FILE
+    echo "DB_TEST_NAME=$APP_DB_TEST_NAME" >> $ENV_FILE
     echo "DB_PROTOCOL=postgres" >> $ENV_FILE
     echo "DB_USERNAME=$APP_DB_USER" >> $ENV_FILE
     echo "DB_PASSWORD=$APP_DB_PASS" >> $ENV_FILE
