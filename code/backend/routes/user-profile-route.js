@@ -5,30 +5,30 @@ var upload = multer({ storage: storage });
 var userProfileService = require('../services/user-profile-service');
 var routeUtil = require('../utils/route-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
     router.route('/users/:userId/profile')
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
 
-            userProfileService.getById(userId).then(function(profile){
+            userProfileService.getById(userId).then((profile) => {
                 if (_.isEmpty(profile)) res.status(404);
                 res.json(profile);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .put(isAuthenticated, userHasAccess, function(req, res) {
+        .put(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
 
-            userProfileService.update(userId, req.body.patches).then(function(profile){
+            userProfileService.update(userId, req.body.patches).then((profile) => {
                 res.json(profile);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -36,26 +36,26 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/profile/cities')
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
 
-            userProfileService.getCities(userId).then(function(cities){
+            userProfileService.getCities(userId).then((cities) => {
                 res.json(cities);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .post(isAuthenticated, userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
             var cityIds = req.body.cityIds;
 
-            userProfileService.setCities(userId, cityIds).then(function(success){
+            userProfileService.setCities(userId, cityIds).then((success) => {
                 res.send(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -64,27 +64,27 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
  router.route('/users/:userId/profile/professions')
 
-        .post(isAuthenticated, userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
             var professionIds = req.body.professionIds;
 
-            userProfileService.setProfessions(userId, professionIds).then(function(success){
+            userProfileService.setProfessions(userId, professionIds).then((success) => {
                 res.send(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
 
         })
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
 
-            userProfileService.getProfessions(userId).then(function(professions){
+            userProfileService.getProfessions(userId).then((professions) => {
                 res.json(professions);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -92,27 +92,27 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/profile/services')
 
-        .post(isAuthenticated, userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
             var servicesIds = req.body.servicesIds;
 
-            userProfileService.setServices(userId, servicesIds).then(function(success){
+            userProfileService.setServices(userId, servicesIds).then((success) => {
                 res.send(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
 
         })
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
 
-            userProfileService.getServices(userId).then(function(services){
+            userProfileService.getServices(userId).then((services) => {
                 res.json(services);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -120,27 +120,27 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/profile/displayimage')
 
-        .get(function(req, res) {
+        .get((req, res) => {
 
             var userId = req.params.userId;
 
-            userProfileService.getDisplayImage(userId).then(function(file){
+            userProfileService.getDisplayImage(userId).then((file) => {
                 res.type(file.type);
                 res.end(file.data, 'binary');
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .post(isAuthenticated, userHasAccess, upload.single('file'), function(req, res) {
+        .post(isAuthenticated, userHasAccess, upload.single('file'), (req, res) => {
 
             var userId = req.params.userId;
             var ip = routeUtil.getCurrentIp(req);
 
             userProfileService.updateDisplayImage(userId, req.file.originalname, req.file.size, req.file.mimetype, req.file.buffer, ip).then(function(success){
                 res.send(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

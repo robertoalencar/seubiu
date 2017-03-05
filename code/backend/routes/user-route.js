@@ -4,25 +4,25 @@ var userDeviceService = require('../services/user-device-service');
 var routeUtil = require('../utils/route-util');
 var passport = require('passport');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
     router.route('/users')
 
-        .get(isAuthenticated, isAdmin, function(req, res) {
+        .get(isAuthenticated, isAdmin, (req, res) => {
 
-            userService.getAll().then(function(users){
+            userService.getAll().then((users) => {
                 res.json(users);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .post(function(req, res) {
+        .post((req, res) => {
 
-            userService.create(req.body).then(function(newUser){
+            userService.create(req.body).then((newUser) => {
                 res.json(newUser);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -30,38 +30,38 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId')
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
 
-            userService.getById(userId).then(function(user){
+            userService.getById(userId).then((user) => {
                 if (_.isEmpty(user)) res.status(404);
                 res.json(user);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-         .put(isAuthenticated, userHasAccess, function(req, res) {
+         .put(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.params.userId;
 
-            userService.update(userId, req.body.patches, req.user.admin).then(function(user){
+            userService.update(userId, req.body.patches, req.user.admin).then((user) => {
                 res.json(user);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .delete(isAuthenticated, isAdmin, function(req, res) {
+        .delete(isAuthenticated, isAdmin, (req, res) => {
 
             var userId = req.params.userId;
 
-            userService.remove(userId).then(function(success){
+            userService.remove(userId).then((success) => {
                 res.send(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

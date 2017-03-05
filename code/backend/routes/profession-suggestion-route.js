@@ -2,28 +2,28 @@ var _ = require('lodash');
 var professionSuggestionService = require('../services/profession-suggestion-service');
 var routeUtil = require('../utils/route-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
     router.route('/professionsuggestions')
 
-        .post(isAuthenticated, userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, (req, res) => {
 
             var userId = req.user.id;
             var ip = routeUtil.getCurrentIp(req);
 
-            professionSuggestionService.create(userId, req.body, ip).then(function(newSuggestion){
+            professionSuggestionService.create(userId, req.body, ip).then((newSuggestion) => {
                 res.json(newSuggestion);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .get(isAuthenticated, isAdmin, function(req, res) {
+        .get(isAuthenticated, isAdmin, (req, res) => {
 
-            professionSuggestionService.getAll(req.query).then(function(suggestions){
+            professionSuggestionService.getAll(req.query).then((suggestions) => {
                 res.json(suggestions);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -31,38 +31,38 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/professionsuggestions/:id')
 
-        .get(isAuthenticated, isAdmin, function(req, res) {
+        .get(isAuthenticated, isAdmin, (req, res) => {
 
             var id = req.params.id;
 
-            professionSuggestionService.getById(id).then(function(suggestion){
+            professionSuggestionService.getById(id).then((suggestion) => {
                 if (_.isEmpty(suggestion)) res.status(404);
                 res.json(suggestion);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .put(isAuthenticated, isAdmin, function(req, res) {
+        .put(isAuthenticated, isAdmin, (req, res) => {
 
             var id = req.params.id;
 
-            professionSuggestionService.update(id, req.body.patches).then(function(suggestion){
+            professionSuggestionService.update(id, req.body.patches).then((suggestion) => {
                 res.json(suggestion);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .delete(isAuthenticated, isAdmin, function(req, res) {
+        .delete(isAuthenticated, isAdmin, (req, res) => {
 
             var id = req.params.id;
 
-            professionSuggestionService.remove(id).then(function(success){
+            professionSuggestionService.remove(id).then((success) => {
                 res.send(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -70,13 +70,13 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/professionsuggestions/:id/approve')
 
-        .post(isAuthenticated, isAdmin, function(req, res) {
+        .post(isAuthenticated, isAdmin, (req, res) => {
 
             var id = req.params.id;
 
-            professionSuggestionService.approve(id).then(function(success){
+            professionSuggestionService.approve(id).then((success) => {
                 res.send(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

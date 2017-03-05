@@ -1,15 +1,15 @@
 var requestService = require('../services/request-service');
 var routeUtil = require('../utils/route-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
     router.route('/requests')
 
-        .get(isAuthenticated, isAdmin, function(req, res) {
+        .get(isAuthenticated, isAdmin, (req, res) => {
 
-            requestService.getAll(req.query).then(function(requests){
+            requestService.getAll(req.query).then((requests) => {
                 res.json(requests);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -17,13 +17,13 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/requests/:requestId/professional/accept')
 
-        .post(isAuthenticated, function(req, res) {
+        .post(isAuthenticated, (req, res) => {
             var requestId = req.params.requestId;
             var professionalId = req.user.id;
 
-            requestService.professionalAccept(requestId, professionalId).then(function(success){
+            requestService.professionalAccept(requestId, professionalId).then((success) => {
                 res.json(success);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

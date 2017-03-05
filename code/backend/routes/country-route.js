@@ -2,15 +2,15 @@ var countryService = require('../services/country-service');
 var stateService = require('../services/state-service');
 var routeUtil = require('../utils/route-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
     router.route('/countries')
 
-        .get(function(req, res) {
+        .get((req, res) => {
 
-            countryService.getAll().then(function(countries){
+            countryService.getAll().then((countries) => {
                 res.json(countries);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -18,13 +18,13 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/countries/:id/states')
 
-        .get(function(req, res) {
+        .get((req, res) => {
 
             var id = req.params.id;
 
-            stateService.getStatesByCountry(id).then(function(states){
+            stateService.getStatesByCountry(id).then((states) => {
                 res.json(states);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
