@@ -1,17 +1,17 @@
 var dbUtil = require('../utils/orm-db-util');
 var transaction = require('../utils/orm-db-transaction');
 
-var setupInitialData = function(task) {
+var setupInitialData = (task) => {
     process.env.DB_NAME=process.env.DB_TEST_NAME;
 
-    return (new Promise(function (resolve, reject) {
-        dbUtil.createSchema().then(function(){
-            transaction.doReadWrite(function(db) {
+    return (new Promise((resolve, reject) => {
+        dbUtil.createSchema().then(() => {
+            transaction.doReadWrite((db) => {
                 resolve(task(db));
-            }, function(err){
+            }, (err) => {
                 reject(err);
             });
-        }, function(err){
+        }, (err) => {
             reject(err);
         });
     }));

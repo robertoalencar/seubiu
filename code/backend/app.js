@@ -17,15 +17,15 @@ var userService = require('./services/user-service');
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
 opts.secretOrKey = process.env.SESSION_SECRET;
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
 
-    userService.getById(jwt_payload.id).then(function(user){
+    userService.getById(jwt_payload.id).then((user) => {
       if (!user) {
         done(null, false);
       } else {
         done(null, user);
       }
-    }, function(err) {
+    }, (err) => {
       done(err);
     });
 
@@ -51,22 +51,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function(req, res, next) {
+app.get('/', (req, res, next) => {
   res.render('index', { title: 'Seu Biu' });
 });
 
 app.get('/api/me', passport.authenticate('jwt', { session: false}),
-    function(req, res) {
+    (req, res) => {
       res.send(req.user);
     }
 );
 
-app.post('/api/authenticate', function(req, res) {
+app.post('/api/authenticate', (req, res) => {
 
   var email = req.body.email;
   var password = req.body.password;
 
-  userService.getByEmailAndPassword(email, password).then(function(user){
+  userService.getByEmailAndPassword(email, password).then((user) => {
       if (!user) {
         res.sendStatus(401);
       } else {
@@ -81,7 +81,7 @@ app.post('/api/authenticate', function(req, res) {
         });
 
       }
-    }, function(err) {
+    }, (err) => {
       res.sendStatus(401);
   });
 
@@ -94,7 +94,7 @@ app.use('/api', require('./routes/'));
 require('./jobs')();
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -105,7 +105,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -116,7 +116,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
@@ -7,8 +6,8 @@ var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var getById = function(userId) {
-    return doReadOnly(function(db) {
+var getById = (userId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!userId) {
@@ -31,9 +30,9 @@ var getById = function(userId) {
     });
 };
 
-var applyPatchesForUserPersonalInfo = function (userPersonalInfo, patches, db) {
+var applyPatchesForUserPersonalInfo = (userPersonalInfo, patches, db) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -76,8 +75,8 @@ var applyPatchesForUserPersonalInfo = function (userPersonalInfo, patches, db) {
 
 };
 
-var update = function(userId, patches) {
-    return doReadWrite(function(db) {
+var update = (userId, patches) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {

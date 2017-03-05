@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var ERROR = require('./service-error-constants');
 
-module.exports = function(err, type) {
+module.exports = (err, type) => {
     if (_.isArray(err) && _.isEmpty(type)) {
         return {
             'message': err,

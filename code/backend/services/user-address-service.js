@@ -6,14 +6,14 @@ var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
+var getByFilter = (filter, db) => {
     var userAddressFind = Promise.promisify(db.models.UserAddress.find);
     return userAddressFind(filter, [ 'description', 'A' ]);
 };
 
 
-var getAllByUserId = function(id) {
-    return doReadOnly(function(db) {
+var getAllByUserId = (id) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!id) {
@@ -30,8 +30,8 @@ var getAllByUserId = function(id) {
 
 };
 
-var getById = function(userId, addressId) {
-    return doReadOnly(function(db) {
+var getById = (userId, addressId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!userId) {
@@ -53,8 +53,8 @@ var getById = function(userId, addressId) {
 
 };
 
-var remove = function(userId, addressId) {
-    return doReadWrite(function(db) {
+var remove = (userId, addressId) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -69,9 +69,9 @@ var remove = function(userId, addressId) {
             throw ServiceException(errors);
         } else {
 
-            return new Promise(function (resolve, reject) {
+            return new Promise((resolve, reject) => {
 
-                db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
+                db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove((err) => {
                     if (err) reject(err);
                     resolve(true);
                 });
@@ -84,8 +84,8 @@ var remove = function(userId, addressId) {
 
 };
 
-var create = function(userId, addr) {
-    return doReadWrite(function(db) {
+var create = (userId, addr) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -154,9 +154,9 @@ var create = function(userId, addr) {
 
 };
 
-var applyPatchesForAddress = function(address, patches) {
+var applyPatchesForAddress = (address, patches) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -260,8 +260,8 @@ var applyPatchesForAddress = function(address, patches) {
 
 };
 
-var update = function(userId, addressId, patches) {
-    return doReadWrite(function(db) {
+var update = (userId, addressId, patches) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {

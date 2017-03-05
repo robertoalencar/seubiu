@@ -7,22 +7,22 @@ var data = require('../utils/initial-data-db');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Country API', function() {
+describe('Country API', () => {
 
-    before(function (done) {
+    before((done) => {
 
-        testUtil.setupInitialData(data).then(function(){
+        testUtil.setupInitialData(data).then(() => {
             done();
-        }, function(err) {
+        }, (err) => {
             done(err);
         });
 
     });
 
-    it('should get all countries on GET /api/countries', function(done) {
+    it('should get all countries on GET /api/countries', (done) => {
         chai.request(server)
         .get('/api/countries')
-        .end(function(err, res){
+        .end((err, res) => {
 
             var expected = [
                 {
@@ -40,10 +40,10 @@ describe('Country API', function() {
         });
     });
 
-    it('should get all states by country on GET /api/countries/:id/states', function(done) {
+    it('should get all states by country on GET /api/countries/:id/states', (done) => {
         chai.request(server)
         .get('/api/countries/1/states')
-        .end(function(err, res){
+        .end((err, res) => {
 
             var expected = [
                 {

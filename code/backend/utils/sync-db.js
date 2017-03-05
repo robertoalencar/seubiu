@@ -2,10 +2,10 @@ var dbUtil = require('./orm-db-util');
 
 console.log('Creating the database schema...');
 
-dbUtil.createSchema().then(function(){
+dbUtil.createSchema().then(() => {
     console.log('Done.');
     process.exit();
-},function(err){
+}, (err) => {
     console.error(err);
     process.exit();
 });

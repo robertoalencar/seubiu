@@ -4,8 +4,8 @@ var useRedis = require('../utils/redis-client-use').use;
 
 var KEY_PREFIX = 'urn' + ':' + 'emailverification' + ':' + 'token' + ':';
 
-var generateToken = function (userId) {
-    return useRedis(function(client) {
+var generateToken = (userId) => {
+    return useRedis((client) => {
         var token = uuid.v1();
         var key = KEY_PREFIX + token
 
@@ -16,8 +16,8 @@ var generateToken = function (userId) {
 
 };
 
-var deleteToken = function (token) {
-    return useRedis(function(client) {
+var deleteToken = (token) => {
+    return useRedis((client) => {
         var key = KEY_PREFIX + token
 
         return await(client.del(key));

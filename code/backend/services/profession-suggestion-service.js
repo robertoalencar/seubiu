@@ -6,19 +6,19 @@ var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
+var getByFilter = (filter, db) => {
     var professionSuggestionFind = Promise.promisify(db.models.ProfessionSuggestion.find);
     return professionSuggestionFind(filter, [ 'profession', 'A' ]);
 };
 
-var getAll = function(filter) {
-    return doReadOnly(function(db) {
+var getAll = (filter) => {
+    return doReadOnly(db => {
         return getByFilter(filter, db);
     });
 };
 
-var getById = function(id) {
-    return doReadOnly(function(db) {
+var getById = (id) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!id) {
@@ -36,8 +36,8 @@ var getById = function(id) {
 
 };
 
-var remove = function(id) {
-    return doReadWrite(function(db) {
+var remove = (id) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!id) {
@@ -48,9 +48,9 @@ var remove = function(id) {
             throw ServiceException(errors);
         } else {
 
-            return new Promise(function (resolve, reject) {
+            return new Promise((resolve, reject) => {
 
-                db.models.ProfessionSuggestion.find({'id': id}).remove(function (err) {
+                db.models.ProfessionSuggestion.find({'id': id}).remove( (err) => {
                     if (err) reject(err);
                     resolve(true);
                 });
@@ -63,8 +63,8 @@ var remove = function(id) {
 
 };
 
-var create = function(userId, data, ip) {
-    return doReadWrite(function(db) {
+var create = (userId, data, ip) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -97,9 +97,9 @@ var create = function(userId, data, ip) {
 
 };
 
-var applyPatchesForProfessionSuggestion = function(professionSuggestion, patches) {
+var applyPatchesForProfessionSuggestion = (professionSuggestion, patches) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -117,8 +117,8 @@ var applyPatchesForProfessionSuggestion = function(professionSuggestion, patches
 
 };
 
-var update = function(professionSuggestionId, patches) {
-    return doReadWrite(function(db) {
+var update = (professionSuggestionId, patches) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!professionSuggestionId) {
@@ -147,7 +147,7 @@ var update = function(professionSuggestionId, patches) {
 };
 
 var approve = function(id) {
-    return doReadWrite(function(db) {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!id) {

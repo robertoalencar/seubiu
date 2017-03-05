@@ -6,7 +6,7 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var pool = require('./orm-db-pool');
 
-var doInTransaction = async (function (task, readOnly) {
+var doInTransaction = async ((task, readOnly) => {
     var transactionId = uuid.v1();
     var db;
     var transaction;
@@ -17,9 +17,9 @@ var doInTransaction = async (function (task, readOnly) {
         debug('### New transaction: ' + transactionId);
 
         debug('### Acquire database connection for transaction: ' + transactionId);
-        db = await (new Promise(function (resolve, reject) {
+        db = await (new Promise((resolve, reject) => {
 
-            pool.acquire(function(err, db) {
+            pool.acquire((err, db) => {
                 if (err) reject(err);
                 resolve(db);
             });
@@ -27,9 +27,9 @@ var doInTransaction = async (function (task, readOnly) {
         }));
 
         debug('### Start ' + (readOnly ? 'read-only':'read-write') +  ' transaction: ' + transactionId);
-        transaction = await (new Promise(function (resolve, reject) {
+        transaction = await (new Promise((resolve, reject) => {
 
-            db.transaction(function (err, t) {
+            db.transaction((err, t) => {
                 if (err) reject(err);
                 resolve(t);
             });
@@ -40,22 +40,22 @@ var doInTransaction = async (function (task, readOnly) {
 
         if (readOnly) {
             debug('### Rollback transaction: ' + transactionId);
-            await (new Promise(function (resolve, reject) {
+            await (new Promise((resolve, reject) => {
 
-                transaction.rollback(function(err) {
+                transaction.rollback((err) => {
                     if (err) reject(err);
-                    resolve();
+                    resolve(true);
                 });
 
             }));
 
         } else {
             debug('### Commit transaction: ' + transactionId);
-            await (new Promise(function (resolve, reject) {
+            await (new Promise((resolve, reject) => {
 
-                transaction.commit(function(err) {
+                transaction.commit((err) => {
                     if (err) reject(err);
-                    resolve();
+                    resolve(true);
                 });
 
             }));
@@ -68,11 +68,11 @@ var doInTransaction = async (function (task, readOnly) {
 
         if (transaction) {
             debug('### Rollback transaction: ' + transactionId);
-            await (new Promise(function (resolve, reject) {
+            await (new Promise((resolve, reject) => {
 
-                transaction.rollback(function(err) {
+                transaction.rollback((err) => {
                     if (err) reject(err);
-                    resolve();
+                    resolve(true);
                 });
 
             }));
@@ -90,12 +90,12 @@ var doInTransaction = async (function (task, readOnly) {
 
 module.exports = {
 
-    doReadWrite: function(task) {
+    doReadWrite: (task) => {
 
         return doInTransaction(task, false);
     },
 
-    doReadOnly: function(task) {
+    doReadOnly: (task) => {
 
         return doInTransaction(task, true);
     }

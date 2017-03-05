@@ -6,19 +6,19 @@ var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
+var getByFilter = (filter, db) => {
     var requestFind = Promise.promisify(db.models.Request.find);
     return requestFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = function(filter) {
-    return doReadOnly(function(db) {
+var getAll = (filter) => {
+    return doReadOnly((db) => {
         return getByFilter(filter, db);
     });
 };
 
-var getByOwner = function(userId) {
-    return doReadOnly(function(db) {
+var getByOwner = (userId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!userId) {
@@ -34,8 +34,8 @@ var getByOwner = function(userId) {
     });
 };
 
-var create = function(userId, ip, data) {
-    return doReadWrite(function(db) {
+var create = (userId, ip, data) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -106,7 +106,7 @@ var create = function(userId, ip, data) {
 
             var requestProfessionals = [];
 
-            _.forEach(professionals, function(professional) {
+            _.forEach(professionals, (professional) => {
 
                 requestProfessionals.push({
                     'request_id': request.id,
@@ -125,8 +125,8 @@ var create = function(userId, ip, data) {
 
 };
 
-var professionalAccept = function(requestId, professionalId) {
-    return doReadWrite(function(db) {
+var professionalAccept = (requestId, professionalId) => {
+    return doReadWrite((db) => {
 
         var errors = [];
 

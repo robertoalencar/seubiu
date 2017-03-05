@@ -4,15 +4,15 @@ var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var pool = require('./redis-client-pool');
 
-var use = async (function (task) {
+var use = async ((task) => {
     var client;
 
     try {
 
         debug('### Acquire Redis client');
-        client = await (new Promise(function (resolve, reject) {
+        client = await (new Promise((resolve, reject) => {
 
-            pool.acquire(function(err, client) {
+            pool.acquire((err, client) => {
                 if (err) reject(err);
                 resolve(client);
             });

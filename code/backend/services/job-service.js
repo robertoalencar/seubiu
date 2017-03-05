@@ -16,13 +16,13 @@ var TYPES = {
     NOTIFY_NEW_REQUEST_TO_PROFESSIONALS: 'NOTIFY_NEW_REQUEST_TO_PROFESSIONALS'
 };
 
-process.once('SIGTERM', function(sig) {
-  queue.shutdown(5000, function(err) {
+process.once('SIGTERM', (sig) => {
+  queue.shutdown(5000, (err) => {
     process.exit(0);
   });
 });
 
-var createJob = function(jobType, title, data) {
+var createJob = (jobType, title, data) => {
     var clonedData = _.cloneDeep(data);
     clonedData.title = title;
     return queue.create(jobType, clonedData).attempts(3).removeOnComplete(true);

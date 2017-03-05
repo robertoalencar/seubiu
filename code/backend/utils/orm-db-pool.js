@@ -10,7 +10,7 @@ function defineModels(db) {
 
 var pool = new Pool({
     name     : process.env.DB_PROTOCOL,
-    create   : function(callback) {
+    create   : (callback) => {
 
       var opts = {
         host:     process.env.DB_HOST,
@@ -23,7 +23,7 @@ var pool = new Pool({
         query:    { debug: (process.env.DB_DEBUG ? Boolean(process.env.DB_DEBUG) : false) }
       };
 
-      orm.connect(opts, function (err, db) {
+      orm.connect(opts, (err, db) => {
         if (err) return callback(err);
 
         db.use(modts, {
@@ -31,8 +31,8 @@ var pool = new Pool({
           modifiedProperty: 'modified_at',
           expireProperty: false,
           dbtype: { type: 'date', time: true },
-          now: function() { return new Date(); },
-          expire: function() { var d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
+          now: () => { return new Date(); },
+          expire: () => { var d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
           persist: true
         });
 
@@ -48,7 +48,7 @@ var pool = new Pool({
       });
 
     },
-    destroy  : function(db) { db.close(); },
+    destroy  : (db) => { db.close(); },
     max      : process.env.DB_POOL_MAX,
     log      : false
 });

@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
@@ -7,8 +6,8 @@ var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var getById = function(userId) {
-    return doReadOnly(function(db) {
+var getById = (userId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!userId) {
@@ -25,9 +24,9 @@ var getById = function(userId) {
     });
 };
 
-var applyPatchesForUpdate = function (userProfile, patches, db) {
+var applyPatchesForUpdate = (userProfile, patches, db) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -66,8 +65,8 @@ var applyPatchesForUpdate = function (userProfile, patches, db) {
 
 };
 
-var update = function(userId, patches) {
-    return doReadWrite(function(db) {
+var update = (userId, patches) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -98,8 +97,8 @@ var update = function(userId, patches) {
 
 };
 
-var setCities = function(userId, cityIds) {
-    return doReadWrite(function(db) {
+var setCities = (userId, cityIds) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -130,8 +129,8 @@ var setCities = function(userId, cityIds) {
     });
 };
 
-var getCities = function(userId) {
-    return doReadOnly(function(db) {
+var getCities = (userId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!userId) {
@@ -155,8 +154,8 @@ var getCities = function(userId) {
     });
 };
 
-var setProfessions = function(userId, professionIds) {
-    return doReadWrite(function(db) {
+var setProfessions = (userId, professionIds) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -187,8 +186,8 @@ var setProfessions = function(userId, professionIds) {
     });
 };
 
-var getProfessions = function(userId) {
-    return doReadOnly(function(db) {
+var getProfessions = (userId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!userId) {
@@ -212,8 +211,8 @@ var getProfessions = function(userId) {
     });
 };
 
-var setServices = function(userId, servicesIds) {
-    return doReadWrite(function(db) {
+var setServices = (userId, servicesIds) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -244,8 +243,8 @@ var setServices = function(userId, servicesIds) {
     });
 };
 
-var getServices = function(userId) {
-    return doReadOnly(function(db) {
+var getServices = (userId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!userId) {
@@ -269,8 +268,8 @@ var getServices = function(userId) {
     });
 };
 
-var updateDisplayImage = function(userId, name, size, type, data, ip) {
-    return doReadWrite(function(db) {
+var updateDisplayImage = (userId, name, size, type, data, ip) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {
@@ -307,9 +306,9 @@ var updateDisplayImage = function(userId, name, size, type, data, ip) {
                 throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            await (new Promise(function (resolve, reject) {
+            await (new Promise((resolve, reject) => {
 
-                db.models.File.find({'id': userProfile.displayimage_id}).remove(function (err) {
+                db.models.File.find({'id': userProfile.displayimage_id}).remove((err) => {
                     if (err) reject(err);
                     resolve(true);
                 });
@@ -332,8 +331,8 @@ var updateDisplayImage = function(userId, name, size, type, data, ip) {
     });
 };
 
-var getDisplayImage = function(userId) {
-    return doReadWrite(function(db) {
+var getDisplayImage = (userId) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {

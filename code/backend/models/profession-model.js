@@ -1,4 +1,4 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
     var Profession = db.define('Profession', {
         id         : { type: 'serial', key: true, mapsTo: 'id' },

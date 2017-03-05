@@ -1,4 +1,4 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
     var DeviceType = db.define('DeviceType', {
         id         : { type: 'serial', key: true, mapsTo: 'id' },

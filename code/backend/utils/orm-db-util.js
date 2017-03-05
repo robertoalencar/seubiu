@@ -4,7 +4,7 @@ var modts = require('orm-timestamps');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
-var createSchema = async (function() {
+var createSchema = async (() => {
 
     var opts = {
       host:     process.env.DB_HOST,
@@ -19,7 +19,7 @@ var createSchema = async (function() {
 
     var db = await (new Promise(function (resolve, reject) {
 
-        orm.connect(opts, function (err, db) {
+        orm.connect(opts, (err, db) => {
             if (err) reject(err);
             resolve(db);
         });
@@ -31,25 +31,25 @@ var createSchema = async (function() {
         modifiedProperty: 'modified_at',
         expireProperty: false,
         dbtype: { type: 'date', time: true },
-        now: function() { return new Date(); },
-        expire: function() { var d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
+        now: () => { return new Date(); },
+        expire: () => { var d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
         persist: true
     });
 
     require('../models/')(orm, db);
 
-    await (new Promise(function (resolve, reject) {
+    await (new Promise((resolve, reject) => {
 
-        db.drop(function(err) {
+        db.drop((err) => {
           if (err) reject(err);
           resolve(true);
         });
 
     }));
 
-    await (new Promise(function (resolve, reject) {
+    await (new Promise((resolve, reject) => {
 
-        db.sync(function(err) {
+        db.sync((err) => {
           if (err) reject(err);
           resolve(true);
         });

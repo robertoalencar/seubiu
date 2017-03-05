@@ -1,4 +1,4 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
   require('./file-model')(orm, db);
   require('./country-model')(orm, db);

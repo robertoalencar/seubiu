@@ -10,24 +10,24 @@ var jobService = require('./job-service');
 
 var MINIMUM_PASSWORD_SIZE = 8;
 
-var getByFilter = function(filter, db) {
+var getByFilter = (filter, db) => {
     var userFind = Promise.promisify(db.models.User.find);
     return userFind(filter, [ 'name', 'A' ]);
 };
 
-var getAll = function() {
-    return doReadOnly(function(db) {
+var getAll = () => {
+    return doReadOnly((db) => {
         return getByFilter({}, db);
     });
 };
 
-var getTotalUsers = function(db) {
+var getTotalUsers = (db) => {
     var userCount = Promise.promisify(db.models.User.count);
     return await (userCount());
 };
 
-var getByEmailAndPassword = function(email, password) {
-    return doReadOnly(function(db) {
+var getByEmailAndPassword = (email, password) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (_.isEmpty(email)) {
@@ -49,8 +49,8 @@ var getByEmailAndPassword = function(email, password) {
 
 };
 
-var getById = function(id) {
-    return doReadOnly(function(db) {
+var getById = (id) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!id) {
@@ -68,18 +68,18 @@ var getById = function(id) {
 
 };
 
-var phoneAlreadyInUse = function(phone, db) {
+var phoneAlreadyInUse = (phone, db) => {
     var userExists = Promise.promisify(db.models.User.exists);
     return await (userExists({'phone': phone}));
 };
 
-var emailAlreadyInUse = function(email, db) {
+var emailAlreadyInUse = (email, db) => {
     var userExists = Promise.promisify(db.models.User.exists);
     return await (userExists({'email': email}));
 };
 
-var create = function(user) {
-    return doReadWrite(function(db) {
+var create = (user) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (_.isEmpty(user.name)) {
@@ -135,8 +135,8 @@ var create = function(user) {
     });
 };
 
-var remove = function(id) {
-    return doReadWrite(function(db) {
+var remove = (id) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!id) {
@@ -146,8 +146,8 @@ var remove = function(id) {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            return new Promise(function (resolve, reject) {
-                db.models.User.find({ 'id': id }).remove(function (err) {
+            return new Promise((resolve, reject) => {
+                db.models.User.find({ 'id': id }).remove((err) => {
                     if (err) reject(err);
                     resolve(true);
                 });
@@ -159,7 +159,7 @@ var remove = function(id) {
 
 };
 
-var checkSecurityForPatches = function(patches, isAdmin){
+var checkSecurityForPatches = (patches, isAdmin) => {
     var errors = [];
     var hasPathAllowedOnlyForAdmin = false;
 
@@ -168,7 +168,7 @@ var checkSecurityForPatches = function(patches, isAdmin){
         '/email'
     ];
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         if (adminOnly.indexOf(patchOp.path) > -1) {
             hasPathAllowedOnlyForAdmin = true;
@@ -184,9 +184,9 @@ var checkSecurityForPatches = function(patches, isAdmin){
 
 };
 
-var applyPatchesForUser = function(user, patches) {
+var applyPatchesForUser = (user, patches) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -255,8 +255,8 @@ var applyPatchesForUser = function(user, patches) {
 
 };
 
-var update = function(userId, patches, isAdmin) {
-    return doReadWrite(function(db) {
+var update = (userId, patches, isAdmin) => {
+    return doReadWrite((db) => {
         var errors = [];
 
         if (!userId) {

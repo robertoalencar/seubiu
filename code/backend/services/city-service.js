@@ -4,19 +4,19 @@ var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
+var getByFilter = (filter, db) => {
     var cityFind = Promise.promisify(db.models.City.find);
     return cityFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = function() {
-    return doReadOnly(function(db) {
+var getAll = () => {
+    return doReadOnly((db) => {
         return getByFilter({}, db);
     });
 };
 
-var getCitiesByState = function(stateId) {
-    return doReadOnly(function(db) {
+var getCitiesByState = (stateId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!stateId) {

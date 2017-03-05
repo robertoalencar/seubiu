@@ -4,19 +4,19 @@ var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
+var getByFilter = (filter, db) => {
     var professionFind = Promise.promisify(db.models.Profession.find);
     return professionFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = function() {
-    return doReadOnly(function(db) {
+var getAll = () => {
+    return doReadOnly((db) => {
         return getByFilter({}, db);
     });
 };
 
-var getServicesByProfession = function(id) {
-    return doReadOnly(function(db) {
+var getServicesByProfession = (id) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!id) {
@@ -34,8 +34,8 @@ var getServicesByProfession = function(id) {
 
 };
 
-var getById = function(id) {
-    return doReadOnly(function(db) {
+var getById = (id) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!id) {

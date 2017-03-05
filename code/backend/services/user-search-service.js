@@ -4,9 +4,9 @@ var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
 var ERROR = require('../utils/service-error-constants');
 var ServiceException = require('../utils/service-exception');
 
-var _searchByProfessionServicesAndCity = function (professionId, servicesIds, cityId, db) {
+var _searchByProfessionServicesAndCity = (professionId, servicesIds, cityId, db) => {
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
 
         var sql = [
             'SELECT DISTINCT u."id", u."name", upro."displayName", us."rating", us."score"',
@@ -30,7 +30,7 @@ var _searchByProfessionServicesAndCity = function (professionId, servicesIds, ci
         ];
 
         db.driver.execQuery(_.join(sql, ' '), parameters,
-            function (err, data) {
+            (err, data) => {
                 if (err) reject(err);
                 resolve(data);
             });
@@ -39,8 +39,8 @@ var _searchByProfessionServicesAndCity = function (professionId, servicesIds, ci
 
 };
 
-var searchByProfessionServicesAndCity = function(professionId, servicesIds, cityId) {
-    return doReadOnly(function(db) {
+var searchByProfessionServicesAndCity = (professionId, servicesIds, cityId) => {
+    return doReadOnly((db) => {
         var errors = [];
 
         if (!professionId) {

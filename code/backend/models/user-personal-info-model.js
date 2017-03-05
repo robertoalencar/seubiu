@@ -1,4 +1,4 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
     var UserPersonalInfo = db.define('UserPersonalInfo', {
         id              : { type: 'serial', key: true, mapsTo: 'id' },

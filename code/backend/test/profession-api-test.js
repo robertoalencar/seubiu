@@ -7,22 +7,22 @@ var data = require('../utils/initial-data-db');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Profession API', function() {
+describe('Profession API', () => {
 
-    before(function (done) {
+    before((done) => {
 
-        testUtil.setupInitialData(data).then(function(){
+        testUtil.setupInitialData(data).then(() => {
             done();
-        }, function(err) {
+        }, (err) => {
             done(err);
         });
 
     });
 
-    it('should get all professions on GET /api/professions', function(done) {
+    it('should get all professions on GET /api/professions', (done) => {
         chai.request(server)
         .get('/api/professions')
-        .end(function(err, res){
+        .end((err, res) => {
 
             var expected = [
                 {
@@ -46,10 +46,10 @@ describe('Profession API', function() {
         });
     });
 
-    it('should get a profession by id on GET /api/professions/:id', function(done) {
+    it('should get a profession by id on GET /api/professions/:id', (done) => {
         chai.request(server)
         .get('/api/professions/1')
-        .end(function(err, res){
+        .end((err, res) => {
 
             var expected = {
                 "id": 1,
@@ -66,10 +66,10 @@ describe('Profession API', function() {
         });
     });
 
-    it('should get all services by profession on GET /api/professions/:id/services', function(done) {
+    it('should get all services by profession on GET /api/professions/:id/services', (done) => {
         chai.request(server)
         .get('/api/professions/1/services')
-        .end(function(err, res){
+        .end((err, res) => {
 
             var expected = [
                 {

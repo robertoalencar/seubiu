@@ -1,7 +1,7 @@
 var await = require('asyncawait/await');
 var Promise = require('bluebird');
 
-module.exports = function(db){
+module.exports = (db) => {
 
     var countryCreate = Promise.promisify(db.models.Country.create);
     var country = await (countryCreate({

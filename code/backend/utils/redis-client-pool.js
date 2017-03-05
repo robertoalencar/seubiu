@@ -8,14 +8,14 @@ Promise.promisifyAll(redis.Multi.prototype);
 
 var pool = new Pool({
     name     : 'Redis',
-    create   : function(callback) {
+    create   : (callback) => {
         callback(null, redis.createClient({
             port: process.env.REDIS_PORT,
             host: process.env.REDIS_HOST,
             db: 1
           }));
     },
-    destroy  : function(client) { client.quit(); },
+    destroy  : (client) => { client.quit(); },
     max      : process.env.REDIS_POOL_MAX,
     log      : false
 });

@@ -2,16 +2,16 @@ var async = require('asyncawait/async');
 var transaction = require('./orm-db-transaction');
 var initialData = require('../utils/initial-data-db');
 
-var bootstrap = async (function() {
+var bootstrap = async (() => {
 
     return transaction.doReadWrite(initialData);
 
 });
 
-bootstrap().then(function(){
+bootstrap().then(() => {
     console.log('Done.');
     process.exit();
-},function(err){
+}, (err) => {
     console.error(err);
     process.exit();
 });
