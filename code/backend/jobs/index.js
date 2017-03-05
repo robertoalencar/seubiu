@@ -1,4 +1,4 @@
-var jobService = require('../services/job-service');
+const jobService = require('../services/job-service');
 
 module.exports = () => {
   require('./send-new-user-email-job')(jobService.queue, jobService.TYPES);

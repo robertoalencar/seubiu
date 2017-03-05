@@ -1,6 +1,6 @@
 module.exports = (orm, db) => {
 
-   var City = db.define('City', {
+   const City = db.define('City', {
         id         : { type: 'serial', key: true, mapsTo: 'id' },
         description: { type: 'text', size: 100, unique: true, required: true, mapsTo: 'description' }
     }, {

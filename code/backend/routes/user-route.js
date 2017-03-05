@@ -1,8 +1,8 @@
-var _ = require('lodash');
-var userService = require('../services/user-service');
-var userDeviceService = require('../services/user-device-service');
-var routeUtil = require('../utils/route-util');
-var passport = require('passport');
+const _ = require('lodash');
+const userService = require('../services/user-service');
+const userDeviceService = require('../services/user-device-service');
+const routeUtil = require('../utils/route-util');
+const passport = require('passport');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
@@ -32,7 +32,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userService.getById(userId).then((user) => {
                 if (_.isEmpty(user)) res.status(404);
@@ -45,7 +45,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
          .put(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userService.update(userId, req.body.patches, req.user.admin).then((user) => {
                 res.json(user);
@@ -57,7 +57,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .delete(isAuthenticated, isAdmin, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userService.remove(userId).then((success) => {
                 res.send(success);

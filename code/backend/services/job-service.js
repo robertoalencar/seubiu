@@ -1,8 +1,8 @@
-var dotenv = require('dotenv').config();
-var _ = require('lodash');
-var kue = require('kue');
+const dotenv = require('dotenv').config();
+const _ = require('lodash');
+const kue = require('kue');
 
-var queue = kue.createQueue({
+const queue = kue.createQueue({
   prefix: 'q',
   redis: {
     port: process.env.REDIS_PORT,
@@ -11,7 +11,7 @@ var queue = kue.createQueue({
   }
 });
 
-var TYPES = {
+const TYPES = {
     SEND_NEW_USER_EMAIL: 'SEND_NEW_USER_EMAIL',
     NOTIFY_NEW_REQUEST_TO_PROFESSIONALS: 'NOTIFY_NEW_REQUEST_TO_PROFESSIONALS'
 };
@@ -22,8 +22,8 @@ process.once('SIGTERM', (sig) => {
   });
 });
 
-var createJob = (jobType, title, data) => {
-    var clonedData = _.cloneDeep(data);
+const createJob = (jobType, title, data) => {
+    let clonedData = _.cloneDeep(data);
     clonedData.title = title;
     return queue.create(jobType, clonedData).attempts(3).removeOnComplete(true);
 };

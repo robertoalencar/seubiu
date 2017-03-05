@@ -1,8 +1,8 @@
-var chai = require('chai');
-var chaiHttp = require('chai-http');
-var server = require('../app');
-var testUtil = require('../utils/api-test-util');
-var data = require('../utils/initial-data-db');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../app');
+const testUtil = require('../utils/api-test-util');
+const data = require('../utils/initial-data-db');
 
 chai.should();
 chai.use(chaiHttp);
@@ -24,7 +24,7 @@ describe('Profession API', () => {
         .get('/api/professions')
         .end((err, res) => {
 
-            var expected = [
+            const expected = [
                 {
                     "id": 1,
                     "description": "Eletricista",
@@ -51,7 +51,7 @@ describe('Profession API', () => {
         .get('/api/professions/1')
         .end((err, res) => {
 
-            var expected = {
+            const expected = {
                 "id": 1,
                 "description": "Eletricista",
                 "active": true
@@ -71,7 +71,7 @@ describe('Profession API', () => {
         .get('/api/professions/1/services')
         .end((err, res) => {
 
-            var expected = [
+            const expected = [
                 {
                     "id": 1,
                     "description": "Aterramento",

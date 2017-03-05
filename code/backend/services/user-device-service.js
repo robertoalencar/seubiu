@@ -1,24 +1,24 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = (filter, db) => {
-    var userDeviceFind = Promise.promisify(db.models.UserDevice.find);
+const getByFilter = (filter, db) => {
+    const userDeviceFind = Promise.promisify(db.models.UserDevice.find);
     return userDeviceFind(filter, [ 'description', 'A' ]);
 };
 
-var tokenAlreadyExists = (userId, deviceToken, deviceTypeId, db) => {
-    var userDeviceExists = Promise.promisify(db.models.UserDevice.exists);
+const tokenAlreadyExists = (userId, deviceToken, deviceTypeId, db) => {
+    const userDeviceExists = Promise.promisify(db.models.UserDevice.exists);
     return await(userDeviceExists({'user_id': userId, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId}));
 };
 
-var add = (userId, deviceToken, deviceTypeId) => {
+const add = (userId, deviceToken, deviceTypeId) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -39,7 +39,7 @@ var add = (userId, deviceToken, deviceTypeId) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var deviceCreate = Promise.promisify(db.models.UserDevice.create);
+            const deviceCreate = Promise.promisify(db.models.UserDevice.create);
             return deviceCreate({'user_id': userId, 'deviceToken': deviceToken, 'devicetype_id': deviceTypeId});
         }
 
@@ -47,9 +47,9 @@ var add = (userId, deviceToken, deviceTypeId) => {
 
 };
 
-var getAllByUserId = (userId) => {
+const getAllByUserId = (userId) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -64,9 +64,9 @@ var getAllByUserId = (userId) => {
     });
 };
 
-var getByToken = (userId, deviceToken) => {
+const getByToken = (userId, deviceToken) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -79,7 +79,7 @@ var getByToken = (userId, deviceToken) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var devices = await (getByFilter({'user_id': userId, 'deviceToken': deviceToken}, db));
+            let devices = await (getByFilter({'user_id': userId, 'deviceToken': deviceToken}, db));
             return _.first(devices);
         }
 

@@ -1,12 +1,12 @@
-var dotenv = require('dotenv').config();
-var orm = require('orm');
-var modts = require('orm-timestamps');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+const dotenv = require('dotenv').config();
+const orm = require('orm');
+const modts = require('orm-timestamps');
+const async = require('asyncawait/async');
+const await = require('asyncawait/await');
 
-var createSchema = async (() => {
+const createSchema = async (() => {
 
-    var opts = {
+    const opts = {
       host:     process.env.DB_HOST,
       database: process.env.DB_NAME,
       pathname: process.env.DB_PATH_NAME,
@@ -17,7 +17,7 @@ var createSchema = async (() => {
       query:    { debug: (process.env.DB_DEBUG ? Boolean(process.env.DB_DEBUG) : false) }
     };
 
-    var db = await (new Promise(function (resolve, reject) {
+    const db = await (new Promise(function (resolve, reject) {
 
         orm.connect(opts, (err, db) => {
             if (err) reject(err);
@@ -32,7 +32,7 @@ var createSchema = async (() => {
         expireProperty: false,
         dbtype: { type: 'date', time: true },
         now: () => { return new Date(); },
-        expire: () => { var d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
+        expire: () => { const d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
         persist: true
     });
 

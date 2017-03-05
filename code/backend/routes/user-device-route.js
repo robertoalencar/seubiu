@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var userDeviceService = require('../services/user-device-service');
-var routeUtil = require('../utils/route-util');
+const _ = require('lodash');
+const userDeviceService = require('../services/user-device-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
@@ -8,9 +8,9 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var deviceToken = req.body.deviceToken;
-            var deviceTypeId = req.body.deviceTypeId;
+            const userId = req.params.userId;
+            const deviceToken = req.body.deviceToken;
+            const deviceTypeId = req.body.deviceTypeId;
 
             userDeviceService.add(userId, deviceToken, deviceTypeId).then((addedDevice) => {
                 res.json(addedDevice);
@@ -22,7 +22,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userDeviceService.getAllByUserId(userId).then((devices) => {
                 res.json(devices);
@@ -36,8 +36,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var deviceToken = req.params.deviceToken;
+            const userId = req.params.userId;
+            const deviceToken = req.params.deviceToken;
 
             userDeviceService.getByToken(userId, deviceToken).then((device) => {
                 res.json(device);

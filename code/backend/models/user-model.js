@@ -1,6 +1,6 @@
 module.exports = (orm, db) => {
 
-    var User = db.define('User', {
+    const User = db.define('User', {
         id              : { type: 'serial', key: true, mapsTo: 'id' },
         name            : { type: "text", size: 125, required: true, mapsTo: 'name' },
         surname         : { type: "text", size: 125, required: true, mapsTo: 'surname' },

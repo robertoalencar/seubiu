@@ -1,25 +1,25 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = (filter, db) => {
-    var professionSuggestionFind = Promise.promisify(db.models.ProfessionSuggestion.find);
+const getByFilter = (filter, db) => {
+    const professionSuggestionFind = Promise.promisify(db.models.ProfessionSuggestion.find);
     return professionSuggestionFind(filter, [ 'profession', 'A' ]);
 };
 
-var getAll = (filter) => {
+const getAll = (filter) => {
     return doReadOnly(db => {
         return getByFilter(filter, db);
     });
 };
 
-var getById = (id) => {
+const getById = (id) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ID_IS_REQUIRED);
@@ -28,7 +28,7 @@ var getById = (id) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
+            const professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
             return professionSuggestionGet(id);
         }
 
@@ -36,9 +36,9 @@ var getById = (id) => {
 
 };
 
-var remove = (id) => {
+const remove = (id) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ID_IS_REQUIRED);
@@ -63,9 +63,9 @@ var remove = (id) => {
 
 };
 
-var create = (userId, data, ip) => {
+const create = (userId, data, ip) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -83,7 +83,7 @@ var create = (userId, data, ip) => {
             throw ServiceException(errors);
         } else {
 
-            var professionSuggestionCreate = Promise.promisify(db.models.ProfessionSuggestion.create);
+            const professionSuggestionCreate = Promise.promisify(db.models.ProfessionSuggestion.create);
             return professionSuggestionCreate(
             {
                 'profession': data.profession,
@@ -97,7 +97,7 @@ var create = (userId, data, ip) => {
 
 };
 
-var applyPatchesForProfessionSuggestion = (professionSuggestion, patches) => {
+const applyPatchesForProfessionSuggestion = (professionSuggestion, patches) => {
 
     _(patches).forEach((patchOp) => {
 
@@ -117,9 +117,9 @@ var applyPatchesForProfessionSuggestion = (professionSuggestion, patches) => {
 
 };
 
-var update = (professionSuggestionId, patches) => {
+const update = (professionSuggestionId, patches) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!professionSuggestionId) {
             errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ID_IS_REQUIRED);
@@ -133,12 +133,12 @@ var update = (professionSuggestionId, patches) => {
             throw ServiceException(errors);
         } else {
 
-            var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
-            var professionSuggestion = await (professionSuggestionGet(professionSuggestionId));
+            const professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
+            let professionSuggestion = await (professionSuggestionGet(professionSuggestionId));
 
             applyPatchesForProfessionSuggestion(professionSuggestion, patches);
 
-            var professionSuggestionSave = Promise.promisify(professionSuggestion.save);
+            const professionSuggestionSave = Promise.promisify(professionSuggestion.save);
             return professionSuggestionSave();
         }
 
@@ -146,9 +146,9 @@ var update = (professionSuggestionId, patches) => {
 
 };
 
-var approve = function(id) {
+const approve = function(id) {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ID_IS_REQUIRED);
@@ -158,8 +158,8 @@ var approve = function(id) {
             throw ServiceException(errors);
         } else {
 
-            var professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
-            var professionSuggestion = await (professionSuggestionGet(id));
+            const professionSuggestionGet = Promise.promisify(db.models.ProfessionSuggestion.get);
+            let professionSuggestion = await (professionSuggestionGet(id));
 
             if (professionSuggestion.approved) {
                 throw ServiceException([ERROR.ProfessionSuggestion.PROFESSION_SUGGESTION_ALREADY_APPROVED]);
@@ -167,11 +167,11 @@ var approve = function(id) {
 
             professionSuggestion.approved = true;
 
-            var professionSuggestionSave = Promise.promisify(professionSuggestion.save);
+            const professionSuggestionSave = Promise.promisify(professionSuggestion.save);
             professionSuggestion = await (professionSuggestionSave());
 
-            var professionCreate = Promise.promisify(db.models.Profession.create);
-            var newProfession = await (professionCreate(
+            const professionCreate = Promise.promisify(db.models.Profession.create);
+            let newProfession = await (professionCreate(
             {
                 'description': professionSuggestion.profession,
                 'active': true

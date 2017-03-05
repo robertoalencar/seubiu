@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var userAddressService = require('../services/user-address-service');
-var routeUtil = require('../utils/route-util');
+const _ = require('lodash');
+const userAddressService = require('../services/user-address-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
@@ -8,7 +8,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userAddressService.create(userId, req.body).then((newAddress) => {
                 res.json(newAddress);
@@ -20,7 +20,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userAddressService.getAllByUserId(userId).then((addresses) => {
                 res.json(addresses);
@@ -34,8 +34,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var addressId = req.params.addressId;
+            const userId = req.params.userId;
+            const addressId = req.params.addressId;
 
             userAddressService.getById(userId, addressId).then((address) => {
                 if (_.isEmpty(address)) res.status(404);
@@ -48,8 +48,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .put(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var addressId = req.params.addressId;
+            const userId = req.params.userId;
+            const addressId = req.params.addressId;
 
             userAddressService.update(userId, addressId, req.body.patches).then((address) => {
                 res.json(address);
@@ -61,8 +61,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .delete(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var addressId = req.params.addressId;
+            const userId = req.params.userId;
+            const addressId = req.params.addressId;
 
             userAddressService.remove(userId, addressId).then((success) => {
                 res.send(success);

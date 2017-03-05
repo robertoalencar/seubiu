@@ -1,6 +1,6 @@
-var md5 = require('md5');
+const md5 = require('md5');
 
-var password = process.argv[2];
+const password = process.argv[2];
 
 if (password) {
     console.log('Encrypted password: ' + md5(password));

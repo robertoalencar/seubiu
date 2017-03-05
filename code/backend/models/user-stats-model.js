@@ -1,6 +1,6 @@
 module.exports = (orm, db) => {
 
-    var UserStats = db.define('UserStats', {
+    const UserStats = db.define('UserStats', {
         id              : { type: 'serial', key: true, mapsTo: 'id' },
         ratingCount     : { type: 'number', defaultValue: 0, mapsTo: 'ratingCount' },
         ratingSum       : { type: 'number', defaultValue: 0, mapsTo: 'ratingSum' },

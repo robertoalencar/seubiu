@@ -1,18 +1,14 @@
-var dotenv = require('dotenv').config();
-var orm = require('orm');
-var modts = require('orm-timestamps');
-var transaction = require('orm-transaction');
-var Pool = require('generic-pool').Pool;
+const dotenv = require('dotenv').config();
+const orm = require('orm');
+const modts = require('orm-timestamps');
+const transaction = require('orm-transaction');
+const Pool = require('generic-pool').Pool;
 
-function defineModels(db) {
-  require('../models/')(orm, db);
-}
-
-var pool = new Pool({
+const pool = new Pool({
     name     : process.env.DB_PROTOCOL,
     create   : (callback) => {
 
-      var opts = {
+      const opts = {
         host:     process.env.DB_HOST,
         database: process.env.DB_NAME,
         pathname: process.env.DB_PATH_NAME,
@@ -32,7 +28,7 @@ var pool = new Pool({
           expireProperty: false,
           dbtype: { type: 'date', time: true },
           now: () => { return new Date(); },
-          expire: () => { var d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
+          expire: () => { const d = new Date(); return d.setMinutes(d.getMinutes() + 60); },
           persist: true
         });
 
@@ -41,7 +37,7 @@ var pool = new Pool({
         db.settings.set('instance.returnAllErrors', true);
         db.settings.set('instance.cache', false);
 
-        defineModels(db);
+        require('../models/')(orm, db);
 
         callback(null, db);
 

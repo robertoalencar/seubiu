@@ -1,20 +1,20 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = (filter, db) => {
-    var userAddressFind = Promise.promisify(db.models.UserAddress.find);
+const getByFilter = (filter, db) => {
+    const userAddressFind = Promise.promisify(db.models.UserAddress.find);
     return userAddressFind(filter, [ 'description', 'A' ]);
 };
 
 
-var getAllByUserId = (id) => {
+const getAllByUserId = (id) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -30,9 +30,9 @@ var getAllByUserId = (id) => {
 
 };
 
-var getById = (userId, addressId) => {
+const getById = (userId, addressId) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -45,7 +45,7 @@ var getById = (userId, addressId) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var userAddresses = await(getByFilter({'user_id': userId, 'id': addressId}, db));
+            let userAddresses = await(getByFilter({'user_id': userId, 'id': addressId}, db));
             return _.first(userAddresses);
         }
 
@@ -53,9 +53,9 @@ var getById = (userId, addressId) => {
 
 };
 
-var remove = (userId, addressId) => {
+const remove = (userId, addressId) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -84,9 +84,9 @@ var remove = (userId, addressId) => {
 
 };
 
-var create = (userId, addr) => {
+const create = (userId, addr) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -132,7 +132,7 @@ var create = (userId, addr) => {
             throw ServiceException(errors);
         } else {
 
-            var userAddressCreate = Promise.promisify(db.models.UserAddress.create);
+            const userAddressCreate = Promise.promisify(db.models.UserAddress.create);
             return  userAddressCreate(
             {
                 'description': addr.description,
@@ -154,7 +154,7 @@ var create = (userId, addr) => {
 
 };
 
-var applyPatchesForAddress = (address, patches) => {
+const applyPatchesForAddress = (address, patches) => {
 
     _(patches).forEach((patchOp) => {
 
@@ -260,9 +260,9 @@ var applyPatchesForAddress = (address, patches) => {
 
 };
 
-var update = (userId, addressId, patches) => {
+const update = (userId, addressId, patches) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -280,12 +280,12 @@ var update = (userId, addressId, patches) => {
             throw ServiceException(errors);
         } else {
 
-            var userAddresses = await (getByFilter({'user_id': userId, 'id': addressId}, db));
-            var userAddress = _.first(userAddresses);
+            let userAddresses = await (getByFilter({'user_id': userId, 'id': addressId}, db));
+            let userAddress = _.first(userAddresses);
 
             applyPatchesForAddress(userAddress, patches);
 
-            var userAddressSave = Promise.promisify(userAddress.save);
+            const userAddressSave = Promise.promisify(userAddress.save);
             return userAddressSave();
         }
 

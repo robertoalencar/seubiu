@@ -1,23 +1,23 @@
-var _ = require('lodash');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = (filter, db) => {
-    var cityFind = Promise.promisify(db.models.City.find);
+const getByFilter = (filter, db) => {
+    let cityFind = Promise.promisify(db.models.City.find);
     return cityFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = () => {
+const getAll = () => {
     return doReadOnly((db) => {
         return getByFilter({}, db);
     });
 };
 
-var getCitiesByState = (stateId) => {
+const getCitiesByState = (stateId) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!stateId) {
             errors.push(ERROR.State.STATE_ID_IS_REQUIRED);

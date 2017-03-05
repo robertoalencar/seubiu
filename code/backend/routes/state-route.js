@@ -1,6 +1,6 @@
-var stateService = require('../services/state-service');
-var cityService = require('../services/city-service');
-var routeUtil = require('../utils/route-util');
+const stateService = require('../services/state-service');
+const cityService = require('../services/city-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
@@ -20,7 +20,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get((req, res) => {
 
-            var stateId = req.params.stateId;
+            const stateId = req.params.stateId;
 
             cityService.getCitiesByState(stateId).then((cities) => {
                 res.json(cities);

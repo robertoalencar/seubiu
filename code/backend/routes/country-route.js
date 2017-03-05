@@ -1,6 +1,6 @@
-var countryService = require('../services/country-service');
-var stateService = require('../services/state-service');
-var routeUtil = require('../utils/route-util');
+const countryService = require('../services/country-service');
+const stateService = require('../services/state-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 

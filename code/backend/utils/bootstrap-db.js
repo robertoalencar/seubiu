@@ -1,8 +1,8 @@
-var async = require('asyncawait/async');
-var transaction = require('./orm-db-transaction');
-var initialData = require('../utils/initial-data-db');
+const async = require('asyncawait/async');
+const transaction = require('./orm-db-transaction');
+const initialData = require('../utils/initial-data-db');
 
-var bootstrap = async (() => {
+const bootstrap = async (() => {
 
     return transaction.doReadWrite(initialData);
 

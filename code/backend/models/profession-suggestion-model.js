@@ -1,6 +1,6 @@
 module.exports = (orm, db) => {
 
-    var ProfessionSuggestion = db.define('ProfessionSuggestion', {
+    const ProfessionSuggestion = db.define('ProfessionSuggestion', {
         id          : { type: 'serial', key: true, mapsTo: 'id' },
         profession  : { type: 'text', size: 100, required: true, mapsTo: 'profession' },
         approved    : { type: 'boolean', defaultValue: false, mapsTo: 'approved' },

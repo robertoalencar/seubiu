@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
 
-var authenticate = passport.authenticate('jwt', { session: false});
+const authenticate = passport.authenticate('jwt', { session: false});
 
 function isAdmin(req, res, next) {
   if (req.isAuthenticated() && req.user.admin) { return next(null); }

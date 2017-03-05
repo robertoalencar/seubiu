@@ -1,4 +1,4 @@
-var dbUtil = require('./orm-db-util');
+const dbUtil = require('./orm-db-util');
 
 console.log('Creating the database schema...');
 

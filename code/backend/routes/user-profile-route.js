@@ -1,9 +1,9 @@
-var _ = require('lodash');
-var multer  = require('multer');
-var storage = multer.memoryStorage();
-var upload = multer({ storage: storage });
-var userProfileService = require('../services/user-profile-service');
-var routeUtil = require('../utils/route-util');
+const _ = require('lodash');
+const multer  = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+const userProfileService = require('../services/user-profile-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
@@ -11,7 +11,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userProfileService.getById(userId).then((profile) => {
                 if (_.isEmpty(profile)) res.status(404);
@@ -24,7 +24,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .put(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userProfileService.update(userId, req.body.patches).then((profile) => {
                 res.json(profile);
@@ -38,7 +38,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userProfileService.getCities(userId).then((cities) => {
                 res.json(cities);
@@ -50,8 +50,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var cityIds = req.body.cityIds;
+            const userId = req.params.userId;
+            const cityIds = req.body.cityIds;
 
             userProfileService.setCities(userId, cityIds).then((success) => {
                 res.send(success);
@@ -66,8 +66,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var professionIds = req.body.professionIds;
+            const userId = req.params.userId;
+            const professionIds = req.body.professionIds;
 
             userProfileService.setProfessions(userId, professionIds).then((success) => {
                 res.send(success);
@@ -80,7 +80,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userProfileService.getProfessions(userId).then((professions) => {
                 res.json(professions);
@@ -94,8 +94,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var servicesIds = req.body.servicesIds;
+            const userId = req.params.userId;
+            const servicesIds = req.body.servicesIds;
 
             userProfileService.setServices(userId, servicesIds).then((success) => {
                 res.send(success);
@@ -108,7 +108,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userProfileService.getServices(userId).then((services) => {
                 res.json(services);
@@ -122,7 +122,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get((req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
             userProfileService.getDisplayImage(userId).then((file) => {
                 res.type(file.type);
@@ -135,8 +135,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, userHasAccess, upload.single('file'), (req, res) => {
 
-            var userId = req.params.userId;
-            var ip = routeUtil.getCurrentIp(req);
+            const userId = req.params.userId;
+            const ip = routeUtil.getCurrentIp(req);
 
             userProfileService.updateDisplayImage(userId, req.file.originalname, req.file.size, req.file.mimetype, req.file.buffer, ip).then(function(success){
                 res.send(success);

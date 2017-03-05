@@ -1,25 +1,25 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = (filter, db) => {
-    var requestFind = Promise.promisify(db.models.Request.find);
+const getByFilter = (filter, db) => {
+    const requestFind = Promise.promisify(db.models.Request.find);
     return requestFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = (filter) => {
+const getAll = (filter) => {
     return doReadOnly((db) => {
         return getByFilter(filter, db);
     });
 };
 
-var getByOwner = (userId) => {
+const getByOwner = (userId) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -34,9 +34,9 @@ var getByOwner = (userId) => {
     });
 };
 
-var create = (userId, ip, data) => {
+const create = (userId, ip, data) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -82,8 +82,8 @@ var create = (userId, ip, data) => {
             throw ServiceException(errors);
         } else {
 
-            var requestCreate = Promise.promisify(db.models.Request.create);
-            var request = await (requestCreate({
+            const requestCreate = Promise.promisify(db.models.Request.create);
+            let request = await (requestCreate({
                     'description': data.description,
                     'ip': ip,
                     'address': data.address,
@@ -95,16 +95,16 @@ var create = (userId, ip, data) => {
                     'status_id': db.models.RequestStatus.NEW
             }));
 
-            var serviceFind = Promise.promisify(db.models.Service.find);
-            var services = await (serviceFind({'id': data.serviceIds}));
+            const serviceFind = Promise.promisify(db.models.Service.find);
+            let services = await (serviceFind({'id': data.serviceIds}));
 
-            var requestSetService = Promise.promisify(request.setServices);
+            const requestSetService = Promise.promisify(request.setServices);
             await (requestSetService(services));
 
-            var professionalFind = Promise.promisify(db.models.User.find);
-            var professionals = await (professionalFind({'id': data.professionalIds}));
+            const professionalFind = Promise.promisify(db.models.User.find);
+            let professionals = await (professionalFind({'id': data.professionalIds}));
 
-            var requestProfessionals = [];
+            let requestProfessionals = [];
 
             _.forEach(professionals, (professional) => {
 
@@ -115,7 +115,7 @@ var create = (userId, ip, data) => {
 
             });
 
-            var requestProfessionalCreate = Promise.promisify(db.models.RequestProfessional.create);
+            const requestProfessionalCreate = Promise.promisify(db.models.RequestProfessional.create);
             await (requestProfessionalCreate(requestProfessionals));
 
             return request;
@@ -125,10 +125,10 @@ var create = (userId, ip, data) => {
 
 };
 
-var professionalAccept = (requestId, professionalId) => {
+const professionalAccept = (requestId, professionalId) => {
     return doReadWrite((db) => {
 
-        var errors = [];
+        let errors = [];
 
         if (!requestId) {
             errors.push(ERROR.Request.REQUEST_ID_IS_REQUIRED);
@@ -142,8 +142,8 @@ var professionalAccept = (requestId, professionalId) => {
             throw ServiceException(errors);
         } else {
 
-            var requestProfessionalFind = Promise.promisify(db.models.RequestProfessional.find);
-            var requestProfessional = _.first(await (requestProfessionalFind({'request_id': requestId, 'professional_id': professionalId})));
+            const requestProfessionalFind = Promise.promisify(db.models.RequestProfessional.find);
+            let requestProfessional = _.first(await (requestProfessionalFind({'request_id': requestId, 'professional_id': professionalId})));
 
             if (_.isNil(requestProfessional)) {
                 throw ServiceException(ERROR.RequestProfessional.REQUEST_PROFESSIONAL_NOT_FOUND, ERROR.Types.NOT_FOUND);
@@ -152,7 +152,7 @@ var professionalAccept = (requestId, professionalId) => {
             } else {
 
                 requestProfessional.accepted = true;
-                var requestProfessionalSave = Promise.promisify(requestProfessional.save);
+                const requestProfessionalSave = Promise.promisify(requestProfessional.save);
                 return requestProfessionalSave();
 
             }

@@ -1,14 +1,14 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getById = (userId) => {
+const getById = (userId) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -17,8 +17,8 @@ var getById = (userId) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
-            var userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
+            const userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
+            let userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
 
             if (_.isNil(userPersonalInfo)) {
                 throw ServiceException(ERROR.UserPersonalInfo.USER_PERSONAL_INFO_NOT_FOUND, ERROR.Type.NOT_FOUND);
@@ -30,7 +30,7 @@ var getById = (userId) => {
     });
 };
 
-var applyPatchesForUserPersonalInfo = (userPersonalInfo, patches, db) => {
+const applyPatchesForUserPersonalInfo = (userPersonalInfo, patches, db) => {
 
     _(patches).forEach((patchOp) => {
 
@@ -75,9 +75,9 @@ var applyPatchesForUserPersonalInfo = (userPersonalInfo, patches, db) => {
 
 };
 
-var update = (userId, patches) => {
+const update = (userId, patches) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -90,8 +90,8 @@ var update = (userId, patches) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
-            var userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
+            const userPersonalInfoFind = Promise.promisify(db.models.UserPersonalInfo.find);
+            let userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
 
             if (_.isNil(userPersonalInfo)) {
                 userPersonalInfo = new db.models.UserPersonalInfo({'user_id': userId});
@@ -99,7 +99,7 @@ var update = (userId, patches) => {
 
             applyPatchesForUserPersonalInfo(userPersonalInfo, patches, db);
 
-            var userPersonalInfoSave = Promise.promisify(userPersonalInfo.save);
+            const userPersonalInfoSave = Promise.promisify(userPersonalInfo.save);
             return userPersonalInfoSave();
 
         }

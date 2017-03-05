@@ -1,7 +1,7 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
-var handleException = (res, err) => {
-    var statusCode = 500;
+const handleException = (res, err) => {
+    let statusCode = 500;
 
     if (err.type && err.type == 'BUSINESS') {
         statusCode = 400;
@@ -13,7 +13,7 @@ var handleException = (res, err) => {
 
 };
 
-var getCurrentIp = (req) => {
+const getCurrentIp = (req) => {
 
     return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 

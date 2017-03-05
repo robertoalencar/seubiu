@@ -1,35 +1,35 @@
-var _ = require('lodash');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var _searchByProfessionServicesAndCity = (professionId, servicesIds, cityId, db) => {
+const _searchByProfessionServicesAndCity = (professionId, servicesIds, cityId, db) => {
 
     return new Promise((resolve, reject) => {
 
-        var sql = [
-            'SELECT DISTINCT u."id", u."name", upro."displayName", us."rating", us."score"',
-                'FROM',
-                    '"user" AS u',
-                    'INNER JOIN user_profile AS upro ON (u.id = upro.user_id)',
-                    'LEFT OUTER JOIN user_profile_city AS upc ON (upro.id = upc.user_profile_id)',
-                    'LEFT OUTER JOIN user_profile_service AS ups ON (upro.id = ups.user_profile_id)',
-                    'LEFT OUTER JOIN user_profile_profession AS upp ON (upro.id = upp.user_profile_id)',
-                    'LEFT OUTER JOIN user_address AS ua ON (u.id = ua.user_id)',
-                    'LEFT OUTER JOIN user_stats AS us ON (u.id = us.user_id)',
-                'WHERE',
-                    'u.status_id = ? AND u."emailVerified" = ? AND',
-                    '( upp.profession_id = ? AND (ups.service_id IN ? OR upro."otherServices" = ? ) ) AND ( (ua.city_id = ? AND ua.main = ?) OR upc.city_id = ? )',
-                'ORDER BY us."rating" DESC, us."score" DESC'
-        ];
+        let sql = `
+            SELECT DISTINCT u."id", u."name", upro."displayName", us."rating", us."score"
+                FROM
+                    "user" AS u
+                    INNER JOIN user_profile AS upro ON (u.id = upro.user_id)
+                    LEFT OUTER JOIN user_profile_city AS upc ON (upro.id = upc.user_profile_id)
+                    LEFT OUTER JOIN user_profile_service AS ups ON (upro.id = ups.user_profile_id)
+                    LEFT OUTER JOIN user_profile_profession AS upp ON (upro.id = upp.user_profile_id)
+                    LEFT OUTER JOIN user_address AS ua ON (u.id = ua.user_id)
+                    LEFT OUTER JOIN user_stats AS us ON (u.id = us.user_id)
+                WHERE
+                    u.status_id = ? AND u."emailVerified" = ? AND
+                    ( upp.profession_id = ? AND (ups.service_id IN ? OR upro."otherServices" = ? ) ) AND ( (ua.city_id = ? AND ua.main = ?) OR upc.city_id = ? )
+                ORDER BY us."rating" DESC, us."score" DESC
+        `;
 
-        var parameters = [
+        const parameters = [
             db.models.UserStatus.ACTIVE, true, professionId, servicesIds,
             true, cityId, true, cityId
         ];
 
-        db.driver.execQuery(_.join(sql, ' '), parameters,
+        db.driver.execQuery(sql, parameters,
             (err, data) => {
                 if (err) reject(err);
                 resolve(data);
@@ -39,9 +39,9 @@ var _searchByProfessionServicesAndCity = (professionId, servicesIds, cityId, db)
 
 };
 
-var searchByProfessionServicesAndCity = (professionId, servicesIds, cityId) => {
+const searchByProfessionServicesAndCity = (professionId, servicesIds, cityId) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!professionId) {
             errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);

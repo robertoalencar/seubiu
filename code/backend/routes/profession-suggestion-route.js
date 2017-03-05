@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var professionSuggestionService = require('../services/profession-suggestion-service');
-var routeUtil = require('../utils/route-util');
+const _ = require('lodash');
+const professionSuggestionService = require('../services/profession-suggestion-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
@@ -8,8 +8,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.user.id;
-            var ip = routeUtil.getCurrentIp(req);
+            const userId = req.user.id;
+            const ip = routeUtil.getCurrentIp(req);
 
             professionSuggestionService.create(userId, req.body, ip).then((newSuggestion) => {
                 res.json(newSuggestion);
@@ -33,7 +33,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, isAdmin, (req, res) => {
 
-            var id = req.params.id;
+            const id = req.params.id;
 
             professionSuggestionService.getById(id).then((suggestion) => {
                 if (_.isEmpty(suggestion)) res.status(404);
@@ -46,7 +46,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .put(isAuthenticated, isAdmin, (req, res) => {
 
-            var id = req.params.id;
+            const id = req.params.id;
 
             professionSuggestionService.update(id, req.body.patches).then((suggestion) => {
                 res.json(suggestion);
@@ -58,7 +58,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .delete(isAuthenticated, isAdmin, (req, res) => {
 
-            var id = req.params.id;
+            const id = req.params.id;
 
             professionSuggestionService.remove(id).then((success) => {
                 res.send(success);
@@ -72,7 +72,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .post(isAuthenticated, isAdmin, (req, res) => {
 
-            var id = req.params.id;
+            const id = req.params.id;
 
             professionSuggestionService.approve(id).then((success) => {
                 res.send(success);

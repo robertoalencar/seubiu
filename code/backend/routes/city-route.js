@@ -1,5 +1,5 @@
-var cityService = require('../services/city-service');
-var routeUtil = require('../utils/route-util');
+const cityService = require('../services/city-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 

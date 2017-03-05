@@ -1,20 +1,20 @@
-var express = require('express');
-var dotenv = require('dotenv').config();
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var passport = require('passport');
-var JwtStrategy = require('passport-jwt').Strategy;
-var ExtractJwt = require('passport-jwt').ExtractJwt;
-var jwt = require('jsonwebtoken');
-var responseTime = require('response-time');
-var cryptoUtil = require('./utils/crypto-util');
-var userService = require('./services/user-service');
+const express = require('express');
+const dotenv = require('dotenv').config();
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const jwt = require('jsonwebtoken');
+const responseTime = require('response-time');
+const cryptoUtil = require('./utils/crypto-util');
+const userService = require('./services/user-service');
 
-var opts = {};
+let opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
 opts.secretOrKey = process.env.SESSION_SECRET;
 passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
@@ -31,7 +31,7 @@ passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
 
 }));
 
-var app = express();
+const app = express();
 
 // response-time middleware
 app.use(responseTime());
@@ -63,15 +63,15 @@ app.get('/api/me', passport.authenticate('jwt', { session: false}),
 
 app.post('/api/authenticate', (req, res) => {
 
-  var email = req.body.email;
-  var password = req.body.password;
+  const email = req.body.email;
+  const password = req.body.password;
 
   userService.getByEmailAndPassword(email, password).then((user) => {
       if (!user) {
         res.sendStatus(401);
       } else {
 
-        var token = jwt.sign({id:user.id}, process.env.SESSION_SECRET, {
+        const token = jwt.sign({id:user.id}, process.env.SESSION_SECRET, {
           expiresIn: '1d'
         });
 
@@ -95,7 +95,7 @@ require('./jobs')();
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

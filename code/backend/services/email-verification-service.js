@@ -1,13 +1,13 @@
-var uuid = require('uuid');
-var await = require('asyncawait/await');
-var useRedis = require('../utils/redis-client-use').use;
+const uuid = require('uuid');
+const await = require('asyncawait/await');
+const useRedis = require('../utils/redis-client-use').use;
 
-var KEY_PREFIX = 'urn' + ':' + 'emailverification' + ':' + 'token' + ':';
+const KEY_PREFIX = 'urn' + ':' + 'emailverification' + ':' + 'token' + ':';
 
-var generateToken = (userId) => {
+const generateToken = (userId) => {
     return useRedis((client) => {
-        var token = uuid.v1();
-        var key = KEY_PREFIX + token
+        const token = uuid.v1();
+        const key = KEY_PREFIX + token;
 
         await(client.set(key, userId));
 
@@ -16,9 +16,9 @@ var generateToken = (userId) => {
 
 };
 
-var deleteToken = (token) => {
+const deleteToken = (token) => {
     return useRedis((client) => {
-        var key = KEY_PREFIX + token
+        const key = KEY_PREFIX + token
 
         return await(client.del(key));
     });

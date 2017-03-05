@@ -1,34 +1,34 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var md5 = require('md5');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
-var jobService = require('./job-service');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const md5 = require('md5');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
+const jobService = require('./job-service');
 
-var MINIMUM_PASSWORD_SIZE = 8;
+const MINIMUM_PASSWORD_SIZE = 8;
 
-var getByFilter = (filter, db) => {
-    var userFind = Promise.promisify(db.models.User.find);
+const getByFilter = (filter, db) => {
+    const userFind = Promise.promisify(db.models.User.find);
     return userFind(filter, [ 'name', 'A' ]);
 };
 
-var getAll = () => {
+const getAll = () => {
     return doReadOnly((db) => {
         return getByFilter({}, db);
     });
 };
 
-var getTotalUsers = (db) => {
-    var userCount = Promise.promisify(db.models.User.count);
+const getTotalUsers = (db) => {
+    const userCount = Promise.promisify(db.models.User.count);
     return await (userCount());
 };
 
-var getByEmailAndPassword = (email, password) => {
+const getByEmailAndPassword = (email, password) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (_.isEmpty(email)) {
             errors.push(ERROR.User.EMAIL_IS_REQUIRED);
@@ -49,9 +49,9 @@ var getByEmailAndPassword = (email, password) => {
 
 };
 
-var getById = (id) => {
+const getById = (id) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -60,7 +60,7 @@ var getById = (id) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var userGet = Promise.promisify(db.models.User.get);
+            const userGet = Promise.promisify(db.models.User.get);
             return userGet(id);
         }
 
@@ -68,19 +68,19 @@ var getById = (id) => {
 
 };
 
-var phoneAlreadyInUse = (phone, db) => {
-    var userExists = Promise.promisify(db.models.User.exists);
+const phoneAlreadyInUse = (phone, db) => {
+    const userExists = Promise.promisify(db.models.User.exists);
     return await (userExists({'phone': phone}));
 };
 
-var emailAlreadyInUse = (email, db) => {
-    var userExists = Promise.promisify(db.models.User.exists);
+const emailAlreadyInUse = (email, db) => {
+    const userExists = Promise.promisify(db.models.User.exists);
     return await (userExists({'email': email}));
 };
 
-var create = (user) => {
+const create = (user) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (_.isEmpty(user.name)) {
             errors.push(ERROR.Common.NAME_IS_REQUIRED);
@@ -112,11 +112,11 @@ var create = (user) => {
             throw ServiceException(errors);
         } else {
 
-            var isBootStrap = (getTotalUsers(db) === 0);
+            const isBootStrap = (getTotalUsers(db) === 0);
 
-            var userCreate = Promise.promisify(db.models.User.create);
+            const userCreate = Promise.promisify(db.models.User.create);
 
-            var newUser = await (userCreate({
+            let newUser = await (userCreate({
                     'name': user.name,
                     'surname': user.surname,
                     'phone': user.phone,
@@ -135,9 +135,9 @@ var create = (user) => {
     });
 };
 
-var remove = (id) => {
+const remove = (id) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -159,11 +159,11 @@ var remove = (id) => {
 
 };
 
-var checkSecurityForPatches = (patches, isAdmin) => {
-    var errors = [];
-    var hasPathAllowedOnlyForAdmin = false;
+const checkSecurityForPatches = (patches, isAdmin) => {
+    let errors = [];
+    let hasPathAllowedOnlyForAdmin = false;
 
-    var adminOnly = [
+    let adminOnly = [
         '/admin', '/emailVerified', '/status',
         '/email'
     ];
@@ -184,7 +184,7 @@ var checkSecurityForPatches = (patches, isAdmin) => {
 
 };
 
-var applyPatchesForUser = (user, patches) => {
+const applyPatchesForUser = (user, patches) => {
 
     _(patches).forEach((patchOp) => {
 
@@ -255,9 +255,9 @@ var applyPatchesForUser = (user, patches) => {
 
 };
 
-var update = (userId, patches, isAdmin) => {
+const update = (userId, patches, isAdmin) => {
     return doReadWrite((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -272,12 +272,12 @@ var update = (userId, patches, isAdmin) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var userGet = Promise.promisify(db.models.User.get);
-            var user = await (userGet(userId));
+            const userGet = Promise.promisify(db.models.User.get);
+            let user = await (userGet(userId));
 
             applyPatchesForUser(user, patches);
 
-            var userSave = Promise.promisify(user.save);
+            const userSave = Promise.promisify(user.save);
             return userSave();
         }
 

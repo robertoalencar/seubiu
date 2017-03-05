@@ -1,24 +1,24 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = (filter, db) => {
-    var stateFind = Promise.promisify(db.models.State.find);
+const getByFilter = (filter, db) => {
+    const stateFind = Promise.promisify(db.models.State.find);
     return stateFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = () => {
+const getAll = () => {
     return doReadOnly((db) => {
         return getByFilter({}, db);
     });
 };
 
-var getStatesByCountry = (countryId) => {
+const getStatesByCountry = (countryId) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!countryId) {
             errors.push(ERROR.Country.COUNTRY_ID_IS_REQUIRED);

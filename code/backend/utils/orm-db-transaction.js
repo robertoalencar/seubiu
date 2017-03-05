@@ -1,16 +1,16 @@
-var debug = require("debug")("orm:db-transaction");
-var _ = require('lodash');
-var uuid = require('uuid');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var pool = require('./orm-db-pool');
+const debug = require("debug")("orm:db-transaction");
+const _ = require('lodash');
+const uuid = require('uuid');
+const async = require('asyncawait/async');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const pool = require('./orm-db-pool');
 
-var doInTransaction = async ((task, readOnly) => {
-    var transactionId = uuid.v1();
-    var db;
-    var transaction;
-    var result;
+const doInTransaction = async ((task, readOnly) => {
+    const transactionId = uuid.v1();
+    let db;
+    let transaction;
+    let result;
 
     try {
 

@@ -1,7 +1,7 @@
-var dbUtil = require('../utils/orm-db-util');
-var transaction = require('../utils/orm-db-transaction');
+const dbUtil = require('../utils/orm-db-util');
+const transaction = require('../utils/orm-db-transaction');
 
-var setupInitialData = (task) => {
+const setupInitialData = (task) => {
     process.env.DB_NAME=process.env.DB_TEST_NAME;
 
     return (new Promise((resolve, reject) => {

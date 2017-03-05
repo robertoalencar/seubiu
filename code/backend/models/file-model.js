@@ -1,6 +1,6 @@
 module.exports = (orm, db) => {
 
-    var File = db.define('File', {
+    const File = db.define('File', {
         id      : { type: 'serial', key: true, mapsTo: 'id' },
         name    : { type: 'text', size: 255, mapsTo: 'name' },
         size    : { type: 'number', mapsTo: 'size' },

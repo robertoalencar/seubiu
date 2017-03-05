@@ -1,8 +1,8 @@
-var chai = require('chai');
-var chaiHttp = require('chai-http');
-var server = require('../app');
-var testUtil = require('../utils/api-test-util');
-var data = require('../utils/initial-data-db');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../app');
+const testUtil = require('../utils/api-test-util');
+const data = require('../utils/initial-data-db');
 
 chai.should();
 chai.use(chaiHttp);
@@ -24,7 +24,7 @@ describe('State API', () => {
         .get('/api/states')
         .end((err, res) => {
 
-            var expected = [
+            const expected = [
                 {
                     "id": 1,
                     "description": "Pernambuco",
@@ -47,7 +47,7 @@ describe('State API', () => {
         .get('/api/states/1/cities')
         .end((err, res) => {
 
-            var expected = [
+            const expected = [
                 {
                     "id": 2,
                     "description": "Olinda",

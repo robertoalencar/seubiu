@@ -1,6 +1,6 @@
 module.exports = (orm, db) => {
 
-    var RequestProfessional = db.define('RequestProfessional', {
+    const RequestProfessional = db.define('RequestProfessional', {
         id        : { type: 'serial', key: true, mapsTo: 'id' },
         accepted  : { type: 'boolean', defaultValue: false, mapsTo: 'accepted' }
     }, {

@@ -1,23 +1,23 @@
-var _ = require('lodash');
-var Promise = require('bluebird');
-var doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
-var ERROR = require('../utils/service-error-constants');
-var ServiceException = require('../utils/service-exception');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = (filter, db) => {
-    var professionFind = Promise.promisify(db.models.Profession.find);
+const getByFilter = (filter, db) => {
+    const professionFind = Promise.promisify(db.models.Profession.find);
     return professionFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = () => {
+const getAll = () => {
     return doReadOnly((db) => {
         return getByFilter({}, db);
     });
 };
 
-var getServicesByProfession = (id) => {
+const getServicesByProfession = (id) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
@@ -26,7 +26,7 @@ var getServicesByProfession = (id) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var serviceFind = Promise.promisify(db.models.Service.find);
+            const serviceFind = Promise.promisify(db.models.Service.find);
             return serviceFind({'profession_id':id});
         }
 
@@ -34,9 +34,9 @@ var getServicesByProfession = (id) => {
 
 };
 
-var getById = (id) => {
+const getById = (id) => {
     return doReadOnly((db) => {
-        var errors = [];
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
@@ -45,7 +45,7 @@ var getById = (id) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            var professionGet = Promise.promisify(db.models.Profession.get);
+            const professionGet = Promise.promisify(db.models.Profession.get);
             return professionGet(id);
         }
 

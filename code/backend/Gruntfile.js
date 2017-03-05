@@ -4,9 +4,7 @@ module.exports = function(grunt) {
     jshint: {
       files: ['Gruntfile.js', '**/*.js', '!node_modules/**', '!migrations/**', '!public/**'],
       options: {
-        globals: {
-          jQuery: true
-        }
+        esversion: 6
       }
     },
     shell: {

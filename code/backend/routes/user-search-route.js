@@ -1,5 +1,5 @@
-var userSearchService = require('../services/user-search-service');
-var routeUtil = require('../utils/route-util');
+const userSearchService = require('../services/user-search-service');
+const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
@@ -7,9 +7,9 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         .get(isAuthenticated, (req, res) => {
 
-            var professionId = req.query.professionId;
-            var servicesIds = req.query.servicesIds;
-            var cityId = req.query.cityId;
+            const professionId = req.query.professionId;
+            const servicesIds = req.query.servicesIds;
+            const cityId = req.query.cityId;
 
             userSearchService.searchByProfessionServicesAndCity(professionId, servicesIds, cityId).then(function(users){
                 res.json(users);
