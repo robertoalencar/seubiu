@@ -1,8 +1,10 @@
+const debug = require("debug")("orm:db-pool");
 const dotenv = require('dotenv').config();
 const orm = require('orm');
 const modts = require('orm-timestamps');
 const transaction = require('orm-transaction');
 const Pool = require('generic-pool').Pool;
+const uuid = require('uuid');
 
 const pool = new Pool({
     name     : process.env.DB_PROTOCOL,
@@ -21,6 +23,9 @@ const pool = new Pool({
 
       orm.connect(opts, (err, db) => {
         if (err) return callback(err);
+
+        db.poolId = uuid.v1()
+        debug(`### Open connection ID [${db.poolId}]`);
 
         db.use(modts, {
           createdProperty: 'created_at',
@@ -44,7 +49,10 @@ const pool = new Pool({
       });
 
     },
-    destroy  : (db) => { db.close(); },
+    destroy  : (db) => {
+      debug(`### Close connection ID [${db.poolId}]`);
+      db.close();
+    },
     max      : process.env.DB_POOL_MAX,
     log      : false
 });

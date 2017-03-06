@@ -8,15 +8,14 @@ const pool = require('./orm-db-pool');
 
 const doInTransaction = async ((task, readOnly) => {
     const transactionId = uuid.v1();
+    const transactionMode = (readOnly ? 'read-only':'read-write');
     let db;
     let transaction;
     let result;
 
     try {
+        debug(`### New transaction ID [${transactionId}], mode [${transactionMode}]`);
 
-        debug('### New transaction: ' + transactionId);
-
-        debug('### Acquire database connection for transaction: ' + transactionId);
         db = await (new Promise((resolve, reject) => {
 
             pool.acquire((err, db) => {
@@ -26,7 +25,8 @@ const doInTransaction = async ((task, readOnly) => {
 
         }));
 
-        debug('### Start ' + (readOnly ? 'read-only':'read-write') +  ' transaction: ' + transactionId);
+        debug(`### Start transaction ID [${transactionId}], connection ID [${db.poolId}]`);
+
         transaction = await (new Promise((resolve, reject) => {
 
             db.transaction((err, t) => {
@@ -39,7 +39,7 @@ const doInTransaction = async ((task, readOnly) => {
         result = await (task(db));
 
         if (readOnly) {
-            debug('### Rollback transaction: ' + transactionId);
+            debug(`### Rollback transaction ID [${transactionId}], connection ID [${db.poolId}]`);
             await (new Promise((resolve, reject) => {
 
                 transaction.rollback((err) => {
@@ -50,7 +50,7 @@ const doInTransaction = async ((task, readOnly) => {
             }));
 
         } else {
-            debug('### Commit transaction: ' + transactionId);
+            debug(`### Commit transaction ID [${transactionId}], connection ID [${db.poolId}]`);
             await (new Promise((resolve, reject) => {
 
                 transaction.commit((err) => {
@@ -67,7 +67,7 @@ const doInTransaction = async ((task, readOnly) => {
     } catch(err) {
 
         if (transaction) {
-            debug('### Rollback transaction: ' + transactionId);
+            debug(`### Rollback transaction ID [${transactionId}], connection ID [${db.poolId}]`);
             await (new Promise((resolve, reject) => {
 
                 transaction.rollback((err) => {
@@ -82,7 +82,7 @@ const doInTransaction = async ((task, readOnly) => {
         throw err;
 
     } finally {
-        debug('### Release database connection from transaction: ' + transactionId);
+        debug(`### Finish transaction ID [${transactionId}], connection ID [${db.poolId}]`);
         if (db) pool.release(db);
     }
 
