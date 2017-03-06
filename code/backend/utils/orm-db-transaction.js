@@ -5,8 +5,10 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 const Promise = require('bluebird');
 const pool = require('./orm-db-pool');
+const executionContext = require('./execution-context-util');
 
 const doInTransaction = async ((task, readOnly) => {
+    const requestID = executionContext.get('requestID');
     const transactionId = uuid.v1();
     const transactionMode = (readOnly ? 'read-only':'read-write');
     let db;
@@ -14,7 +16,7 @@ const doInTransaction = async ((task, readOnly) => {
     let result;
 
     try {
-        debug(`### New transaction ID [${transactionId}], mode [${transactionMode}]`);
+        debug(`### New transaction ID [${transactionId}], mode [${transactionMode}], request ID [${requestID}]`);
 
         db = await (new Promise((resolve, reject) => {
 

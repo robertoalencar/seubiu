@@ -17,14 +17,13 @@ const pool = new Pool({
         protocol: process.env.DB_PROTOCOL,
         user:     process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
-        port:     process.env.DB_PORT,
-        query:    { debug: (process.env.DB_DEBUG ? Boolean(process.env.DB_DEBUG) : false) }
+        port:     process.env.DB_PORT
       };
 
       orm.connect(opts, (err, db) => {
         if (err) return callback(err);
 
-        db.poolId = uuid.v1()
+        db.poolId = uuid.v1();
         debug(`### Open connection ID [${db.poolId}]`);
 
         db.use(modts, {
@@ -41,6 +40,7 @@ const pool = new Pool({
 
         db.settings.set('instance.returnAllErrors', true);
         db.settings.set('instance.cache', false);
+        db.settings.set('connection.debug', (process.env.DB_DEBUG ? Boolean(process.env.DB_DEBUG) : false));
 
         require('../models/')(orm, db);
 
