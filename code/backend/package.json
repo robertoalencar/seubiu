@@ -7,11 +7,11 @@
     "test": "grunt test"
   },
   "dependencies": {
+    "apicache": "^0.8.3",
     "asyncawait": "^1.0.6",
     "bluebird": "^3.4.6",
     "body-parser": "~1.15.1",
     "connect-redis": "^3.2.0",
-    "continuation-local-storage": "^3.2.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
     "dotenv": "^2.0.0",
@@ -33,7 +33,6 @@
     "passport-jwt": "^2.1.0",
     "pg": "^6.1.0",
     "redis": "^2.6.5",
-    "response-time": "^2.3.1",
     "serve-favicon": "~2.3.0",
     "uuid": "^2.0.2"
   },

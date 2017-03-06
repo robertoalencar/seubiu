@@ -1,21 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-
 const authenticate = passport.authenticate('jwt', { session: false});
 
-function isAdmin(req, res, next) {
+const isAdmin = (req, res, next) => {
   if (req.isAuthenticated() && req.user.admin) { return next(null); }
   res.sendStatus(403);
 }
 
-function userHasAccess(req, res, next) {
+const userHasAccess = (req, res, next) => {
     if (req.isAuthenticated() && (req.user.id == req.params.userId || req.user.admin)) { return next(null); }
     res.sendStatus(403);
 }
 
 require('./user-route')(router, authenticate, isAdmin, userHasAccess);
-require('./profession-route')(router, authenticate, isAdmin, userHasAccess);
+require('./profession-route')(router, authenticate, isAdmin, userHasAccess );
 require('./state-route')(router, authenticate, isAdmin, userHasAccess);
 require('./city-route')(router, authenticate, isAdmin, userHasAccess);
 require('./country-route')(router, authenticate, isAdmin, userHasAccess);

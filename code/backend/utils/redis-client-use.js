@@ -2,7 +2,7 @@ const debug = require("debug")("orm:redis-client-use");
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 const Promise = require('bluebird');
-const pool = require('./redis-client-pool');
+const redisClientPool = require('./redis-client-pool').pool;
 
 const use = async (function (task) {
     let client;
@@ -12,7 +12,7 @@ const use = async (function (task) {
         debug('### Acquire Redis client');
         client = await (new Promise((resolve, reject) => {
 
-            pool.acquire((err, client) => {
+            redisClientPool.acquire((err, client) => {
                 if (err) reject(err);
                 resolve(client);
             });
@@ -25,7 +25,7 @@ const use = async (function (task) {
         throw err;
     } finally {
         debug('### Release Redis client');
-        if (client) pool.release(client);
+        if (client) redisClientPool.release(client);
     }
 
 });

@@ -3,9 +3,11 @@ const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
+    const useCache = routeUtil.cacheWithRedis('12 months');
+
     router.route('/cities')
 
-        .get((req, res) => {
+        .get(useCache, (req, res) => {
 
             cityService.getAll().then((cities) => {
                 res.json(cities);

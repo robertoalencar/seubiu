@@ -1,8 +1,10 @@
-const dbUtil = require('../utils/orm-db-util');
-const transaction = require('../utils/orm-db-transaction');
+const dbUtil = require('./orm-db-util');
+const transaction = require('./orm-db-transaction');
+const routeUtil = require('./route-util');
 
 const setupInitialData = (task) => {
     process.env.DB_NAME=process.env.DB_TEST_NAME;
+    process.env.REDIS_DB=1;
 
     return (new Promise((resolve, reject) => {
         dbUtil.createSchema().then(() => {

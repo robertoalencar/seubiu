@@ -1,4 +1,10 @@
 const _ = require('lodash');
+const apicache = require('apicache');
+const redisClientPool = require('./redis-client-pool');
+
+const cacheWithRedis = apicache
+                      .options({ redisClient: redisClientPool.createClient() })
+                      .middleware;
 
 const handleException = (res, err) => {
     let statusCode = 500;
@@ -20,8 +26,7 @@ const getCurrentIp = (req) => {
 };
 
 module.exports = {
-
     handleException: handleException,
-    getCurrentIp: getCurrentIp
-
+    getCurrentIp: getCurrentIp,
+    cacheWithRedis: cacheWithRedis
 };

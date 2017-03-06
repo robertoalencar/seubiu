@@ -4,9 +4,11 @@ const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
+    const useCache = routeUtil.cacheWithRedis('12 months');
+
     router.route('/states')
 
-        .get((req, res) => {
+        .get(useCache, (req, res) => {
 
             stateService.getAll().then((states) => {
                 res.json(states);

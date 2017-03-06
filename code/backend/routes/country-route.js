@@ -4,9 +4,11 @@ const routeUtil = require('../utils/route-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
+    const useCache = routeUtil.cacheWithRedis('12 months');
+
     router.route('/countries')
 
-        .get((req, res) => {
+        .get(useCache, (req, res) => {
 
             countryService.getAll().then((countries) => {
                 res.json(countries);
@@ -18,7 +20,7 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
     router.route('/countries/:id/states')
 
-        .get((req, res) => {
+        .get(useCache, (req, res) => {
 
             var id = req.params.id;
 

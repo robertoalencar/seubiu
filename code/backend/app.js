@@ -10,9 +10,6 @@ const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwt = require('jsonwebtoken');
-const responseTime = require('response-time');
-const uuid = require('uuid');
-const executionContext = require('./utils/execution-context-util');
 const cryptoUtil = require('./utils/crypto-util');
 const userService = require('./services/user-service');
 
@@ -35,9 +32,6 @@ passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
 
 const app = express();
 
-// response-time middleware
-app.use(responseTime());
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -52,13 +46,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-//Continuation-local storage
-app.use((req, res, next) => {
-  executionContext.init(req, res, next, {
-    'requestID': uuid.v1()
-  });
-});
 
 app.get('/', (req, res, next) => {
   res.render('index', { title: 'Seu Biu' });
