@@ -1,23 +1,37 @@
-const dotenv = require('dotenv').config();
-const redis  = require('redis');
-const Promise = require('bluebird');
+const debug = require("debug")("orm:redis-client-use");
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const pool = require('./redis-client-pool');
 
-Promise.promisifyAll(redis.RedisClient.prototype);
-Promise.promisifyAll(redis.Multi.prototype);
+const use = async (function (task) {
+    let client;
 
-const client = redis.createClient(
-{
-    port: process.env.REDIS_PORT,
-    host: process.env.REDIS_HOST,
-    db: 1
-});
+    try {
 
-const use = async ((task) => {
-    return await (task(client));
+        debug('### Acquire Redis client');
+        client = await (new Promise((resolve, reject) => {
+
+            pool.acquire((err, client) => {
+                if (err) reject(err);
+                resolve(client);
+            });
+
+        }));
+
+        return await (task(client));
+
+    } catch(err) {
+        throw err;
+    } finally {
+        debug('### Release Redis client');
+        if (client) pool.release(client);
+    }
+
 });
 
 module.exports = {
+
     use:use
+
 };
