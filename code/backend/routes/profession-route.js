@@ -1,10 +1,11 @@
 const _ = require('lodash');
 const professionService = require('../services/profession-service');
 const routeUtil = require('../utils/route-util');
+const apicacheUtil = require('../utils/apicache-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
-    const useCache = routeUtil.cacheWithRedis('1 month');
+    const useCache = apicacheUtil.cacheWithRedis('1 month');
 
     router.route('/professions')
 

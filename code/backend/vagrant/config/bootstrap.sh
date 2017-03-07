@@ -203,6 +203,7 @@ then
     echo "REDIS_PORT=6379" >> $ENV_FILE
     echo "REDIS_DB=0" >> $ENV_FILE
     echo "REDIS_POOL_MAX=50" >> $ENV_FILE
+    echo "API_CACHE=true" >> $ENV_FILE
     echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE
 fi
 

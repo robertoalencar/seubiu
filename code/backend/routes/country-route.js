@@ -1,10 +1,11 @@
 const countryService = require('../services/country-service');
 const stateService = require('../services/state-service');
 const routeUtil = require('../utils/route-util');
+const apicacheUtil = require('../utils/apicache-util');
 
 module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
-    const useCache = routeUtil.cacheWithRedis('12 months');
+    const useCache = apicacheUtil.cacheWithRedis('12 months');
 
     router.route('/countries')
 

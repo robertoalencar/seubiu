@@ -5,6 +5,7 @@ const routeUtil = require('./route-util');
 const setupInitialData = (task) => {
     process.env.DB_NAME=process.env.DB_TEST_NAME;
     process.env.REDIS_DB=1;
+    process.env.API_CACHE=false;
 
     return (new Promise((resolve, reject) => {
         dbUtil.createSchema().then(() => {
