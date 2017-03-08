@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="javascripts/vue.js"></script>
+<script src="javascripts/vue-router.js"></script>
+<script src="javascripts/vue-resource.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <h1>Start App!</h1>
+  <p>
+    <!-- use router-link component for navigation. -->
+    <!-- specify the link by passing the `to` prop. -->
+    <!-- <router-link> will be rendered as an `<a>` tag by default -->
+    <router-link to="/foo">Go to Foo</router-link>
+    <router-link to="/bar">Go to Bar</router-link>
+  </p>
+  <!-- route outlet -->
+  <!-- component matched by the route will render here -->
+  <router-view></router-view>
+</div>
+
+<script src="javascripts/start-app.js"></script>
+</body>
+</html>
