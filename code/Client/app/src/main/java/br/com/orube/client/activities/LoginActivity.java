@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Log.d("REST", response.message());
                     progressDialog.dismiss();
-                    Toast.makeText(getBaseContext(), response.message() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), R.string.login_fail, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Call<AuthToken> call, Throwable t) {
                 Log.d("REST", t.getMessage());
                 progressDialog.dismiss();
-                Toast.makeText(getBaseContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), R.string.login_fail, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -219,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login falhou", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), R.string.login_fail, Toast.LENGTH_LONG).show();
         email.setText("");
         password.setText("");
 

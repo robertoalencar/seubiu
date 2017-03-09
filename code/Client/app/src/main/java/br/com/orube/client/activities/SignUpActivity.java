@@ -177,26 +177,45 @@ public class SignUpActivity extends AppCompatActivity {
         String email = this.email.getText().toString();
         String password = this.password.getText().toString();
 
+        String surname = this.surname.getText().toString();
+        String fone = this.fone.getText().toString();
+
         if (name.isEmpty() || name.length() < 3) {
-            this.name.setError("at least 3 characters");
+            this.name.setError("Use pelo menos 3 caracteres");
             valid = false;
         } else {
             this.name.setError(null);
         }
 
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            this.email.setError("enter a valid email address");
+            this.email.setError("entre com um email válido");
             valid = false;
         } else {
             this.email.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            this.password.setError("between 4 and 10 alphanumeric characters");
+            this.password.setError("a senha deve ter entre 4 e 10 caracteres");
             valid = false;
         } else {
             this.password.setError(null);
         }
+
+        if (surname.isEmpty() ) {
+            this.surname.setError("Campo obrigatório");
+            valid = false;
+        } else {
+            this.surname.setError(null);
+        }
+
+        if (fone.isEmpty() ) {
+            this.fone.setError("Campo obrigatório");
+            valid = false;
+        } else {
+            this.fone.setError(null);
+        }
+
+
 
         return valid;
     }
