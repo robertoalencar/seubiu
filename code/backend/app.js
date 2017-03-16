@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const dotenv = require('dotenv').config();
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -31,6 +32,8 @@ passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
 }));
 
 const app = express();
+
+app.use(compression());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
