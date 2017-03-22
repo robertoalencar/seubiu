@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">SeuBiu</string>
 
+    <string name="dashboard">DashBoard</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">user / email</string>
     <string name="prompt_password">Password</string>
@@ -17,9 +19,11 @@
     <string name="title_activity_job_location">Map</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="title_activity_splash_screen">SplashScreenActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="recentes">Solicitações Recentes</string>
+
+    <string name="escolha_profissional">Escolha o profissional:</string>
+    <string name="qual_servico">Para qual serviço:</string>
+
     <string name="bem_vindo">Seja bem vindo!</string>
     <string name="solicitar">Solicitar</string>
     <string name="solicitados">Serviços Solicitados</string>
