@@ -1,6 +1,6 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
-    var UserAddress = db.define('UserAddress', {
+    const UserAddress = db.define('UserAddress', {
         id         : { type: 'serial', key: true, mapsTo: 'id' },
         description: { type: 'text', size: 50, unique: true, required: true, mapsTo: 'description' },
         main       : { type: 'boolean', defaultValue: false, mapsTo: 'main' },

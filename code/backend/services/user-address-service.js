@@ -1,36 +1,38 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
-var ERROR = require('../utils/service-error-constants');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
-    var userAddressFind = Promise.promisify(db.models.UserAddress.find);
+const getByFilter = (filter, db) => {
+    const userAddressFind = Promise.promisify(db.models.UserAddress.find);
     return userAddressFind(filter, [ 'description', 'A' ]);
 };
 
 
-var getAllByUserId = function(id) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getAllByUserId = (id) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            return await(getByFilter({'user_id': id}, db));
+            return getByFilter({'user_id': id}, db);
         }
 
     });
 
 };
 
-var getById = function(userId, addressId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getById = (userId, addressId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -41,9 +43,9 @@ var getById = function(userId, addressId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userAddresses = await(getByFilter({'user_id': userId, 'id': addressId}, db));
+            let userAddresses = await(getByFilter({'user_id': userId, 'id': addressId}, db));
             return _.first(userAddresses);
         }
 
@@ -51,9 +53,9 @@ var getById = function(userId, addressId) {
 
 };
 
-var remove = function(userId, addressId) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const remove = (userId, addressId) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -64,17 +66,17 @@ var remove = function(userId, addressId) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
-            await (new Promise(function (resolve, reject) {
+            return new Promise((resolve, reject) => {
 
-                db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove(function (err) {
+                db.models.UserAddress.find({'user_id': userId, 'id': addressId}).remove((err) => {
                     if (err) reject(err);
                     resolve(true);
                 });
 
-            }));
+            });
 
         }
 
@@ -82,9 +84,9 @@ var remove = function(userId, addressId) {
 
 };
 
-var create = function(userId, addr) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const create = (userId, addr) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -127,11 +129,11 @@ var create = function(userId, addr) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
-            var userAddressCreate = Promise.promisify(db.models.UserAddress.create);
-            return await (userAddressCreate(
+            const userAddressCreate = Promise.promisify(db.models.UserAddress.create);
+            return  userAddressCreate(
             {
                 'description': addr.description,
                 'main': Boolean(addr.main),
@@ -141,20 +143,20 @@ var create = function(userId, addr) {
                 'complement': addr.complement,
                 'district': addr.district,
                 'reference': addr.reference,
-                'user_id': addr.userId,
+                'user_id': userId,
                 'city_id': addr.cityId,
                 'state_id': addr.stateId,
                 'country_id': addr.countryId
-            }));
+            });
         }
 
     });
 
 };
 
-var applyPatchesForAddress = function(address, patches) {
+const applyPatchesForAddress = (address, patches) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -258,9 +260,9 @@ var applyPatchesForAddress = function(address, patches) {
 
 };
 
-var update = function(userId, addressId, patches) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const update = (userId, addressId, patches) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -275,16 +277,16 @@ var update = function(userId, addressId, patches) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
-            var userAddresses = await (getByFilter({'user_id': userId, 'id': addressId}, db));
-            var userAddress = _.first(userAddresses);
+            let userAddresses = await (getByFilter({'user_id': userId, 'id': addressId}, db));
+            let userAddress = _.first(userAddresses);
 
             applyPatchesForAddress(userAddress, patches);
 
-            var userAddressSave = Promise.promisify(userAddress.save);
-            return await(userAddressSave());
+            const userAddressSave = Promise.promisify(userAddress.save);
+            return userAddressSave();
         }
 
     });

@@ -1,31 +1,32 @@
-var _ = require('lodash');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
-var ERROR = require('../utils/service-error-constants');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getById = function(userId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getById = (userId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
             return _.first(await(userProfileFind({'user_id': userId})));
         }
 
     });
 };
 
-var applyPatchesForUpdate = function (userProfile, patches, db) {
+const applyPatchesForUpdate = (userProfile, patches, db) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -64,9 +65,9 @@ var applyPatchesForUpdate = function (userProfile, patches, db) {
 
 };
 
-var update = function(userId, patches) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const update = (userId, patches) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -77,10 +78,10 @@ var update = function(userId, patches) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
                 userProfile = new db.models.UserProfile({'user_id': userId});
@@ -88,17 +89,17 @@ var update = function(userId, patches) {
 
             applyPatchesForUpdate(userProfile, patches, db);
 
-            var userProfileSave = Promise.promisify(userProfile.save);
-            return await(userProfileSave());
+            const userProfileSave = Promise.promisify(userProfile.save);
+            return userProfileSave();
         }
 
     });
 
 };
 
-var setCities = function(userId, cityIds) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const setCities = (userId, cityIds) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -109,28 +110,28 @@ var setCities = function(userId, cityIds) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw [ERROR.UserProfile.USER_PROFILE_NOT_FOUND];
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            var cityFind = Promise.promisify(db.models.City.find);
-            var cities = await(cityFind({'id': cityIds}));
+            const cityFind = Promise.promisify(db.models.City.find);
+            let cities = await(cityFind({'id': cityIds}));
 
-            var userProfileSetCities = Promise.promisify(userProfile.setCities);
-            return await (userProfileSetCities(cities));
+            const userProfileSetCities = Promise.promisify(userProfile.setCities);
+            return userProfileSetCities(cities);
         }
 
     });
 };
 
-var getCities = function(userId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getCities = (userId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -139,23 +140,23 @@ var getCities = function(userId) {
         if (!_.isEmpty(errors)) {
             throw errors;
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            var userProfileGetCities = Promise.promisify(userProfile.getCities);
-            return await (userProfileGetCities());
+            const userProfileGetCities = Promise.promisify(userProfile.getCities);
+            return userProfileGetCities();
         }
 
     });
 };
 
-var setProfessions = function(userId, professionIds) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const setProfessions = (userId, professionIds) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -166,53 +167,53 @@ var setProfessions = function(userId, professionIds) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            var professionFind = Promise.promisify(db.models.Profession.find);
-            var professions = await (professionFind({'id': professionIds}));
+            const professionFind = Promise.promisify(db.models.Profession.find);
+            let professions = await (professionFind({'id': professionIds}));
 
-            var userProfileSetProfessions = Promise.promisify(userProfile.setProfessions);
-            return await (userProfileSetProfessions(professions));
+            const userProfileSetProfessions = Promise.promisify(userProfile.setProfessions);
+            return userProfileSetProfessions(professions);
         }
 
     });
 };
 
-var getProfessions = function(userId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getProfessions = (userId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            var userProfileGetProfessions = Promise.promisify(userProfile.getProfessions);
-            return await (userProfileGetProfessions());
+            const userProfileGetProfessions = Promise.promisify(userProfile.getProfessions);
+            return userProfileGetProfessions();
         }
 
     });
 };
 
-var setServices = function(userId, servicesIds) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const setServices = (userId, servicesIds) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -223,53 +224,53 @@ var setServices = function(userId, servicesIds) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            var servicesFind = Promise.promisify(db.models.Service.find);
-            var services = await (servicesFind({'id': servicesIds}));
+            const servicesFind = Promise.promisify(db.models.Service.find);
+            let services = await (servicesFind({'id': servicesIds}));
 
-            var userProfileSetServices = Promise.promisify(userProfile.setServices);
-            return await (userProfileSetServices(services));
+            const userProfileSetServices = Promise.promisify(userProfile.setServices);
+            return userProfileSetServices(services);
         }
 
     });
 };
 
-var getServices = function(userId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getServices = (userId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            var userProfileGetServices = Promise.promisify(userProfile.getServices);
-            return await (userProfileGetServices());
+            const userProfileGetServices = Promise.promisify(userProfile.getServices);
+            return userProfileGetServices();
         }
 
     });
 };
 
-var updateDisplayImage = function(userId, name, size, type, data, ip) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const updateDisplayImage = (userId, name, size, type, data, ip) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -296,26 +297,26 @@ var updateDisplayImage = function(userId, name, size, type, data, ip) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            await (new Promise(function (resolve, reject) {
+            await (new Promise((resolve, reject) => {
 
-                db.models.File.find({'id': userProfile.displayimage_id}).remove(function (err) {
+                db.models.File.find({'id': userProfile.displayimage_id}).remove((err) => {
                     if (err) reject(err);
                     resolve(true);
                 });
 
             }));
 
-            var fileCreate = Promise.promisify(db.models.File.create);
-            var file = await (fileCreate({
+            const fileCreate = Promise.promisify(db.models.File.create);
+            let file = await (fileCreate({
                             'name' : name,
                             'size' : size,
                             'type' : type,
@@ -323,35 +324,35 @@ var updateDisplayImage = function(userId, name, size, type, data, ip) {
                             'ip'   : ip
             }));
 
-            var profileSetDisplayImage = Promise.promisify(userProfile.setDisplayImage);
-            return await(profileSetDisplayImage(file));
+            const profileSetDisplayImage = Promise.promisify(userProfile.setDisplayImage);
+            return profileSetDisplayImage(file);
         }
 
     });
 };
 
-var getDisplayImage = function(userId) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const getDisplayImage = (userId) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userProfileFind = Promise.promisify(db.models.UserProfile.find);
-            var userProfile = _.first(await(userProfileFind({'user_id': userId})));
+            const userProfileFind = Promise.promisify(db.models.UserProfile.find);
+            let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw([ERROR.UserProfile.USER_PROFILE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             } else if (userProfile.displayimage_id) {
-                throw([ERROR.UserProfile.DISPLAY_IMAGE_NOT_FOUND]);
+                throw ServiceException(ERROR.UserProfile.DISPLAY_IMAGE_NOT_FOUND, ERROR.Type.NOT_FOUND);
             }
 
-            var fileGet = Promise.promisify(db.models.File.get);
-            return await(fileGet(userProfile.displayimage_id));
+            const fileGet = Promise.promisify(db.models.File.get);
+            return fileGet(userProfile.displayimage_id);
         }
 
     });

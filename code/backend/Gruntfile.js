@@ -2,11 +2,9 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     jshint: {
-      files: ['Gruntfile.js', '**/*.js', '!node_modules/**', '!migrations/**'],
+      files: ['Gruntfile.js', '**/*.js', '!node_modules/**', '!migrations/**', '!public/**'],
       options: {
-        globals: {
-          jQuery: true
-        }
+        esversion: 6
       }
     },
     shell: {
@@ -16,8 +14,11 @@ module.exports = function(grunt) {
       jasmine: {
         command: 'jasmine'
       },
-      orm_db_sync: {
-        command: 'node utils/orm-db-sync.js'
+      mocha: {
+        command: 'mocha'
+      },
+      sync_db: {
+        command: 'node utils/sync-db.js'
       },
       bootstrap_db: {
         command: 'node utils/bootstrap-db.js'
@@ -32,7 +33,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask('start', ['shell:supervisor']);
-  grunt.registerTask('test', ['shell:jasmine']);
-  grunt.registerTask('initdb', ['shell:redis_flush_all', 'shell:orm_db_sync', 'shell:bootstrap_db']);
+  grunt.registerTask('test', ['shell:jasmine', 'shell:mocha']);
+  grunt.registerTask('initdb', ['shell:redis_flush_all', 'shell:sync_db', 'shell:bootstrap_db']);
 
 };

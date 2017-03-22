@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="br.com.orube.client.activities.DashBoardActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
 
     <Space
@@ -17,49 +18,92 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/bem_vindo"
+        android:text="@string/escolha_profissional"
+        android:textSize="14dp"
+        android:textStyle="bold"
         android:id="@+id/textView"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginLeft="20px"
+        android:layout_gravity="left" />
 
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="20px"
         android:spinnerMode="dropdown"
+        android:background="@drawable/myedit"
         android:id="@+id/SpnJobType"></Spinner>
 
-    <Button
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/qual_servico"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="20px"
+        android:layout_gravity="left" />
+
+    <ListView
+        android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/proximo"
-        android:id="@+id/btnProximo"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="wrap_content" />
 
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="30px" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/nao_encontrou"
-        android:id="@+id/lbmMsgSetp1"
-        android:layout_gravity="center_horizontal" />
 
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="30px" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/clique_aqui"
-        android:id="@+id/textView3"
-        android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/mybutton"
+            android:layout_margin="20px"
+            android:text="@string/proximo"
+            android:id="@+id/btnProximo"
+            android:textStyle="bold"
+            android:textColor="@color/colorOffWhite"
+            android:layout_gravity="center_horizontal" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/nao_encontrou"
+            android:id="@+id/lbmMsgSetp1"
+            android:layout_gravity="center_horizontal" />
+
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="30px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/clique_aqui"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/step1"
+            android:layout_margin="50px"
+
+            android:layout_gravity="fill_vertical|center"/>
+        </LinearLayout>
 
 
 </LinearLayout>

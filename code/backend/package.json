@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "start": "supervisor ./bin/www",
-    "test": "jasmine"
+    "test": "grunt test"
   },
   "dependencies": {
+    "apicache": "^0.8.3",
     "asyncawait": "^1.0.6",
     "bluebird": "^3.4.6",
     "body-parser": "~1.15.1",
-    "connect-redis": "^3.1.0",
+    "connect-redis": "^3.2.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
     "dotenv": "^2.0.0",
@@ -19,6 +20,7 @@
     "generic-pool": "^2.4.2",
     "jade": "~1.11.0",
     "jsonwebtoken": "^7.1.9",
+    "kue": "^0.11.5",
     "lodash": "^4.15.0",
     "md5": "^2.2.1",
     "moment": "^2.14.1",
@@ -30,12 +32,13 @@
     "passport": "^0.3.2",
     "passport-jwt": "^2.1.0",
     "pg": "^6.1.0",
-    "redis": "^2.6.2",
-    "response-time": "^2.3.1",
+    "redis": "^2.6.5",
     "serve-favicon": "~2.3.0",
     "uuid": "^2.0.2"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-shell": "^2.0.0"

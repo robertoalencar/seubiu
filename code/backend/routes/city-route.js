@@ -1,15 +1,18 @@
-var cityService = require('../services/city-service');
-var routeUtil = require('../utils/route-util');
+const cityService = require('../services/city-service');
+const routeUtil = require('../utils/route-util');
+const apicacheUtil = require('../utils/apicache-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
+
+    const useCache = apicacheUtil.cacheWithRedis('12 months');
 
     router.route('/cities')
 
-        .get(function(req, res) {
+        .get(useCache, (req, res) => {
 
-            cityService.getAll().then(function(cities){
+            cityService.getAll().then((cities) => {
                 res.json(cities);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

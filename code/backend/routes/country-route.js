@@ -1,30 +1,33 @@
-var countryService = require('../services/country-service');
-var stateService = require('../services/state-service');
-var routeUtil = require('../utils/route-util');
+const countryService = require('../services/country-service');
+const stateService = require('../services/state-service');
+const routeUtil = require('../utils/route-util');
+const apicacheUtil = require('../utils/apicache-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
+
+    const useCache = apicacheUtil.cacheWithRedis('12 months');
 
     router.route('/countries')
 
-        .get(function(req, res) {
+        .get(useCache, (req, res) => {
 
-            countryService.getAll().then(function(countries){
+            countryService.getAll().then((countries) => {
                 res.json(countries);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         });
 
-    router.route('/countries/:countryId/states')
+    router.route('/countries/:id/states')
 
-        .get(function(req, res) {
+        .get(useCache, (req, res) => {
 
-            var countryId = req.params.countryId;
+            var id = req.params.id;
 
-            stateService.getStatesByCountry(countryId).then(function(states){
+            stateService.getStatesByCountry(id).then((states) => {
                 res.json(states);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

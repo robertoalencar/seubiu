@@ -1,32 +1,34 @@
-var _ = require('lodash');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var md5 = require('md5');
-var transaction = require('../utils/orm-db-transaction');
-var ERROR = require('../utils/service-error-constants');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const md5 = require('md5');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
+const jobService = require('./job-service');
 
-var MINIMUM_PASSWORD_SIZE = 8;
+const MINIMUM_PASSWORD_SIZE = 8;
 
-var getByFilter = function(filter, db) {
-    var userFind = Promise.promisify(db.models.User.find);
+const getByFilter = (filter, db) => {
+    const userFind = Promise.promisify(db.models.User.find);
     return userFind(filter, [ 'name', 'A' ]);
 };
 
-var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+const getAll = () => {
+    return doReadOnly((db) => {
+        return getByFilter({}, db);
     });
 };
 
-var getTotalUsers = function(db) {
-    var userCount = Promise.promisify(db.models.User.count);
+const getTotalUsers = (db) => {
+    const userCount = Promise.promisify(db.models.User.count);
     return await (userCount());
 };
 
-var getByEmailAndPassword = function(email, password) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getByEmailAndPassword = (email, password) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (_.isEmpty(email)) {
             errors.push(ERROR.User.EMAIL_IS_REQUIRED);
@@ -37,7 +39,7 @@ var getByEmailAndPassword = function(email, password) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
             //TODO: Add this filter when the email verification was implemented: , 'emailVerified': true
             return _.first(await (getByFilter({'password': md5(password), 'email': email}, db)));
@@ -47,38 +49,38 @@ var getByEmailAndPassword = function(email, password) {
 
 };
 
-var getById = function(id) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getById = (id) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userGet = Promise.promisify(db.models.User.get);
-            return await (userGet(id));
+            const userGet = Promise.promisify(db.models.User.get);
+            return userGet(id);
         }
 
     });
 
 };
 
-var phoneAlreadyInUse = function(phone, db) {
-    var userExists = Promise.promisify(db.models.User.exists);
+const phoneAlreadyInUse = (phone, db) => {
+    const userExists = Promise.promisify(db.models.User.exists);
     return await (userExists({'phone': phone}));
 };
 
-var emailAlreadyInUse = function(email, db) {
-    var userExists = Promise.promisify(db.models.User.exists);
+const emailAlreadyInUse = (email, db) => {
+    const userExists = Promise.promisify(db.models.User.exists);
     return await (userExists({'email': email}));
 };
 
-var create = function(user) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const create = (user) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (_.isEmpty(user.name)) {
             errors.push(ERROR.Common.NAME_IS_REQUIRED);
@@ -107,13 +109,14 @@ var create = function(user) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
-            var isBootStrap = (getTotalUsers(db) === 0);
+            const isBootStrap = (getTotalUsers(db) === 0);
 
-            var userCreate = Promise.promisify(db.models.User.create);
-            return await (userCreate({
+            const userCreate = Promise.promisify(db.models.User.create);
+
+            let newUser = await (userCreate({
                     'name': user.name,
                     'surname': user.surname,
                     'phone': user.phone,
@@ -123,28 +126,32 @@ var create = function(user) {
                     'admin': isBootStrap,
                     'emailVerified': isBootStrap
             }));
+
+            await (jobService.createJob(jobService.TYPES.SEND_NEW_USER_EMAIL, 'Send new user e-mail', newUser).save());
+
+            return newUser;
         }
 
     });
 };
 
-var remove = function(id) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const remove = (id) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            return await (new Promise(function (resolve, reject) {
-                db.models.User.find({ 'id': id }).remove(function (err) {
+            return new Promise((resolve, reject) => {
+                db.models.User.find({ 'id': id }).remove((err) => {
                     if (err) reject(err);
                     resolve(true);
                 });
-            }));
+            });
 
         }
 
@@ -152,16 +159,16 @@ var remove = function(id) {
 
 };
 
-var checkSecurityForPatches = function(patches, isAdmin){
-    var errors = [];
-    var hasPathAllowedOnlyForAdmin = false;
+const checkSecurityForPatches = (patches, isAdmin) => {
+    let errors = [];
+    let hasPathAllowedOnlyForAdmin = false;
 
-    var adminOnly = [
+    let adminOnly = [
         '/admin', '/emailVerified', '/status',
         '/email'
     ];
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         if (adminOnly.indexOf(patchOp.path) > -1) {
             hasPathAllowedOnlyForAdmin = true;
@@ -177,9 +184,9 @@ var checkSecurityForPatches = function(patches, isAdmin){
 
 };
 
-var applyPatchesForUser = function(user, patches) {
+const applyPatchesForUser = (user, patches) => {
 
-    _(patches).forEach(function(patchOp) {
+    _(patches).forEach((patchOp) => {
 
         switch (patchOp.path) {
 
@@ -248,9 +255,9 @@ var applyPatchesForUser = function(user, patches) {
 
 };
 
-var update = function(userId, patches, isAdmin) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const update = (userId, patches, isAdmin) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -263,15 +270,15 @@ var update = function(userId, patches, isAdmin) {
         errors = _.concat(errors, checkSecurityForPatches(patches, Boolean(isAdmin)));
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var userGet = Promise.promisify(db.models.User.get);
-            var user = await (userGet(userId));
+            const userGet = Promise.promisify(db.models.User.get);
+            let user = await (userGet(userId));
 
             applyPatchesForUser(user, patches);
 
-            var userSave = Promise.promisify(user.save);
-            return await(userSave());
+            const userSave = Promise.promisify(user.save);
+            return userSave();
         }
 
     });

@@ -13,6 +13,44 @@ apt-get install -y curl
 apt-get install -y git
 
 ################################################
+############## Java section ##############
+################################################
+#add-apt-repository ppa:webupd8team/java -y
+#apt-get update
+#/bin/echo /usr/bin/debconf shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections;/bin/echo /usr/bin/debconf shared/accepted-oracle-license-v1-1 seen true | sudo /usr/bin/debconf-set-selections;
+#apt-get install -y -q oracle-java8-installer
+#apt-get install -y -q oracle-java8-set-default
+
+################################################
+############## Kafka section ##############
+################################################
+#KAFKA_URL="http://ftp.unicamp.br/pub/apache/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz"
+#KAFKA_DIR="/var/lib/kafka"
+#KAFKA_DONWLOAD_DIR="/var/tmp"
+
+# Create donwload directory
+#if [ ! -d "$KAFKA_DONWLOAD_DIR" ];
+#then
+#  mkdir -p $KAFKA_DONWLOAD_DIR
+#fi
+
+# Install ZooKeeper
+#apt-get install -y zookeeperd
+
+# Download and extract Kafka
+#wget --quiet $KAFKA_URL -O $KAFKA_DONWLOAD_DIR/kafka.tgz
+
+#mkdir -p $KAFKA_DIR && cd $KAFKA_DIR
+
+#tar -xvzf $KAFKA_DONWLOAD_DIR/kafka.tgz --strip 1
+
+# Enable topic deletion
+#sed -i "s/#delete.topic.enable=true/delete.topic.enable=true/" "$KAFKA_DIR/config/server.properties"
+
+# Start Kafka
+#nohup $KAFKA_DIR/bin/kafka-server-start.sh $KAFKA_DIR/config/server.properties > $KAFKA_DIR/kafka.log 2>&1 &
+
+################################################
 ############## Redis section ##############
 ################################################
 
@@ -36,6 +74,7 @@ APP_DB_PASS=pass123@
 
 # Edit the following to change the name of the database that is created (defaults to the user name)
 APP_DB_NAME=$APP_DB_USER
+APP_DB_TEST_NAME="${APP_DB_NAME}_test"
 
 # Edit the following to change the version of PostgreSQL that is installed
 PG_VERSION=9.4
@@ -80,8 +119,15 @@ DROP DATABASE IF EXISTS $APP_DB_NAME;
 -- Create the database user:
 CREATE USER $APP_DB_USER WITH PASSWORD '$APP_DB_PASS';
 
--- Create the database:
+-- Create main database:
 CREATE DATABASE $APP_DB_NAME WITH OWNER=$APP_DB_USER
+                                  LC_COLLATE='en_US.utf8'
+                                  LC_CTYPE='en_US.utf8'
+                                  ENCODING='UTF8'
+                                  TEMPLATE=template0;
+
+-- Create test database:
+CREATE DATABASE $APP_DB_TEST_NAME WITH OWNER=$APP_DB_USER
                                   LC_COLLATE='en_US.utf8'
                                   LC_CTYPE='en_US.utf8'
                                   ENCODING='UTF8'
@@ -93,7 +139,8 @@ echo ""
 echo "Your PostgreSQL database has been setup and can be accessed on your local machine on the forwarded port (default: 15432)"
 echo "  Host: localhost"
 echo "  Port: 15432"
-echo "  Database: $APP_DB_NAME"
+echo "  Main Database: $APP_DB_NAME"
+echo "  Test Database: $APP_DB_TEST_NAME"
 echo "  Username: $APP_DB_USER"
 echo "  Password: $APP_DB_PASS"
 echo ""
@@ -115,8 +162,8 @@ echo ""
 
 # Install Node.js and NPM
 apt-get remove -y nodejs
-curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
-apt-get install -y nodejs
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 # Install Grunt
 npm install -g grunt-cli
@@ -133,6 +180,9 @@ npm install -g supervisor
 # Install Jasmine
 npm install -g jasmine
 
+# Install Mocha
+npm install -g mocha
+
 # App dir
 APP_DIR=/seubiu
 
@@ -141,14 +191,19 @@ ENV_FILE=$APP_DIR/.env
 if [ ! -f $ENV_FILE ]
 then
     echo "DB_NAME=$APP_DB_NAME" >> $ENV_FILE
+    echo "DB_TEST_NAME=$APP_DB_TEST_NAME" >> $ENV_FILE
     echo "DB_PROTOCOL=postgres" >> $ENV_FILE
     echo "DB_USERNAME=$APP_DB_USER" >> $ENV_FILE
     echo "DB_PASSWORD=$APP_DB_PASS" >> $ENV_FILE
     echo "DB_HOST=localhost" >> $ENV_FILE
     echo "DB_PORT=5432" >> $ENV_FILE
     echo "DB_DEBUG=true" >> $ENV_FILE
+    echo "DB_POOL_MAX=50" >> $ENV_FILE
     echo "REDIS_HOST=localhost" >> $ENV_FILE
     echo "REDIS_PORT=6379" >> $ENV_FILE
+    echo "REDIS_DB=0" >> $ENV_FILE
+    echo "REDIS_POOL_MAX=50" >> $ENV_FILE
+    echo "API_CACHE=true" >> $ENV_FILE
     echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE
 fi
 
@@ -161,7 +216,7 @@ npm install
 # NODE_ENV=development db-migrate up
 
 # Sync database
-#NODE_ENV=development && node utils/orm-db-sync.js
+#NODE_ENV=development && node utils/sync-db.js
 
 # Bootstrap database
 #NODE_ENV=development && node utils/bootstrap-db.js

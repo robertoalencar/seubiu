@@ -1,16 +1,19 @@
-var stateService = require('../services/state-service');
-var cityService = require('../services/city-service');
-var routeUtil = require('../utils/route-util');
+const stateService = require('../services/state-service');
+const cityService = require('../services/city-service');
+const routeUtil = require('../utils/route-util');
+const apicacheUtil = require('../utils/apicache-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
+
+    const useCache = apicacheUtil.cacheWithRedis('12 months');
 
     router.route('/states')
 
-        .get(function(req, res) {
+        .get(useCache, (req, res) => {
 
-            stateService.getAll().then(function(states){
+            stateService.getAll().then((states) => {
                 res.json(states);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -18,13 +21,13 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/states/:stateId/cities')
 
-        .get(function(req, res) {
+        .get((req, res) => {
 
-            var stateId = req.params.stateId;
+            const stateId = req.params.stateId;
 
-            cityService.getCitiesByState(stateId).then(function(cities){
+            cityService.getCitiesByState(stateId).then((cities) => {
                 res.json(cities);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

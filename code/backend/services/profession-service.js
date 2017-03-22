@@ -1,52 +1,52 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
-var ERROR = require('../utils/service-error-constants');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
-    var professionFind = Promise.promisify(db.models.Profession.find);
+const getByFilter = (filter, db) => {
+    const professionFind = Promise.promisify(db.models.Profession.find);
     return professionFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+const getAll = () => {
+    return doReadOnly((db) => {
+        return getByFilter({}, db);
     });
 };
 
-var getServicesByProfession = function(id) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getServicesByProfession = (id) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var serviceFind = Promise.promisify(db.models.Service.find);
-            return await (serviceFind({'profession_id':id}));
+            const serviceFind = Promise.promisify(db.models.Service.find);
+            return serviceFind({'profession_id':id});
         }
 
     });
 
 };
 
-var getById = function(id) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getById = (id) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!id) {
             errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            var professionGet = Promise.promisify(db.models.Profession.get);
-            return await (professionGet(id));
+            const professionGet = Promise.promisify(db.models.Profession.get);
+            return professionGet(id);
         }
 
     });

@@ -1,6 +1,6 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
-   var State = db.define('State', {
+   const State = db.define('State', {
         id         : { type: 'serial', key: true, mapsTo: 'id' },
         description: { type: 'text', size: 100, unique: true, required: true, mapsTo: 'description' },
         shortCode  : { type: 'text', size: 2, unique: true, required: true, mapsTo: 'shortCode' }

@@ -5,19 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
     <Space
         android:layout_width="wrap_content"
         android:layout_height="30px" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/bem_vindo"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal" />
 
 
     <LinearLayout
@@ -30,7 +23,7 @@
         <ImageButton
 
             android:id="@+id/btnSolicitar"
-            android:src="@mipmap/botao1"
+            android:src="@mipmap/btn_solicitar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -46,7 +39,7 @@
         <ImageButton
 
             android:id="@+id/btnSolicitados"
-            android:src="@mipmap/botao1"
+            android:src="@mipmap/btn_andamento"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -61,7 +54,7 @@
         <ImageButton
 
             android:id="@+id/btnRealizados"
-            android:src="@mipmap/botao1"
+            android:src="@mipmap/btn_concluido"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -76,6 +69,26 @@
 
 
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/bem_vindo"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
+    <ImageView
+        android:layout_margin="50px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center"
+        android:background="@mipmap/none"/>
+
 
     <ListView
         android:layout_width="match_parent"

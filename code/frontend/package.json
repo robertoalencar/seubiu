@@ -1,0 +1,25 @@
+{
+  "name": "seubiu-frontend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "supervisor ./bin/www",
+    "test": "grunt test"
+  },
+  "dependencies": {
+    "express": "~4.13.4",
+    "express-session": "^1.14.1",
+    "jade": "~1.11.0",
+    "serve-favicon": "~2.3.0",
+    "morgan": "~1.7.0",
+    "multer": "^1.2.0",
+    "body-parser": "~1.15.1",
+    "debug": "~2.2.0",
+    "cookie-parser": "~1.4.3"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-shell": "^2.0.0"
+  }
+}

@@ -1,6 +1,6 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
-    var Request = db.define('Request', {
+    const Request = db.define('Request', {
         id         : { type: 'serial', key: true, mapsTo: 'id' },
         description: { type: 'text', size: 250, mapsTo: 'description' },
         ip         : { type: 'text', size: 255, required: true, mapsTo: 'ip' },

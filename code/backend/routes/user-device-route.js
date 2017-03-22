@@ -1,32 +1,32 @@
-var _ = require('lodash');
-var userDeviceService = require('../services/user-device-service');
-var routeUtil = require('../utils/route-util');
+const _ = require('lodash');
+const userDeviceService = require('../services/user-device-service');
+const routeUtil = require('../utils/route-util');
 
-module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
+module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
     router.route('/users/:userId/devices')
 
-        .post(isAuthenticated, userHasAccess, function(req, res) {
+        .post(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var deviceToken = req.body.deviceToken;
-            var deviceTypeId = req.body.deviceTypeId;
+            const userId = req.params.userId;
+            const deviceToken = req.body.deviceToken;
+            const deviceTypeId = req.body.deviceTypeId;
 
-            userDeviceService.add(userId, deviceToken, deviceTypeId).then(function(addedDevice){
+            userDeviceService.add(userId, deviceToken, deviceTypeId).then((addedDevice) => {
                 res.json(addedDevice);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
         })
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
+            const userId = req.params.userId;
 
-            userDeviceService.getAllByUserId(userId).then(function(devices){
+            userDeviceService.getAllByUserId(userId).then((devices) => {
                 res.json(devices);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 
@@ -34,14 +34,14 @@ module.exports = function(router, isAuthenticated, isAdmin, userHasAccess) {
 
     router.route('/users/:userId/devices/:deviceToken')
 
-        .get(isAuthenticated, userHasAccess, function(req, res) {
+        .get(isAuthenticated, userHasAccess, (req, res) => {
 
-            var userId = req.params.userId;
-            var deviceToken = req.params.deviceToken;
+            const userId = req.params.userId;
+            const deviceToken = req.params.deviceToken;
 
-            userDeviceService.getByToken(userId, deviceToken).then(function(device){
+            userDeviceService.getByToken(userId, deviceToken).then((device) => {
                 res.json(device);
-            }, function(err) {
+            }, (err) => {
                 routeUtil.handleException(res, err);
             });
 

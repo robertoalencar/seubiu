@@ -1,4 +1,4 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
   require('./file-model')(orm, db);
   require('./country-model')(orm, db);
@@ -16,6 +16,7 @@ module.exports = function (orm, db) {
   require('./user-personal-info-model')(orm, db);
   //require('./user-rating-model')(orm, db);
   //require('./request-comment-model')(orm, db);
+  require('./profession-suggestion-model')(orm, db);
   require('./request-professional-model')(orm, db);
   require('./request-status-model')(orm, db);
   require('./request-model')(orm, db);

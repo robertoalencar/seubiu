@@ -1,59 +1,61 @@
-var debug = require("debug")("orm:db-transaction");
-var _ = require('lodash');
-var uuid = require('uuid');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var pool = require('../utils/orm-db-pool');
+const debug = require("debug")("orm:db-transaction");
+const _ = require('lodash');
+const uuid = require('uuid');
+const async = require('asyncawait/async');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const pool = require('./orm-db-pool');
 
-var doInTransaction = async (function (task, readOnly) {
-    var transactionId = uuid.v1();
-    var db;
-    var transaction;
-    var result;
+const doInTransaction = async ((task, readOnly) => {
+    const transactionId = uuid.v1();
+    const transactionMode = (readOnly ? 'read-only':'read-write');
+    let db;
+    let transaction;
+    let result;
 
     try {
+        debug(`### New transaction ID [${transactionId}], mode [${transactionMode}]`);
 
-        debug('Acquire database connection for transaction: ' + transactionId);
-        db = await (new Promise(function (resolve, reject) {
+        db = await (new Promise((resolve, reject) => {
 
-            pool.acquire(function(err, db) {
+            pool.acquire((err, db) => {
                 if (err) reject(err);
                 resolve(db);
             });
 
         }));
 
-        debug('Start ' + (readOnly ? 'read-only':'read-write') +  ' transaction: ' + transactionId);
-        transaction = await (new Promise(function (resolve, reject) {
+        debug(`### Start transaction ID [${transactionId}], connection ID [${db.poolId}]`);
 
-            db.transaction(function (err, t) {
+        transaction = await (new Promise((resolve, reject) => {
+
+            db.transaction((err, t) => {
                 if (err) reject(err);
                 resolve(t);
             });
 
         }));
 
-        result = task(db);
+        result = await (task(db));
 
         if (readOnly) {
-            debug('Rollback transaction: ' + transactionId);
-            await (new Promise(function (resolve, reject) {
+            debug(`### Rollback transaction ID [${transactionId}], connection ID [${db.poolId}]`);
+            await (new Promise((resolve, reject) => {
 
-                transaction.rollback(function(err) {
+                transaction.rollback((err) => {
                     if (err) reject(err);
-                    resolve();
+                    resolve(true);
                 });
 
             }));
 
         } else {
-            debug('Commit transaction: ' + transactionId);
-            await (new Promise(function (resolve, reject) {
+            debug(`### Commit transaction ID [${transactionId}], connection ID [${db.poolId}]`);
+            await (new Promise((resolve, reject) => {
 
-                transaction.commit(function(err) {
+                transaction.commit((err) => {
                     if (err) reject(err);
-                    resolve();
+                    resolve(true);
                 });
 
             }));
@@ -65,12 +67,12 @@ var doInTransaction = async (function (task, readOnly) {
     } catch(err) {
 
         if (transaction) {
-            debug('Rollback transaction: ' + transactionId);
-            await (new Promise(function (resolve, reject) {
+            debug(`### Rollback transaction ID [${transactionId}], connection ID [${db.poolId}]`);
+            await (new Promise((resolve, reject) => {
 
-                transaction.rollback(function(err) {
+                transaction.rollback((err) => {
                     if (err) reject(err);
-                    resolve();
+                    resolve(true);
                 });
 
             }));
@@ -80,7 +82,7 @@ var doInTransaction = async (function (task, readOnly) {
         throw err;
 
     } finally {
-        debug('Release database connection for transaction: ' + transactionId);
+        debug(`### Finish transaction ID [${transactionId}], connection ID [${db.poolId}]`);
         if (db) pool.release(db);
     }
 
@@ -88,12 +90,12 @@ var doInTransaction = async (function (task, readOnly) {
 
 module.exports = {
 
-    doReadWrite: function(task) {
+    doReadWrite: (task) => {
 
         return doInTransaction(task, false);
     },
 
-    doReadOnly: function(task) {
+    doReadOnly: (task) => {
 
         return doInTransaction(task, true);
     }

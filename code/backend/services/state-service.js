@@ -1,32 +1,33 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
-var ERROR = require('../utils/service-error-constants');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
-    var stateFind = Promise.promisify(db.models.State.find);
+const getByFilter = (filter, db) => {
+    const stateFind = Promise.promisify(db.models.State.find);
     return stateFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+const getAll = () => {
+    return doReadOnly((db) => {
+        return getByFilter({}, db);
     });
 };
 
-var getStatesByCountry = function(countryId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getStatesByCountry = (countryId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!countryId) {
             errors.push(ERROR.Country.COUNTRY_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            return await (getByFilter({'country_id':countryId}, db));
+            return getByFilter({'country_id':countryId}, db);
         }
 
     });

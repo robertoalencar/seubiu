@@ -1,6 +1,6 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
-    var RequestComment = db.define('RequestComment', {
+    const RequestComment = db.define('RequestComment', {
         id     : { type: 'serial', key: true, mapsTo: 'id' },
         content: { type: 'text', size: 250, required: true, mapsTo: 'content' }
 
@@ -9,7 +9,7 @@ module.exports = function (orm, db) {
         timestamp: true
     });
 
-    Comment.hasOne('request', db.models.Request, { required: true, reverse: 'comments' });
-    Comment.hasOne('author', db.models.User, { required: true });
+    RequestComment.hasOne('request', db.models.Request, { required: true, reverse: 'comments' });
+    RequestComment.hasOne('author', db.models.User, { required: true });
 
 };

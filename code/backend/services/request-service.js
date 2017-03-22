@@ -1,40 +1,42 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
-var ERROR = require('../utils/service-error-constants');
+const _ = require('lodash');
+const await = require('asyncawait/await');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const doReadWrite = require('../utils/orm-db-transaction').doReadWrite;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
-    var requestFind = Promise.promisify(db.models.Request.find);
+const getByFilter = (filter, db) => {
+    const requestFind = Promise.promisify(db.models.Request.find);
     return requestFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = function(filter) {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter(filter, db));
+const getAll = (filter) => {
+    return doReadOnly((db) => {
+        return getByFilter(filter, db);
     });
 };
 
-var getByOwner = function(userId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getByOwner = (userId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            return await (getByFilter({'owner_id':userId}, db));
+            return getByFilter({'owner_id':userId}, db);
         }
 
     });
 };
 
-var create = function(userId, ip, data) {
-    return transaction.doReadWrite(function(db) {
-        var errors = [];
+const create = (userId, ip, data) => {
+    return doReadWrite((db) => {
+        let errors = [];
 
         if (!userId) {
             errors.push(ERROR.User.USER_ID_IS_REQUIRED);
@@ -77,11 +79,11 @@ var create = function(userId, ip, data) {
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
 
-            var requestCreate = Promise.promisify(db.models.Request.create);
-            var request = await (requestCreate({
+            const requestCreate = Promise.promisify(db.models.Request.create);
+            let request = await (requestCreate({
                     'description': data.description,
                     'ip': ip,
                     'address': data.address,
@@ -93,24 +95,28 @@ var create = function(userId, ip, data) {
                     'status_id': db.models.RequestStatus.NEW
             }));
 
-            var serviceFind = Promise.promisify(db.models.Service.find);
-            var services = await (serviceFind({'id': data.serviceIds}));
+            const serviceFind = Promise.promisify(db.models.Service.find);
+            let services = await (serviceFind({'id': data.serviceIds}));
 
-            var requestSetService = Promise.promisify(request.setServices);
+            const requestSetService = Promise.promisify(request.setServices);
             await (requestSetService(services));
 
-            var professionalFind = Promise.promisify(db.models.User.find);
-            var professionals = await (professionalFind({'id': data.professionalIds}));
+            const professionalFind = Promise.promisify(db.models.User.find);
+            let professionals = await (professionalFind({'id': data.professionalIds}));
 
-            var requestProfessionalCreate = Promise.promisify(db.models.RequestProfessional.create);
-            _.forEach(professionals, function(professional) {
+            let requestProfessionals = [];
 
-                await (requestProfessionalCreate({
+            _.forEach(professionals, (professional) => {
+
+                requestProfessionals.push({
                     'request_id': request.id,
                     'professional_id': professional.id
-                }));
+                });
 
             });
+
+            const requestProfessionalCreate = Promise.promisify(db.models.RequestProfessional.create);
+            await (requestProfessionalCreate(requestProfessionals));
 
             return request;
         }
@@ -119,8 +125,45 @@ var create = function(userId, ip, data) {
 
 };
 
+const professionalAccept = (requestId, professionalId) => {
+    return doReadWrite((db) => {
+
+        let errors = [];
+
+        if (!requestId) {
+            errors.push(ERROR.Request.REQUEST_ID_IS_REQUIRED);
+        }
+
+        if (!professionalId) {
+            errors.push(ERROR.Profession.PROFESSION_ID_IS_REQUIRED);
+        }
+
+        if (!_.isEmpty(errors)) {
+            throw ServiceException(errors);
+        } else {
+
+            const requestProfessionalFind = Promise.promisify(db.models.RequestProfessional.find);
+            let requestProfessional = _.first(await (requestProfessionalFind({'request_id': requestId, 'professional_id': professionalId})));
+
+            if (_.isNil(requestProfessional)) {
+                throw ServiceException(ERROR.RequestProfessional.REQUEST_PROFESSIONAL_NOT_FOUND, ERROR.Types.NOT_FOUND);
+            } else if (requestProfessional.accepted) {
+                throw ServiceException([ERROR.RequestProfessional.REQUEST_PROFESSIONAL_ALREADY_ACCEPTED]);
+            } else {
+
+                requestProfessional.accepted = true;
+                const requestProfessionalSave = Promise.promisify(requestProfessional.save);
+                return requestProfessionalSave();
+
+            }
+
+        }
+    });
+};
+
 module.exports = {
     getAll: getAll,
     getByOwner: getByOwner,
-    create: create
+    create: create,
+    professionalAccept: professionalAccept
 };

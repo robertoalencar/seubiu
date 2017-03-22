@@ -1,6 +1,6 @@
-module.exports = function (orm, db) {
+module.exports = (orm, db) => {
 
-    var UserProfile = db.define('UserProfile', {
+    const UserProfile = db.define('UserProfile', {
         id              : { type: 'serial', key: true, mapsTo: 'id' },
         displayName     : { type: 'text', size: 255, mapsTo: 'displayName' },
         about           : { type: 'text', mapsTo: 'about' },

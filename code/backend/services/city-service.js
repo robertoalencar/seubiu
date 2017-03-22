@@ -1,32 +1,32 @@
-var _ = require('lodash');
-var await = require('asyncawait/await');
-var Promise = require('bluebird');
-var transaction = require('../utils/orm-db-transaction');
-var ERROR = require('../utils/service-error-constants');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const doReadOnly = require('../utils/orm-db-transaction').doReadOnly;
+const ERROR = require('../utils/service-error-constants');
+const ServiceException = require('../utils/service-exception');
 
-var getByFilter = function(filter, db) {
-    var cityFind = Promise.promisify(db.models.City.find);
+const getByFilter = (filter, db) => {
+    let cityFind = Promise.promisify(db.models.City.find);
     return cityFind(filter, [ 'description', 'A' ]);
 };
 
-var getAll = function() {
-    return transaction.doReadOnly(function(db) {
-        return await (getByFilter({}, db));
+const getAll = () => {
+    return doReadOnly((db) => {
+        return getByFilter({}, db);
     });
 };
 
-var getCitiesByState = function(stateId) {
-    return transaction.doReadOnly(function(db) {
-        var errors = [];
+const getCitiesByState = (stateId) => {
+    return doReadOnly((db) => {
+        let errors = [];
 
         if (!stateId) {
             errors.push(ERROR.State.STATE_ID_IS_REQUIRED);
         }
 
         if (!_.isEmpty(errors)) {
-            throw errors;
+            throw ServiceException(errors);
         } else {
-            return await(getByFilter({'state_id':stateId}, db));
+            return getByFilter({'state_id':stateId}, db);
         }
     });
 };
