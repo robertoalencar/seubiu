@@ -205,6 +205,8 @@ then
     echo "REDIS_POOL_MAX=50" >> $ENV_FILE
     echo "API_CACHE=true" >> $ENV_FILE
     echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE
+    echo "SERVER_ADDRESS=localhost" >> $ENV_FILE
+    echo "SERVER_PORT=3000" >> $ENV_FILE
 fi
 
 cd $APP_DIR
