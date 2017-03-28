@@ -3,26 +3,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimary">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:paddingTop="5dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
         <ImageView android:src="@mipmap/logo"
             android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="5dp"
             android:layout_gravity="center_horizontal" />
 
         <!--  Name Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/myedit"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_name"
@@ -35,6 +37,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/myedit"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_surname"
@@ -48,6 +51,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/myedit"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_email"
@@ -60,6 +64,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/myedit"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_fone"
@@ -74,13 +79,14 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/myedit"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Password"/>
+                android:hint="Senha"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Signup Button -->
@@ -90,16 +96,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
+            android:background="@drawable/mybutton"
             android:padding="12dp"
-            android:text="Create Account"/>
+            android:text="Criar Conta"/>
 
-        <TextView android:id="@+id/link_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Já possui uma Conta? Clique aqui"
-            android:gravity="center"
-            android:textSize="16dip"/>
 
     </LinearLayout>
 </ScrollView>
