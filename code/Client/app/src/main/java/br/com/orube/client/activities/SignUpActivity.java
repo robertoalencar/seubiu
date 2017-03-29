@@ -106,12 +106,14 @@ public class SignUpActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
                     Log.d("REST", response.body().toString());
+                    Toast.makeText(getBaseContext(), "Conta criada com sucesso", Toast.LENGTH_LONG).show();
 
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivityForResult(intent, REQUEST_SIGNUP);
                 } else {
                     Log.d("REST", response.message());
-                    Toast.makeText(getBaseContext(), response.message() + " - " + response.body(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Erro ao Criar a conta", Toast.LENGTH_LONG).show();
+
                 }
             }
 
@@ -151,7 +153,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Erro ao Criar a conta", Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }

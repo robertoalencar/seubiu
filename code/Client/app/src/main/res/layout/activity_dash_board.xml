@@ -8,6 +8,31 @@
     android:orientation="vertical"
     android:background="@color/colorPrimary">
 
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/black_overlay"
+            app:title="@string/dashboard"
+            app:titleTextColor="@color/colorOffWhite"
+            android:elevation="4dp"
+            android:minHeight="100px"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+
+    <include layout="@layout/content_side_menu" />
+
+
     <Space
         android:layout_width="wrap_content"
         android:layout_height="30px" />
@@ -70,16 +95,6 @@
 
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/bem_vindo"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="18sp"
-        android:textStyle="bold" />
 
 
     <ImageView
