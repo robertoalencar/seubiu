@@ -11,6 +11,7 @@
     "asyncawait": "^1.0.6",
     "bluebird": "^3.4.6",
     "body-parser": "~1.15.1",
+    "compression": "^1.6.2",
     "connect-redis": "^3.2.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
