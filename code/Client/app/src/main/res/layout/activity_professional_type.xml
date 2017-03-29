@@ -8,6 +8,12 @@
     tools:context="br.com.orube.client.activities.DashBoardActivity"
     android:orientation="vertical">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.design.widget.AppBarLayout>
+
 
     <Space
         android:layout_width="wrap_content"

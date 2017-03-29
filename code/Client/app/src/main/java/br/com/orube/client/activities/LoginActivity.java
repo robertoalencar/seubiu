@@ -4,6 +4,7 @@ package br.com.orube.client.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -53,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                login();
+                login(v);
             }
         });
 
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void login() {
+    public void login(View v) {
 
         Log.d(TAG, "Login");
 
@@ -82,11 +83,11 @@ public class LoginActivity extends AppCompatActivity {
             String iMei = getImei();
 
             getProfessions();
-            doLogin(progressDialog, email, password);
+            doLogin(progressDialog, email, password, v);
 
             //postDelayed();
         }else {
-            onLoginFailed();
+            onLoginFailed(v);
         }
     }
 
@@ -113,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void doLogin(final ProgressDialog progressDialog, String email, String password) {
+    private void doLogin(final ProgressDialog progressDialog, String email, String password, final View v) {
 
         SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class);
 
@@ -130,7 +131,8 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Log.d("REST", response.message());
                     progressDialog.dismiss();
-                    Toast.makeText(getBaseContext(), R.string.login_fail, Toast.LENGTH_LONG).show();
+                    Snackbar.make(v , R.string.login_fail, Snackbar.LENGTH_LONG);
+                    //Toast.makeText(getBaseContext(), R.string.login_fail, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -218,8 +220,9 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), R.string.login_fail, Toast.LENGTH_LONG).show();
+    public void onLoginFailed(View v) {
+        //Toast.makeText(getBaseContext(), R.string.login_fail, Toast.LENGTH_LONG).show();
+        Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG);
         email.setText("");
         password.setText("");
 

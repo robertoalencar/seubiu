@@ -26,5 +26,6 @@ require('./user-personal-info-route')(router, authenticate, isAdmin, userHasAcce
 require('./user-search-route')(router, authenticate, isAdmin, userHasAccess);
 require('./user-request-route')(router, authenticate, isAdmin, userHasAccess);
 require('./profession-suggestion-route')(router, authenticate, isAdmin, userHasAccess);
+require('./email-verification-route')(router, authenticate, isAdmin, userHasAccess);
 
 module.exports = router;

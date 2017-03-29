@@ -11,27 +11,27 @@ Login:
 APP Cliente: Tela de Solicitação do Serviço:
 
  - (Arthur) Implementar a tela de solicitação de serviço para refletir o especificado no protótipo (página: 06)
- - (Arthur) (Feature 01.02) Implementar o Clique aqui de sugestões de serviço
+ - (Arthur) (Feature 01.02) Implementar o Clique aqui de sugestões de Profissional
  - (Arthur) Implementar a tela de solicitação de serviço para refletir o especificado no protótipo (páginas: 07 e 08)
 
 
 API: 	
 
- - (Gilberto) (Feature 01.01) Implementar o serviço que irá cadastrar as sugestões de serviço;
- - (Gilberto) Implementar serviço do aceite dos profissionais;
+ - (Gilberto) (Feature 01.01) Implementar o serviço que irá cadastrar as sugestões de profissional;
+ - (Gilberto) Implementar serviço do aceite dos profissionais (sem a notificação);
  - (Gilberto) Implementar serviço da escolha do profissional pelo cliente;
  
 
 Front-end:
 
  - (Everton) Montar o ambiente de Everton
- - (Everton) (Feature 01.03) Implementar a tela que irá aprovar ou não as sugestões de serviço;
+ - (Everton) (Feature 01.03) Implementar a tela que irá aprovar ou não as sugestões de profissionais;
 
 
 
 (FEATURE 01)
 
-Entidade de Sugestão de Serviço:
+Entidade de Sugestão do Profissional:
 
  - cliente:Cliente;
  - dataSugestão:Date;
@@ -54,7 +54,7 @@ Filtro na tela:
 
 Serviço:
 
- - Deverá pegar a sugestão e a partir dela cadastar um novo serviço no banco;
+ - Deverá pegar a sugestão e a partir dela cadastar um novo profissional no banco;
 
 
 
