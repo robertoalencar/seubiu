@@ -1,0 +1,163 @@
+<template>
+
+
+    <div class="tableCss">
+      <div class="col-xs-12">
+        <div class="card">
+         <div class="card-header">
+      
+         <h3>Tabela Sugestões</h3>
+
+         <div class="col-lg-5 inputSearchCss">
+                <div class="input-group">
+                         <input type="search" class="form-control" 
+                         placeholder="Busque por profissão" 
+                          @input="filtro = $event.target.value">
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="card-body no-padding">
+          <table class="datatable table table-striped primary" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Profissão</th>
+            <th>Quantidade</th>
+            <th>Serviços </th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody v-for="(sugestion,index) in sugestionWithFilter">
+        <tr> 
+            <td >{{ sugestion.profissao }} </td>
+            <td >{{ sugestion.quant }} </td>
+            <td >{{ sugestion.serv }} </td>
+            <td> <button @click="changeShowModal()" class="buttonApprove">Aprovar</button>  <button class="buttonDisapprove"> Reprovar </button></td>
+        </tr>
+                 
+   <service-modal  :profissao="sugestion.profissao" v-show="serviceModal" @showModal="changeShowModal" />     
+   
+    </tbody>
+</table>
+        </div>
+      </div>
+    </div>
+  </div>  </div>
+    </div>
+
+
+
+
+</template>
+
+<script>
+
+    import ServiceModal from '../../servicemodal/ServiceModal.vue';
+    import Sugestion from '../../../domain/sugestion/Sugestion';
+
+  export default{
+
+    data() {
+        return {
+            sugestions : [],
+            filtro: '',
+            users: [],
+            serviceModal: false          
+        }
+    },
+
+    components: {
+        'service-modal' : ServiceModal,
+    },
+
+    mounted: function(){
+        alert( 'teste' );
+
+        var formData = new FormData();
+        formData.append('email', 'teste@gmail.com');
+        formData.append('password', 'asdfasdf');
+
+        let data = {
+            email: 'teste@gmail.com',
+            password: 'asdfasdf'
+        };
+
+        let url = 'http://seubiu.com.br/api/authenticate';
+       
+
+        this.$http.post( url , data, { emulateHTTP: true,
+                                     headers: { 'Access-Control-Allow-Origin': true } } )
+            .then(response => {
+
+                 alert( response );
+
+        }, response => {
+            alert(  );
+            console.log( );
+        });
+    },
+
+    created() {
+
+      this.$http.get('http://localhost:3020/v1/sugestions/')
+      .then(res => res.json())
+      .then(resultado => this.sugestions = resultado, err => console.log(err));
+    },
+
+    userAutenthicate(){
+
+        let object = {email: 'teste@gmail.com', senha : 'asdfasdf' };
+
+       // this.$http.post('http://seubiu.com.br/api/authenticate', object)
+       // .then(res => res.json())
+       // .ten(resultado => this.users = resultado, err => console.log(err));
+    },
+
+    methods: {
+        changeShowModal(){
+           this.serviceModal = !this.serviceModal
+        }
+    },
+
+    computed: {
+        sugestionWithFilter(){
+                if(this.filtro){
+                    let exp = new RegExp(this.filtro.trim(), 'i');
+                    return this.sugestions.filter(sugestion => exp.test(sugestion.profissao));
+                } else {
+                    return this.sugestions;
+                }
+        }
+    }
+ }
+
+</script>
+
+<style> 
+
+    .tableCss{ 
+        margin-left:200px;
+
+    }
+
+    .inputSearchCss{
+        margin-left: 400px;
+        border-radius: 12px;
+    }
+
+    .buttonApprove{
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 12px;
+  }
+
+   .buttonDisapprove{
+  background-color: #f44336;
+  color: white;
+  border-radius: 12px;
+  margin-left: 5px;
+  }
+
+
+</style>
