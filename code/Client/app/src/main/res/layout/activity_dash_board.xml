@@ -29,9 +29,9 @@
     </android.support.design.widget.AppBarLayout>
 
 
-
+    <!--
     <include layout="@layout/content_side_menu" />
-
+    -->
 
     <Space
         android:layout_width="wrap_content"
@@ -46,7 +46,6 @@
 
 
         <ImageButton
-
             android:id="@+id/btnSolicitar"
             android:src="@mipmap/btn_solicitar"
             android:layout_width="0dp"
@@ -62,7 +61,6 @@
             />
 
         <ImageButton
-
             android:id="@+id/btnSolicitados"
             android:src="@mipmap/btn_andamento"
             android:layout_width="0dp"
@@ -92,13 +90,12 @@
             android:scaleType="fitCenter" />
         />
 
-
     </LinearLayout>
 
 
 
     <ImageView
-        android:layout_margin="50px"
+        android:layout_margin="80px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center"
