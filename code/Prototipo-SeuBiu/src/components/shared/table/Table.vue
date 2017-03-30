@@ -19,12 +19,11 @@
         
 
         <div class="card-body no-padding">
-          <table class="datatable table table-striped primary" cellspacing="0" width="100%">
+          <table class="datatable table table-striped primary" cellspacing="0" width="100%" >
     <thead>
         <tr>
             <th>Profissão</th>
             <th>Quantidade</th>
-            <th>Serviços </th>
             <th>Status</th>
         </tr>
     </thead>
@@ -32,12 +31,13 @@
         <tr> 
             <td >{{ sugestion.profissao }} </td>
             <td >{{ sugestion.quant }} </td>
-            <td >{{ sugestion.serv }} </td>
-            <td> <button @click="changeShowModal()" class="buttonApprove">Aprovar</button>  <button class="buttonDisapprove"> Reprovar </button></td>
+            <td> <button @click="changeShowModal()" class="buttonApprove">Aprovar</button>
+              <button class="buttonDisapprove" @click="disapproveSugestion(index)"> Reprovar </button>
+              </td>
         </tr>
                  
    <service-modal  :profissao="sugestion.profissao" v-show="serviceModal" @showModal="changeShowModal" />     
-   
+
     </tbody>
 </table>
         </div>
@@ -63,7 +63,8 @@
             sugestions : [],
             filtro: '',
             users: [],
-            serviceModal: false          
+            serviceModal: false,
+            services: []         
         }
     },
 
@@ -71,7 +72,7 @@
         'service-modal' : ServiceModal,
     },
 
-    mounted: function(){
+   /* mounted: function(){
         alert( 'teste' );
 
         var formData = new FormData();
@@ -96,27 +97,46 @@
             alert(  );
             console.log( );
         });
-    },
+    }, */
 
     created() {
 
-      this.$http.get('http://localhost:3020/v1/sugestions/')
+      this.$http.get('http://localhost:3020/sugestions/')
       .then(res => res.json())
       .then(resultado => this.sugestions = resultado, err => console.log(err));
     },
 
-    userAutenthicate(){
+
+    mounted: function(){
+        this.$http.get('http://localhost:3020/services/')
+        .then(res => res.json())
+        .then(resultado => this.services = resultado, err => console.log(err));
+    },
+
+    /* userAutenthicate(){
 
         let object = {email: 'teste@gmail.com', senha : 'asdfasdf' };
 
        // this.$http.post('http://seubiu.com.br/api/authenticate', object)
        // .then(res => res.json())
        // .ten(resultado => this.users = resultado, err => console.log(err));
-    },
-
+    } */ 
+    
     methods: {
         changeShowModal(){
            this.serviceModal = !this.serviceModal
+        },
+
+
+        disapproveSugestion(index){ 
+
+           let indexObject = {
+               index: index
+           } 
+
+            this.$http.post('http://localhost:3020/remove/sugestion/', indexObject)
+            .then(() => res.json())
+            .then(resultado => alert("Sucesso"), err => console.log(err));
         }
     },
 

@@ -1,7 +1,6 @@
 <template>
     
   <transition name="modal">
-  
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
@@ -18,14 +17,15 @@
             <slot name="body">
 
              <input type="text"  class="col-lg-6" placeholder="Adicione aqui os serviços" 
-            v-on:keyup.enter="addService" 
-            v-model="newService">  <button @click="addService" class="buttonClosed"> Adicionar Serviço </button>
+              v-model="newService" @keyup.enter="addService">
+          <button @click="addService" class="buttonClosed"> Adicionar Serviço </button>
             </br></br>
 
 
-              <li v-for="(service,index) in services">
-                 {{ service }}  <button @click="removeService(index)" class="buttonClosed" > X </button>
-             </li>
+         <li v-for="(service, index) in services">
+                  {{ service }}  
+                 <button @click="removeService(index)" class="buttonClosed" > X </button>
+             </li>  
 
 
             </slot>
@@ -35,57 +35,66 @@
 
             <slot name="footer">
               <button class="buttonClosed" @click="changeModal">  Fechar </button> 
-              <button class="buttonSave" @click="saveServices"> Salvar </button>
+                
+              <button tipo="submit" class="buttonSave" @click="saveServices" > Salvar </button>
+              
             </slot>
                
           </div>
         </div>
       </div>
     </div>
+
   </transition>
 </template>
 
 
 <script>
 
-import Sugestion from '../../domain/sugestion/Sugestion';
+import Service from '../../domain/service/Service';
 
 export default{
 
-    data (){
+    data () {
       return {
-        newService : '',
-        services: ['Reboca parede', 'Colocar cerâmica'],
-        quant : 10,
+       
+       /* newService : { 
+          id: '',
+          refe : '',
+          idSugestion: 2
+        }, */
 
-        sugestion : new Sugestion(this.quant , this.profissao, this.services)
+        services : [],
+        newService : ''
+        }
 
-        
+      },
 
-      }
-    },
-
-      props: ['profissao']
-    ,
+      props: ['profissao'],
 
     methods : {
       changeModal(){
         this.$emit('showModal');  
-    },
+       },
+    
      removeService(index){
             this.services.splice(index, 1)
-        },
-        addService(){
+      },
+
+      addService(){
             this.services.push(this.newService)
             this.newService = ''
         },
-        saveServices(){
 
-          //this.$http.post('http://localhost:3020/v1/sugestions', this.sugestion)
-          //.then(() => this.sugestion = new Sugestion(), err => console.log(err));
+      saveServices(){
+
+          console.log(JSON.stringify(this.services))
+
+          this.$http.post('http://localhost:3020/services/', this.services)
+          .then(() => this.services.refe = '', err => console.log(err));
 
           this.$emit('showModal');         
-     },
+     }
         
      
   }
