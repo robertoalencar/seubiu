@@ -8,7 +8,7 @@
           <div class="modal-header">
             <slot name="header">
 
-              Adicione serviços para a profissão :  <span> {{ profissao }} </span>
+              <span class="tittleService">Adicione serviços para essa profissão:  {{ profissao }}  </span>
             
             </slot>
           </div>
@@ -16,17 +16,18 @@
           <div class="modal-body">
             <slot name="body">
 
-             <input type="text"  class="col-lg-6" placeholder="Adicione aqui os serviços" 
+             <input type="text"  class="inputService" placeholder="Adicione aqui os serviços" 
               v-model="newService" @keyup.enter="addService">
           <button @click="addService" class="buttonClosed"> Adicionar Serviço </button>
             </br></br>
 
 
+         <ul class="ul">   
          <li v-for="(service, index) in services">
                   {{ service }}  
-                 <button @click="removeService(index)" class="buttonClosed" > X </button>
+                 <button @click="removeService(index)" class="buttonRemove" > X </button>
              </li>  
-
+          </ul>
 
             </slot>
           </div>
@@ -36,7 +37,7 @@
             <slot name="footer">
               <button class="buttonClosed" @click="changeModal">  Fechar </button> 
                 
-              <button tipo="submit" class="buttonSave" @click="saveServices" > Salvar </button>
+              <button tipo="submit" class="buttonSave" @click="saveServices" > Salvar Serviços </button>
               
             </slot>
                
@@ -106,6 +107,11 @@ export default{
 
 <style>
 
+.tittleService{
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -136,7 +142,7 @@ export default{
 
 .modal-header h3 {
   margin-top: 0;
-  color: #555555
+  color: #555555;
 }
 
 .modal-body {
@@ -163,17 +169,36 @@ export default{
 
 
 .buttonClosed {
-  background-color: #555555;
+  background-color: #696969;
   color: white;
   border-radius: 12px;
    margin-left: 10px;
+   padding: 5px;
   }
 
   .buttonSave {
-  background-color: #4CAF50;
+  background-color: #B22222;
   color: white;
   border-radius: 12px;
    margin-left: 10px;
+   padding: 5px;
+  }
+
+  .inputService{
+    width:50%;
+    height:30px; 
+     border: 2px solid red;
+     border-radius: 4px;
+  } 
+
+  .buttonRemove{
+
+    background-color: #B22222;
+    color: white;
+    border-radius: 12px;
+    margin-left: 5px;
+   padding: px;
+
   }
   
 </style>

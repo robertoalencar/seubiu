@@ -4,7 +4,7 @@
 
 <aside class="app-sidebar" id="sidebar">
   <div class="sidebar-header">
-    <span class="sidebar-brand"><span class="highlight" >SeuBiu </span> Admin</span>
+    <router-link to="/"> <span class="span" >SeuBiu </span> </router-link>
     <button type="button" class="sidebar-toggle">
       <i class="fa fa-times"></i>
     </button>
@@ -46,4 +46,17 @@
       width: auto;
     }
   
+    span {
+     
+     position:absolute;
+     top:50%;
+     left:50%;
+     transform:translate(-50%,-50%);
+     background: #B22222;
+     color: white;
+     padding: 20px;
+     font-size: 15px;
+     border-radius: 12px;
+}
+
   </style>

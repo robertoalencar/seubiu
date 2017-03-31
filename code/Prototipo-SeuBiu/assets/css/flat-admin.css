@@ -2544,7 +2544,7 @@ aside.app-sidebar {
       height: 90px;
       font-size: 1.2em;
       font-weight: 300;
-      color: #444; }
+      color: #B22222; }
       aside.app-sidebar .sidebar-header .sidebar-brand .highlight {
         padding: 2px 5px;
         font-weight: 200;
@@ -2835,7 +2835,7 @@ aside.app-sidebar {
               padding: 0.9rem 1.5rem; }
               aside.app-sidebar .sidebar-footer ul.menu > li.dropdown .dropdown-menu > li a:hover {
                 background-color: #FFF;
-                color: #18aa4a; }
+                color: #B22222; }
   aside.app-sidebar.active {
     transform: translate(0, 0); }
 
@@ -2936,7 +2936,7 @@ aside.app-sidebar {
 aside.app-sidebar {
   background-color: #FFF; }
   aside.app-sidebar .sidebar-header .sidebar-brand .highlight {
-    background-color: #29c75f; }
+    background-color: #B22222; }
   aside.app-sidebar .sidebar-menu ul.sidebar-nav > li > a .icon {
     background-color: rgba(141, 146, 147, 0.15);
     color: rgba(141, 146, 147, 0.45); }
@@ -2946,19 +2946,19 @@ aside.app-sidebar {
     background-color: rgba(41, 199, 95, 0.25);
     color: rgba(41, 199, 95, 0.75); }
   aside.app-sidebar .sidebar-menu ul.sidebar-nav > li.active > a .title {
-    color: #29c75f; }
+    color: #B22222; }
   aside.app-sidebar .sidebar-menu ul.sidebar-nav > li.dropdown > .dropdown-menu > ul > li.section {
-    color: #29c75f; }
+    color: #B22222; }
   aside.app-sidebar .sidebar-menu ul.sidebar-nav > li.dropdown.open > a:after {
     border-right-color: #FFF; }
   aside.app-sidebar .sidebar-footer {
     border-top-color: rgba(0, 0, 0, 0.1);
     background-color: #FFF; }
     aside.app-sidebar .sidebar-footer ul.menu > li.dropdown .dropdown-menu {
-      border-bottom-color: #29c75f; }
+      border-bottom-color: #B22222; }
 
 .app-login {
-  background: #29c75f;
+  background: #B22222;
   padding: 0 !important; }
   .app-login .app-body {
     position: relative;

@@ -6,12 +6,12 @@
         <div class="card">
          <div class="card-header">
       
-         <h3>Tabela Sugestões</h3>
+         <span class="tittle">Tabela Sugestões</span>
 
          <div class="col-lg-5 inputSearchCss">
                 <div class="input-group">
-                         <input type="search" class="form-control" 
-                         placeholder="Busque por profissão" 
+                         <input type="search" class="form-search" 
+                         placeholder="Busque pela profissão." 
                           @input="filtro = $event.target.value">
                 </div>
             </div>
@@ -29,14 +29,14 @@
     </thead>
     <tbody v-for="(sugestion,index) in sugestionWithFilter">
         <tr> 
-            <td >{{ sugestion.profissao }} </td>
-            <td >{{ sugestion.quant }} </td>
+            <td>{{ sugestion.profissao }} </td>
+            <td>{{ sugestion.quant }} </td>
             <td> <button @click="changeShowModal()" class="buttonApprove">Aprovar</button>
               <button class="buttonDisapprove" @click="disapproveSugestion(index)"> Reprovar </button>
               </td>
         </tr>
                  
-   <service-modal  :profissao="sugestion.profissao" v-show="serviceModal" @showModal="changeShowModal" />     
+   <service-modal   :profissao="sugestion.profissao" v-show="serviceModal" @showModal="changeShowModal" />     
 
     </tbody>
 </table>
@@ -64,7 +64,7 @@
             filtro: '',
             users: [],
             serviceModal: false,
-            services: []         
+            services: []  
         }
     },
 
@@ -123,10 +123,11 @@
     } */ 
     
     methods: {
+
         changeShowModal(){
            this.serviceModal = !this.serviceModal
-        },
 
+        },
 
         disapproveSugestion(index){ 
 
@@ -167,17 +168,35 @@
     }
 
     .buttonApprove{
-  background-color: #4CAF50;
+  background-color: #696969;
   color: white;
   border-radius: 12px;
+  padding: 10px;
   }
 
    .buttonDisapprove{
-  background-color: #f44336;
+  background-color: #B22222;
   color: white;
   border-radius: 12px;
   margin-left: 5px;
+  padding: 10px;
   }
 
+  .tittle{
+    margin-right: 5px;
+     background: #B22222;
+     color: white;
+     padding: 10px;
+     font-size: 15px;
+     border-radius: 12px;
+     font-style: comic;
+  }
+
+  .form-search{
+    width:100%;
+    height:40px; 
+     border: 2px solid red;
+     border-radius: 4px;
+  }
 
 </style>
