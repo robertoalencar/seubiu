@@ -23,6 +23,16 @@
 
     <string name="escolha_profissional">Escolha o profissional:</string>
     <string name="qual_servico">Para qual serviço:</string>
+    <string name="servico">Serviço:</string>
+
+    <string name="resumo">Faça um resumo do que você precisa:</string>
+
+    <string name="onde_sera">Onde será o serviço:</string>
+    <string name="mapa">Ver no Mapa</string>
+
+    <string name="qnd_sera">Quando será o serviço:</string>
+    <string name="escolha_opcao">Escolha uma Opção</string>
+
 
     <string name="bem_vindo">Seja bem vindo!</string>
     <string name="solicitar">Solicitar</string>
@@ -34,13 +44,11 @@
     <string name="nao_encontrou">Não encontrou o profissional que precisa?</string>
     <string name="clique_aqui">Clique aqui</string>
     <string name="professional">Professional:</string>
-    <string name="servico">Para qual serviço?</string>
     <string name="title_activity_side_menu">SideMenuActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="login_fail">Login Falhou</string>
-
 
 
     <string name="action_settings">Settings</string>

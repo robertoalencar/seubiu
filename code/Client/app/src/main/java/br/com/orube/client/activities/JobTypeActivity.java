@@ -51,8 +51,8 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                SeuBiuRequest.getInstance().setProfession( spinner.getSelectedItem().toString() );
                 List<Profession> professions = SeuBiuRequest.getInstance().getProfessionList();
+                SeuBiuRequest.getInstance().setProfession( spinner.getSelectedItem().toString() );
 
                 getServices();
 
@@ -97,9 +97,8 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
 
-        Intent intent;
         if( v == button ){
-            SeuBiuRequest.getInstance().setProfession( spinner.getSelectedItem().toString() );
+            avancar();
         }
     }
 

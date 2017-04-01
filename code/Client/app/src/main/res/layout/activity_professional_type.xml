@@ -6,89 +6,161 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="br.com.orube.client.activities.DashBoardActivity"
-    android:orientation="vertical">
-
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.design.widget.AppBarLayout>
-
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="40px" />
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_margin="15px"
+                android:text="@string/professional"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/labelProfessional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_margin="15px"
+                android:text="@string/escolha_profissional"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="15px"
+            android:text="@string/servico"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/professional"
-            android:layout_marginLeft="5pt"
-            android:layout_gravity="center_horizontal|left" />
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+
+        <ListView
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15px"
+            android:background="@drawable/myedit" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_margin="15px"
+            android:text="@string/resumo"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/lblProfessional"
-            android:layout_marginLeft="5pt"
-            android:layout_gravity="center_horizontal|left" />
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+
+        <EditText
+            android:id="@+id/edtResumo"
+            android:layout_width="match_parent"
+            android:layout_height="200px"
+            android:layout_margin="15px"
+            android:background="@drawable/myedit"
+            android:ems="3"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:lines="4" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_margin="15px"
+            android:text="@string/onde_sera"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnMapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="15px"
+            android:background="@drawable/mybutton2"
+            android:text="@string/mapa"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_margin="15px"
+            android:text="@string/qnd_sera"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="15px"
+            android:background="@drawable/mybutton2"
+            android:text="@string/escolha_opcao"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnProximo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="15px"
+            android:background="@drawable/mybutton"
+            android:text="@string/proximo"
+            android:textColor="@color/colorOffWhite"
+            android:textStyle="bold" />
+
 
     </LinearLayout>
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="30px" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/servico"
-        android:id="@+id/lblServicos"
-        android:layout_marginLeft="5pt"
-        android:layout_gravity="center_horizontal|left" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="30px" />
-
-
-
-    <ListView
-        android:id="@+id/listView1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Onde será o serviço?"
-        android:id="@+id/textView2"
-        android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ver no Mapa"
-        android:id="@+id/btnMapa"
-        android:layout_gravity="center_horizontal" />
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="30px" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/proximo"
-        android:id="@+id/btnAvancar2"
-        android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/step2"
+            android:layout_margin="50px"
+
+            android:layout_gravity="fill_vertical|center"/>
+    </LinearLayout>
 
 </LinearLayout>

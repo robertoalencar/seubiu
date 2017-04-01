@@ -1,5 +1,6 @@
 package br.com.orube.client.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,20 +22,44 @@ import butterknife.ButterKnife;
 
 public class ProfessionalTypeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ListView listView;
-    Model[] modelItems = null;
-
     private Button btnMapa;
     private Button btnProximo;
 
-    @Bind(R.id.lblProfessional)
+    @Bind(R.id.labelProfessional)
     public TextView lblProfessional;
+
+    @Bind(R.id.listView1)
+    public ListView lista;
+
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_professional_type);
         ButterKnife.bind(this);
+
+        SeuBiuRequest request = SeuBiuRequest.getInstance();
+        lblProfessional.setText( request.getProfession().getDescription() );
+
+        List<Service> services = request.getServiceList();
+        List<Model> modelList = new ArrayList<>();
+
+        if( services != null && !services.isEmpty() ){
+            for(Service s : services){
+                modelList.add(new Model(s.getDescription(), 1));
+            }
+            Model[] modelItems = modelList.toArray(new Model[modelList.size()]);
+
+            CustomAdapter adapter = new CustomAdapter(context, modelItems);
+            lista.setAdapter(adapter);
+        }
+
+        lista.setEnabled( false );
+
+
+        /*
+
 
         btnMapa = (Button)findViewById(R.id.btnMapa);
         btnProximo = (Button)findViewById(R.id.btnAvancar2);
@@ -57,7 +82,7 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
 
         CustomAdapter adapter = new CustomAdapter(this, modelItems);
         listView.setAdapter(adapter);
-
+        */
     }
 
     @Override

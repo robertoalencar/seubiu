@@ -37,9 +37,14 @@ public class DashBoardActivity extends AppCompatActivity
         btnSolicitados = (ImageButton)findViewById(R.id.btnSolicitados);
         btnRealizados = (ImageButton)findViewById(R.id.btnRealizados);
 
-        /*
+
+        btnSolicitar.setOnClickListener(this);
+        btnSolicitados.setOnClickListener( this );
+        btnRealizados.setOnClickListener( this );
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -49,11 +54,7 @@ public class DashBoardActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        */
 
-        btnSolicitar.setOnClickListener(this);
-        btnSolicitados.setOnClickListener( this );
-        btnRealizados.setOnClickListener( this );
 
     }
 
@@ -68,6 +69,7 @@ public class DashBoardActivity extends AppCompatActivity
             startActivity(intent);
         }
     }
+
 
 
     @Override
@@ -126,4 +128,6 @@ public class DashBoardActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }
