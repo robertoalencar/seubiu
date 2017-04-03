@@ -31,12 +31,12 @@
         <tr> 
             <td>{{ sugestion.profissao }} </td>
             <td>{{ sugestion.quant }} </td>
-            <td> <button @click="changeShowModal()" class="buttonApprove">Aprovar</button>
+            <td> <button @click="changeShowModal(sugestion)" class="buttonApprove">Aprovar</button>
               <button class="buttonDisapprove" @click="disapproveSugestion(index)"> Reprovar </button>
               </td>
         </tr>
                  
-   <service-modal   :profissao="sugestion.profissao" v-show="serviceModal" @showModal="changeShowModal" />     
+   <service-modal  :sugestion="pickSugestion"  v-show="serviceModal" @showModal="changeShowModal" />     
 
     </tbody>
 </table>
@@ -64,40 +64,15 @@
             filtro: '',
             users: [],
             serviceModal: false,
-            services: []  
+            services: [] ,
+            pickSugestion : {},
+            token: ''
         }
     },
 
     components: {
         'service-modal' : ServiceModal,
     },
-
-   /* mounted: function(){
-        alert( 'teste' );
-
-        var formData = new FormData();
-        formData.append('email', 'teste@gmail.com');
-        formData.append('password', 'asdfasdf');
-
-        let data = {
-            email: 'teste@gmail.com',
-            password: 'asdfasdf'
-        };
-
-        let url = 'http://seubiu.com.br/api/authenticate';
-       
-
-        this.$http.post( url , data, { emulateHTTP: true,
-                                     headers: { 'Access-Control-Allow-Origin': true } } )
-            .then(response => {
-
-                 alert( response );
-
-        }, response => {
-            alert(  );
-            console.log( );
-        });
-    }, */
 
     created() {
 
@@ -112,19 +87,12 @@
         .then(res => res.json())
         .then(resultado => this.services = resultado, err => console.log(err));
     },
-
-    /* userAutenthicate(){
-
-        let object = {email: 'teste@gmail.com', senha : 'asdfasdf' };
-
-       // this.$http.post('http://seubiu.com.br/api/authenticate', object)
-       // .then(res => res.json())
-       // .ten(resultado => this.users = resultado, err => console.log(err));
-    } */ 
     
     methods: {
 
-        changeShowModal(){
+        changeShowModal(sugestion){
+           
+           this.pickSugestion = sugestion
            this.serviceModal = !this.serviceModal
 
         },
@@ -135,10 +103,21 @@
                index: index
            } 
 
-            this.$http.post('http://localhost:3020/remove/sugestion/', indexObject)
+           this.$http.post('http://localhost:3020/remove/sugestion/', indexObject)
+           .then( function(res) {
+                let result = res.json();
+                alert("Objeto removido com sucesso");
+                return result;
+           }).catch(function(err){
+               return console.log(err);
+           });
+
+
+           /* this.$http.post('http://localhost:3020/remove/sugestion/', indexObject)
             .then(() => res.json())
-            .then(resultado => alert("Sucesso"), err => console.log(err));
-        }
+            .then(resultado => alert("Objeto Sucesso"), err => console.log(err)); */
+    }
+    
     },
 
     computed: {
@@ -150,8 +129,47 @@
                     return this.sugestions;
                 }
         }
+    },
+
+    
+    mounted: function(){
+
+            var user = new FormData();
+            user.append('email', 'teste@gmail.com');
+            user.append('password', 'asdfasdf');
+            
+            let url = 'http://seubiu.com.br/api/authenticate';
+
+            let header = {'Content-Type': 'application/x-www-form-urlencoded'}
+        
+        this.$http.post(url, user, header)
+            .then(function(res) {
+                let resultado = res.json();
+                alert("Requisição efetuada");
+                return resultado;
+            }).catch( function(err){
+                alert("Falhou")
+                return console.log(err);
+            });
+
+     /*   this.$http.post('http://seubiu.com.br/api/authenticate', users, {
+               'Content-Type': 'application/x-www-form-urlencoded'
+           })
+        .then(function(res){
+                  let result = JSON.stringify(res);
+                   alert('Sucess');
+                   return result;               
+                })          
+          .then(function(result){
+            this.token = result;
+            alert(token);
+            return token;
+        }).catch(err => console.log(JSON.stringify(err))); */
+
+
     }
- }
+
+  }
 
 </script>
 

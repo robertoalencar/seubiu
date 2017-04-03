@@ -8,7 +8,7 @@
           <div class="modal-header">
             <slot name="header">
 
-              <span class="tittleService">Adicione serviços para essa profissão:  {{ profissao }}  </span>
+              <span class="tittleService">Adicione serviços para essa profissão:  {{ sugestion.profissao }}  </span>
             
             </slot>
           </div>
@@ -19,8 +19,7 @@
              <input type="text"  class="inputService" placeholder="Adicione aqui os serviços" 
               v-model="newService" @keyup.enter="addService">
           <button @click="addService" class="buttonClosed"> Adicionar Serviço </button>
-            </br></br>
-
+            </br></br>     
 
          <ul class="ul">   
          <li v-for="(service, index) in services">
@@ -59,19 +58,13 @@ export default{
     data () {
       return {
        
-       /* newService : { 
-          id: '',
-          refe : '',
-          idSugestion: 2
-        }, */
-
         services : [],
         newService : ''
         }
 
       },
 
-      props: ['profissao'],
+      props: ['profissao', 'sugestion'],
 
     methods : {
       changeModal(){
