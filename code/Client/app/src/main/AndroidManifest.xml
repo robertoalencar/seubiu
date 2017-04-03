@@ -76,7 +76,10 @@
         <activity
             android:name=".activities.SideMenuActivity"
             android:label="@string/title_activity_side_menu"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
     </application>
 
 </manifest>

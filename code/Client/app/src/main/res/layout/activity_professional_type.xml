@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="br.com.orube.client.activities.DashBoardActivity"
+    tools:context="br.com.orube.client.activities.JobTypeActivity"
     android:orientation="vertical"
     android:background="@color/colorPrimary">
 
@@ -106,6 +106,17 @@
             android:background="@drawable/mybutton2"
             android:text="@string/mapa"
             android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnAdress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="15px"
+            android:background="@drawable/mybutton3"
+            android:text="@string/enderecos_salvos"
+            android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold" />
 
 

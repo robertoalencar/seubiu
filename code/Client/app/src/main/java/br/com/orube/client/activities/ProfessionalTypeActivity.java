@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 
 public class ProfessionalTypeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnMapa;
     private Button btnProximo;
 
     @Bind(R.id.labelProfessional)
@@ -30,6 +29,9 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
 
     @Bind(R.id.listView1)
     public ListView lista;
+
+    @Bind(R.id.btnMapa)
+    public Button btnMapa;
 
     private Context context = this;
 
@@ -57,6 +59,7 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
 
         lista.setEnabled( false );
 
+        btnMapa.setOnClickListener( this );
 
         /*
 
@@ -64,7 +67,7 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
         btnMapa = (Button)findViewById(R.id.btnMapa);
         btnProximo = (Button)findViewById(R.id.btnAvancar2);
 
-        btnMapa.setOnClickListener( this );
+
         btnProximo.setOnClickListener( this );
 
         lblProfessional.setText( SeuBiuRequest.getInstance().getProfession().getDescription());
@@ -90,7 +93,7 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
 
         Intent intent = null;
         if( v == btnMapa ){
-            intent = new Intent(this, JobLocationActivity.class);
+            intent = new Intent(this, MapsActivity.class);
         }else if( v == btnProximo){
             intent = new Intent(this, JobDescriptionActivity.class);
         }

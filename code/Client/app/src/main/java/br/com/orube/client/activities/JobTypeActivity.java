@@ -24,6 +24,7 @@ import br.com.orube.client.util.Model;
 import br.com.orube.client.util.ServiceGenerator;
 import br.com.orube.client.util.SeuBiuRequest;
 import br.com.orube.client.util.SeuBiuRest;
+import butterknife.Bind;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,6 +39,8 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
     private Spinner spinner_servico;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
 
         spinner = (Spinner)findViewById(R.id.SpnJobType);
         button = (Button)findViewById(R.id.btnProximo);
+
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
