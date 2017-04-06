@@ -29,6 +29,18 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
         });
 
+    router.route('/groupedprofessionsuggestions')
+
+        .get(isAuthenticated, isAdmin, (req, res) => {
+
+            professionSuggestionService.getAllGrouped(req.query).then((groupedSuggestions) => {
+                res.json(groupedSuggestions);
+            }, (err) => {
+                routeUtil.handleException(res, err);
+            });
+
+        });
+
     router.route('/professionsuggestions/:id')
 
         .get(isAuthenticated, isAdmin, (req, res) => {

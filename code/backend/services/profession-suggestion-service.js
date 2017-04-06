@@ -17,6 +17,31 @@ const getAll = (filter) => {
     });
 };
 
+const getAllGrouped = () => {
+    return doReadOnly(db => {
+        return new Promise((resolve, reject) => {
+
+        let sql = `
+            SELECT MIN(ps."id") as id, ps."profession" as suggestion, COUNT(ps."user_id") as total
+            FROM "profession_suggestion" ps
+            WHERE ps."approved" = ?
+            GROUP BY ps."profession"
+            ORDER BY ps."profession" ASC
+        `;
+
+        const parameters = [ false ];
+
+        db.driver.execQuery(sql, parameters,
+            (err, data) => {
+                if (err) reject(err);
+                resolve(data);
+            });
+
+        });
+    });
+
+};
+
 const getById = (id) => {
     return doReadOnly((db) => {
         let errors = [];
@@ -167,8 +192,16 @@ const approve = function(id) {
 
             professionSuggestion.approved = true;
 
-            const professionSuggestionSave = Promise.promisify(professionSuggestion.save);
-            professionSuggestion = await (professionSuggestionSave());
+            await (new Promise((resolve, reject) => {
+
+                db.models.ProfessionSuggestion.find({'profession': professionSuggestion.profession}).each(function (suggestion) {
+                    suggestion.approved = true;
+                }).save(function (err) {
+                    if (err) reject(err);
+                    resolve(true);
+                });
+
+            }));
 
             const professionCreate = Promise.promisify(db.models.Profession.create);
             let newProfession = await (professionCreate(
@@ -187,6 +220,7 @@ const approve = function(id) {
 
 module.exports = {
     getAll: getAll,
+    getAllGrouped: getAllGrouped,
     getById: getById,
     create: create,
     remove: remove,
