@@ -8,16 +8,30 @@
       
          <span class="tittle">Tabela Sugestões</span>
 
+                    <div class="messageReprove" v-show="remove">
+                    
+                    <span >Sugestão reprovada com sucesso</span>
+                    
+                    </div>
+
+                    <div class="messageReprove" v-show="aprove">
+                
+                    <span >Sugestão aprovada com sucesso</span>
+                    
+                    </div>
+                    
+
          <div class="col-lg-5 inputSearchCss">
                 <div class="input-group">
                          <input type="search" class="form-search" 
                          placeholder="Busque pela profissão." 
                           @input="filtro = $event.target.value">
+                          
                 </div>
             </div>
         </div>
         
-
+            
         <div class="card-body no-padding">
           <table class="datatable table table-striped primary" cellspacing="0" width="100%" >
     <thead>
@@ -31,7 +45,7 @@
         <tr> 
             <td>{{ sugestion.profissao }} </td>
             <td>{{ sugestion.quant }} </td>
-            <td> <button @click="changeShowModal(sugestion)" class="buttonApprove">Aprovar</button>
+            <td> <button @click="changeShowModal(sugestion)" class="buttonApprove">Informar Serviços</button>
               <button class="buttonDisapprove" @click="disapproveSugestion(index)"> Reprovar </button>
               </td>
         </tr>
@@ -66,7 +80,9 @@
             serviceModal: false,
             services: [] ,
             pickSugestion : {},
-            token: ''
+            token: '',
+            remove: false,
+            aprove: false,
         }
     },
 
@@ -76,24 +92,30 @@
 
     created() {
 
-      this.$http.get('http://localhost:3020/sugestions/')
-      .then(res => res.json())
-      .then(resultado => this.sugestions = resultado, err => console.log(err));
-    },
-
-
-    mounted: function(){
-        this.$http.get('http://localhost:3020/services/')
-        .then(res => res.json())
-        .then(resultado => this.services = resultado, err => console.log(err));
+       this.loadSugestions();
     },
     
     methods: {
 
+        loadSugestions() {
+         this.$http.get('http://localhost:3020/sugestions/')
+        .then(res => res.json())
+        .then(resultado => this.sugestions = resultado, err => console.log(err));   
+
+        },
+        
         changeShowModal(sugestion){
            
            this.pickSugestion = sugestion
            this.serviceModal = !this.serviceModal
+          
+        },
+
+        messageAproved(){
+            
+                /*    setTimeout(function(){
+                        this.aprove = false;
+                    }.bind(this), 3000); */
 
         },
 
@@ -106,18 +128,21 @@
            this.$http.post('http://localhost:3020/remove/sugestion/', indexObject)
            .then( function(res) {
                 let result = res.json();
-                alert("Objeto removido com sucesso");
                 return result;
            }).catch(function(err){
                return console.log(err);
            });
+     
+             this.remove = true;
 
+            setTimeout(function(){
+                this.remove = false;
+               
+            }.bind(this), 3000); 
 
-           /* this.$http.post('http://localhost:3020/remove/sugestion/', indexObject)
-            .then(() => res.json())
-            .then(resultado => alert("Objeto Sucesso"), err => console.log(err)); */
-    }
-    
+        
+
+      }
     },
 
     computed: {
@@ -129,26 +154,30 @@
                     return this.sugestions;
                 }
         }
+
     },
 
     
-    mounted: function(){
+   /* mounted: function(){
 
             var user = new FormData();
             user.append('email', 'teste@gmail.com');
             user.append('password', 'asdfasdf');
-            
+
             let url = 'http://seubiu.com.br/api/authenticate';
 
-            let header = {'Content-Type': 'application/x-www-form-urlencoded'}
+            let header =  {'Content-type': 'application/x-www-form-urlencoded',
+                            'Access-Control-Allow-Origin':'http://seubiu.com.br',
+                            'Origin':'http://localhost:8081'};
+      
         
-        this.$http.post(url, user, header)
+        this.$http.post(url, user, JSON.stringify(header))
             .then(function(res) {
                 let resultado = res.json();
-                alert("Requisição efetuada");
+                alert("sucess");
                 return resultado;
             }).catch( function(err){
-                alert("Falhou")
+                alert("fail")
                 return console.log(err);
             });
 
@@ -166,9 +195,6 @@
             return token;
         }).catch(err => console.log(JSON.stringify(err))); */
 
-
-    }
-
   }
 
 </script>
@@ -181,7 +207,8 @@
     }
 
     .inputSearchCss{
-        margin-left: 400px;
+        width: 30%;
+        margin-left: auto;
         border-radius: 12px;
     }
 
@@ -216,5 +243,17 @@
      border: 2px solid red;
      border-radius: 4px;
   }
+
+  .messageReprove{
+    margin:auto;   
+    background-color: #696969;
+    color: white;
+    border-radius: 12px;
+    padding: 10px;
+    width: 30%;
+    text-align: center;
+
+  }
+
 
 </style>

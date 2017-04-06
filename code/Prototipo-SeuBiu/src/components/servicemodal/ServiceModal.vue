@@ -36,7 +36,7 @@
             <slot name="footer">
               <button class="buttonClosed" @click="changeModal">  Fechar </button> 
                 
-              <button tipo="submit" class="buttonSave" @click="saveServices" > Salvar Serviços </button>
+              <button tipo="submit" class="buttonSave" @click="saveServices" > Aprovar Sugestão </button>
               
             </slot>
                
@@ -87,7 +87,9 @@ export default{
           this.$http.post('http://localhost:3020/services/', this.services)
           .then(() => this.services.refe = '', err => console.log(err));
 
-          this.$emit('showModal');         
+          this.$emit('teste');
+          this.$emit('showModal');
+
      }
         
      
