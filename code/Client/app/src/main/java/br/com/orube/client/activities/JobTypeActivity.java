@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import br.com.orube.client.util.ServiceGenerator;
 import br.com.orube.client.util.SeuBiuRequest;
 import br.com.orube.client.util.SeuBiuRest;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +46,9 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
 
     private SeuBiuRequest request = SeuBiuRequest.getInstance();
 
+    @Bind(R.id.cliqueAqui)
+    TextView linkCliqueAqui;
+
 
 
 
@@ -56,6 +61,10 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
         spinner = (Spinner)findViewById(R.id.SpnJobType);
         button = (Button)findViewById(R.id.btnProximo);
         listView = (ListView) findViewById(R.id.listView1);
+        ButterKnife.bind( this );
+
+        linkCliqueAqui.setOnClickListener( this );
+
         listView.setClickable( true );
 
 
@@ -114,10 +123,11 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
 
         if( v == button ){
             Model[] model = ((CustomAdapter)listView.getAdapter()).getModelItems();
-            for(Model m : model ){
-                Log.i("Model", m.getName() + " - " + m.getValue() );
-            }
+            request.setServiceListSelected(model);
             avancar();
+        }else if( v == linkCliqueAqui ){
+            Intent intent = new Intent(this, SugetionActivity.class);
+            startActivity( intent );
         }
     }
 

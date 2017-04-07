@@ -25,6 +25,9 @@
     <string name="qual_servico">Para qual serviço:</string>
     <string name="servico">Serviço:</string>
 
+
+    <string name="sugestao">Sugestão:</string>
+
     <string name="resumo">Faça um resumo do que você precisa:</string>
 
     <string name="onde_sera">Onde será o serviço:</string>
@@ -35,7 +38,7 @@
 
     <string name="enderecos_salvos">Endereços Salvos</string>
 
-
+    <string name="salvar">Salvar</string>
     <string name="bem_vindo">Seja bem vindo!</string>
     <string name="solicitar">Solicitar</string>
     <string name="solicitados">Serviços Solicitados</string>

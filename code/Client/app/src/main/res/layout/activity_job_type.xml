@@ -96,7 +96,7 @@
             android:text="@string/clique_aqui"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
-            android:id="@+id/textView3"
+            android:id="@+id/cliqueAqui"
             android:layout_gravity="center_horizontal" />
 
         <ImageView

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="br.com.orube.client.activities.JobTypeActivity"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
+
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50px" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="15px"
+        android:text="@string/sugestao"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="14dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/myedit"
+        android:padding="20px"
+        android:layout_margin="20px"/>
+
+
+
+
+
+        <Button
+            android:id="@+id/btnProximo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="15px"
+            android:background="@drawable/mybutton"
+            android:text="@string/salvar"
+            android:textColor="@color/colorOffWhite"
+            android:textStyle="bold" />
+
+
+
+
+
+</LinearLayout>

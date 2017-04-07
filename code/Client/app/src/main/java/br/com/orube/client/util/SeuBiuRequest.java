@@ -24,7 +24,7 @@ public class SeuBiuRequest {
 
     private List<Service> serviceList;
 
-    private List<Service> serviceListSelected;
+    private Model[] serviceListSelected;
 
     private AuthToken token;
 
@@ -52,11 +52,11 @@ public class SeuBiuRequest {
         this.profession = profession;
     }
 
-    public List<Service> getServiceListSelected() {
+    public Model[] getServiceListSelected() {
         return serviceListSelected;
     }
 
-    public void setServiceListSelected(List<Service> serviceListSelected) {
+    public void setServiceListSelected(Model[] serviceListSelected) {
         this.serviceListSelected = serviceListSelected;
     }
 
