@@ -42,22 +42,13 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
         ButterKnife.bind(this);
 
         SeuBiuRequest request = SeuBiuRequest.getInstance();
-        lblProfessional.setText( request.getProfession().getDescription() );
+        lblProfessional.setText(request.getProfession().getDescription());
 
-        List<Service> services = request.getServiceList();
-        List<Model> modelList = new ArrayList<>();
+        CustomAdapter adapter = new CustomAdapter(context, request.getServiceListSelected());
+        lista.setAdapter(adapter);
 
-        if( services != null && !services.isEmpty() ){
-            for(Service s : services){
-                modelList.add(new Model(s.getDescription(), 1));
-            }
-            Model[] modelItems = modelList.toArray(new Model[modelList.size()]);
 
-            CustomAdapter adapter = new CustomAdapter(context, modelItems);
-            lista.setAdapter(adapter);
-        }
-
-        lista.setEnabled( false );
+        lista.setEnabled(false);
 
         btnMapa.setOnClickListener( this );
 

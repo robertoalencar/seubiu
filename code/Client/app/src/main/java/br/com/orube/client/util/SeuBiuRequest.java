@@ -20,11 +20,11 @@ public class SeuBiuRequest {
 
     private Profession profession;
 
-    private Service service;
-
     private List<Profession> professionList;
 
     private List<Service> serviceList;
+
+    private Model[] serviceListSelected;
 
     private AuthToken token;
 
@@ -52,12 +52,12 @@ public class SeuBiuRequest {
         this.profession = profession;
     }
 
-    public Service getService() {
-        return service;
+    public Model[] getServiceListSelected() {
+        return serviceListSelected;
     }
 
-    public void setService(Service service) {
-        this.service = service;
+    public void setServiceListSelected(Model[] serviceListSelected) {
+        this.serviceListSelected = serviceListSelected;
     }
 
     public static AuthToken getToken() {
@@ -78,14 +78,7 @@ public class SeuBiuRequest {
         }
     }
 
-    public void setService(String selectedItem) {
 
-        for(Service p : serviceList){
-            if(p.getDescription().equals(selectedItem)){
-                instance.setService( p );
-            }
-        }
-    }
 
 
 
