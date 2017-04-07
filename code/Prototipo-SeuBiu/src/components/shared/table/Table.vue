@@ -1,6 +1,5 @@
 <template>
 
-
     <div class="tableCss">
       <div class="col-xs-12">
         <div class="card">
@@ -10,13 +9,13 @@
 
                     <div class="messageReprove" v-show="remove">
                     
-                    <span >Sugestão reprovada com sucesso</span>
+                        <span >Sugestão reprovada com sucesso</span>
                     
                     </div>
 
-                    <div class="messageReprove" v-show="aprove">
+                    <div class="messageReprove" @teste="aprove = false" v-show="aprove">
                 
-                    <span >Sugestão aprovada com sucesso</span>
+                        <span >Sugestão aprovada com sucesso</span>
                     
                     </div>
                     
@@ -30,38 +29,36 @@
                 </div>
             </div>
         </div>
-        
-            
+           
         <div class="card-body no-padding">
-          <table class="datatable table table-striped primary" cellspacing="0" width="100%" >
-    <thead>
-        <tr>
-            <th>Profissão</th>
-            <th>Quantidade</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody v-for="(sugestion,index) in sugestionWithFilter">
-        <tr> 
-            <td>{{ sugestion.profissao }} </td>
-            <td>{{ sugestion.quant }} </td>
-            <td> <button @click="changeShowModal(sugestion)" class="buttonApprove">Informar Serviços</button>
-              <button class="buttonDisapprove" @click="disapproveSugestion(index)"> Reprovar </button>
-              </td>
-        </tr>
-                 
-   <service-modal  :sugestion="pickSugestion"  v-show="serviceModal" @showModal="changeShowModal" />     
+                    <table class="datatable table table-striped primary" cellspacing="0" width="100%" >
+                <thead>
+                    <tr>
+                        <th>Profissão</th>
+                        <th>Quantidade</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody v-for="(sugestion,index) in sugestionWithFilter">
+                    <tr> 
+                        <td>{{ sugestion.profissao }} </td>
+                        <td>{{ sugestion.quant }} </td>
+                        <td> <button @click="changeShowModal(sugestion, index)" class="buttonApprove">Informar Serviços</button>
+                        <button class="buttonDisapprove" @click="disapproveSugestion(index)"> Reprovar </button>
+                        </td>
+                    </tr>
+                            
+            <service-modal :indexSugestion="pickIndex" :sugestion="pickSugestion" @closeModal="closeModal"
+                v-show="serviceModal" @aproved="messageAproved" @showModal="changeShowModal" />     
+                </tbody>
+            </table>
 
-    </tbody>
-</table>
+              </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>  </div>
-    </div>
-
-
-
+     </div>  
+  </div>
+</div>
 
 </template>
 
@@ -76,13 +73,12 @@
         return {
             sugestions : [],
             filtro: '',
-            users: [],
             serviceModal: false,
-            services: [] ,
             pickSugestion : {},
             token: '',
             remove: false,
             aprove: false,
+            pickIndex: ''
         }
     },
 
@@ -90,7 +86,7 @@
         'service-modal' : ServiceModal,
     },
 
-    created() {
+    created () {
 
        this.loadSugestions();
     },
@@ -98,34 +94,39 @@
     methods: {
 
         loadSugestions() {
-         this.$http.get('http://localhost:3020/sugestions/')
+        
+        this.$http.get('http://localhost:3020/sugestions/')
         .then(res => res.json())
         .then(resultado => this.sugestions = resultado, err => console.log(err));   
-
+        
         },
         
-        changeShowModal(sugestion){
-           
+        changeShowModal(sugestion, index){
+
            this.pickSugestion = sugestion
+           this.pickIndex = index;
            this.serviceModal = !this.serviceModal
           
         },
 
-        messageAproved(){
-            
-                /*    setTimeout(function(){
-                        this.aprove = false;
-                    }.bind(this), 3000); */
+        closeModal(){
 
+            this.serviceModal = false;
         },
+
+        messageAproved(){
+
+                this.aprove = !this.aprove;
+                
+                     setTimeout(function(){
+                        this.aprove = false;
+                    }.bind(this), 3000); 
+
+            },
 
         disapproveSugestion(index){ 
 
-           let indexObject = {
-               index: index
-           } 
-
-           this.$http.post('http://localhost:3020/remove/sugestion/', indexObject)
+           this.$http.post('http://localhost:3020/remove/sugestion/', this.index)
            .then( function(res) {
                 let result = res.json();
                 return result;
@@ -140,8 +141,6 @@
                
             }.bind(this), 3000); 
 
-        
-
       }
     },
 
@@ -153,10 +152,9 @@
                 } else {
                     return this.sugestions;
                 }
+
         }
-
-    },
-
+    }
     
    /* mounted: function(){
 
@@ -169,31 +167,8 @@
             let header =  {'Content-type': 'application/x-www-form-urlencoded',
                             'Access-Control-Allow-Origin':'http://seubiu.com.br',
                             'Origin':'http://localhost:8081'};
-      
-        
-        this.$http.post(url, user, JSON.stringify(header))
-            .then(function(res) {
-                let resultado = res.json();
-                alert("sucess");
-                return resultado;
-            }).catch( function(err){
-                alert("fail")
-                return console.log(err);
-            });
 
-     /*   this.$http.post('http://seubiu.com.br/api/authenticate', users, {
-               'Content-Type': 'application/x-www-form-urlencoded'
-           })
-        .then(function(res){
-                  let result = JSON.stringify(res);
-                   alert('Sucess');
-                   return result;               
-                })          
-          .then(function(result){
-            this.token = result;
-            alert(token);
-            return token;
-        }).catch(err => console.log(JSON.stringify(err))); */
+     }     */
 
   }
 

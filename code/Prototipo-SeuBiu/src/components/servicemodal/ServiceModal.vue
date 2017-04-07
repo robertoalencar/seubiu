@@ -14,9 +14,23 @@
           </div>
 
           <div class="modal-body">
-            <slot name="body">
 
-             <input type="text"  class="inputService" placeholder="Adicione aqui os serviços" 
+            <slot name="body">
+            
+                    <div class="validationMessage" v-show="validation">
+                
+                    <span > {{validationMessage}} </span>
+                    
+                    </div>
+
+                    <div class="aprovationMessage" v-show="aprovation">
+                
+                    <span > {{aprovationMessage}} </span>
+                    
+                    </div>
+
+             <input type="text"  class="inputService"
+             required placeholder="Adicione aqui os serviços" 
               v-model="newService" @keyup.enter="addService">
           <button @click="addService" class="buttonClosed"> Adicionar Serviço </button>
             </br></br>     
@@ -34,9 +48,9 @@
           <div class="modal-footer">
 
             <slot name="footer">
-              <button class="buttonClosed" @click="changeModal">  Fechar </button> 
+              <button class="buttonClosed" @click="closeModal">  Fechar </button> 
                 
-              <button tipo="submit" class="buttonSave" @click="saveServices" > Aprovar Sugestão </button>
+              <button tipo="submit" class="buttonSave" @click="saveServices(index, services)" > Aprovar Sugestão </button>
               
             </slot>
                
@@ -51,24 +65,28 @@
 
 <script>
 
-import Service from '../../domain/service/Service';
-
 export default{
+
+    props: ['sugestion', 'indexSugestion'],
 
     data () {
       return {
        
         services : [],
-        newService : ''
-        }
+        newService : '',
+        validationMessage: 'Por favor preencha este campo',
+        validation : false,
+        aprovation: false,
+        aprovationMessage: 'Por favor insira serviços antes de aprovar a sugestão'
 
+        }
       },
 
-      props: ['profissao', 'sugestion'],
-
     methods : {
-      changeModal(){
-        this.$emit('showModal');  
+
+      closeModal(){
+         this.$emit('closeModal'); 
+         this.services = []; 
        },
     
      removeService(index){
@@ -76,29 +94,64 @@ export default{
       },
 
       addService(){
-            this.services.push(this.newService)
-            this.newService = ''
+
+           if (this.newService === ''){
+
+             if(this.aprovation == false){
+               this.validation = true;
+              }
+             
+              setTimeout(function (){
+                this.validation = false;
+              }.bind(this), 5000);
+
+            } else {
+             
+             this.validation = false;
+             this.services.push(this.newService);
+             this.newService = '';
+
+            }
         },
 
-      saveServices(){
+      saveServices(indexSugestion){
 
-          console.log(JSON.stringify(this.services))
+            if(this.services.length > 0){
+              
+           this.$http.post('http://localhost:3020/services/', this.services)
+            .then(() => this.services.refe = '', err => console.log(err));
 
-          this.$http.post('http://localhost:3020/services/', this.services)
-          .then(() => this.services.refe = '', err => console.log(err));
+            this.$http.post('http://localhost:3020/remove/sugestion/', indexSugestion)
+            .then( function(res) {
+                  let result = res.json();
+                  return result;
+            }).catch(function(err){
+                return console.log(err);
+            }); 
+            
+            this.$emit('aproved');
+            this.$emit('showModal');
 
-          this.$emit('teste');
-          this.$emit('showModal');
+            this.services = [];
+            
+
+          } else {
+
+             if(this.validation == false){
+             this.aprovation = true;
+              }
+              
+              setTimeout(function (){
+                this.aprovation = false;
+              }.bind(this), 3000);
+
+          }
 
      }
-        
-     
   }
 }
 
-
 </script>
-
 
 <style>
 
@@ -195,5 +248,29 @@ export default{
    padding: px;
 
   }
+
+  .validationMessage{
+    margin-top:1%;
+    margin-bottom:1%;   
+    background-color: #B22222;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    width: 40%;
+    text-align: center;
+
+  }
+
+  .aprovationMessage{
+     margin-left:10%;
+    margin-bottom:5%;   
+    background-color: #B22222;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    width: 70%;
+    text-align: center;
+  }
+
   
 </style>
