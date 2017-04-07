@@ -48,6 +48,9 @@
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
+        android:focusable="false"
         android:background="@drawable/myedit"
         android:layout_margin="20px" />
 

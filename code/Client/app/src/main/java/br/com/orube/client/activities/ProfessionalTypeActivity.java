@@ -49,7 +49,7 @@ public class ProfessionalTypeActivity extends AppCompatActivity implements View.
 
         if( services != null && !services.isEmpty() ){
             for(Service s : services){
-                modelList.add(new Model(s.getDescription(), 1));
+                modelList.add(new Model(s.getDescription(), true));
             }
             Model[] modelItems = modelList.toArray(new Model[modelList.size()]);
 
