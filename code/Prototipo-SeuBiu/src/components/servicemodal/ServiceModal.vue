@@ -8,7 +8,7 @@
           <div class="modal-header">
             <slot name="header">
 
-              <span class="tittleService">Adicione serviços para essa profissão:  {{ profissao }}  </span>
+              <span class="tittleService">Adicione serviços para essa profissão:  {{ sugestion.profissao }}  </span>
             
             </slot>
           </div>
@@ -19,8 +19,7 @@
              <input type="text"  class="inputService" placeholder="Adicione aqui os serviços" 
               v-model="newService" @keyup.enter="addService">
           <button @click="addService" class="buttonClosed"> Adicionar Serviço </button>
-            </br></br>
-
+            </br></br>     
 
          <ul class="ul">   
          <li v-for="(service, index) in services">
@@ -37,7 +36,7 @@
             <slot name="footer">
               <button class="buttonClosed" @click="changeModal">  Fechar </button> 
                 
-              <button tipo="submit" class="buttonSave" @click="saveServices" > Salvar Serviços </button>
+              <button tipo="submit" class="buttonSave" @click="saveServices" > Aprovar Sugestão </button>
               
             </slot>
                
@@ -59,19 +58,13 @@ export default{
     data () {
       return {
        
-       /* newService : { 
-          id: '',
-          refe : '',
-          idSugestion: 2
-        }, */
-
         services : [],
         newService : ''
         }
 
       },
 
-      props: ['profissao'],
+      props: ['profissao', 'sugestion'],
 
     methods : {
       changeModal(){
@@ -94,7 +87,9 @@ export default{
           this.$http.post('http://localhost:3020/services/', this.services)
           .then(() => this.services.refe = '', err => console.log(err));
 
-          this.$emit('showModal');         
+          this.$emit('teste');
+          this.$emit('showModal');
+
      }
         
      
