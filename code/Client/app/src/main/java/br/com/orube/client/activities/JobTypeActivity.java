@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
 
     private Spinner spinner_servico;
 
+    private SeuBiuRequest request = SeuBiuRequest.getInstance();
+
 
 
 
@@ -55,24 +58,13 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                List<Profession> professions = SeuBiuRequest.getInstance().getProfessionList();
-                SeuBiuRequest.getInstance().setProfession( spinner.getSelectedItem().toString() );
+                String profession = spinner.getSelectedItem().toString();
+                if( profession != null && !profession.isEmpty() ) {
+                    List<Profession> professions = request.getProfessionList();
+                    request.setProfession(profession);
+                    getServices();
 
-                getServices();
 
-                ListView listView = (ListView) findViewById(R.id.listView1);
-
-                List<Service> services = SeuBiuRequest.getInstance().getServiceList();
-                List<Model> modelList = new ArrayList<>();
-
-                if( services != null && !services.isEmpty() ){
-                    for(Service s : services){
-                        modelList.add(new Model(s.getDescription(), 0));
-                    }
-                    Model[] modelItems = modelList.toArray(new Model[modelList.size()]);
-
-                    CustomAdapter adapter = new CustomAdapter(context, modelItems);
-                    listView.setAdapter(adapter);
                 }
             }
 
@@ -84,7 +76,7 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
 
         ArrayAdapter<String> combo = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1 );
 
-        List<Profession> lista = SeuBiuRequest.getInstance().getProfessionList();
+        List<Profession> lista = request.getProfessionList();
         for (Profession p : lista) {
             combo.add(p.getDescription());
         }
@@ -96,6 +88,23 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
 
         button.setOnClickListener( this );
 
+    }
+
+    private void carregarCombo() {
+        ListView listView = (ListView) findViewById(R.id.listView1);
+
+        List<Service> services = request.getServiceList();
+        List<Model> modelList = new ArrayList<>();
+
+        if (services != null && !services.isEmpty()) {
+            for (Service s : services) {
+                modelList.add(new Model(s.getDescription(), 0));
+            }
+            Model[] modelItems = modelList.toArray(new Model[modelList.size()]);
+
+            CustomAdapter adapter = new CustomAdapter(context, modelItems);
+            listView.setAdapter(adapter);
+        }
     }
 
     @Override
@@ -115,13 +124,25 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
     private void getServices() {
         SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class);
 
-        String id = SeuBiuRequest.getInstance().getProfession().getId().toString();
+        String id = request.getProfession().getId().toString();
+
+        /*
+        Call<List<Service>> call = rest.services(id);
+        try {
+            List<Service> services = call.execute().body();
+            request.setServiceList( services );
+            carregarCombo();
+        }catch (IOException e ){
+
+        }
+        */
 
         rest.services( id ).enqueue(new Callback<List<Service>>() {
             @Override
             public void onResponse(Call<List<Service>> call, Response<List<Service>> response) {
                 if(response.isSuccessful()){
-                    SeuBiuRequest.getInstance().setServiceList( response.body() );
+                    request.setServiceList( response.body() );
+                    carregarCombo();
                 }else{
                     Log.d("REST", response.body() + " - " + response.message() );
                 }
@@ -132,6 +153,9 @@ public class JobTypeActivity extends AppCompatActivity implements View.OnClickLi
                 Log.d("REST", t.getMessage() );
             }
         });
+
+
+
 
     }
 }

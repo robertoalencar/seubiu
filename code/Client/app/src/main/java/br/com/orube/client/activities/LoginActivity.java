@@ -80,7 +80,9 @@ public class LoginActivity extends AppCompatActivity {
             String email = this.email.getText().toString();
             String password = this.password.getText().toString();
 
-            String iMei = getImei();
+            //String iMei = getImei();
+
+            //Log.i("IMEI", iMei);
 
             getProfessions();
             doLogin(progressDialog, email, password, v);
