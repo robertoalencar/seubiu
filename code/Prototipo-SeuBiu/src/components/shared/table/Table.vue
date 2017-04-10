@@ -142,6 +142,7 @@
     },
 
     computed: {
+
         sugestionWithFilter(){
                 if(this.filtro){
                     let exp = new RegExp(this.filtro.trim(), 'i');
@@ -150,6 +151,7 @@
                     return this.sugestions;
                 }
         }
+
     }
     
    /* mounted: function(){

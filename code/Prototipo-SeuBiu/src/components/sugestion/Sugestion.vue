@@ -21,7 +21,7 @@ export default {
   },
     data: function(){
       return {
-        routes
+       routes : routes.filter(route => route.menu)
       }
     }
 
