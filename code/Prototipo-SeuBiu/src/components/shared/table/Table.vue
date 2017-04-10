@@ -49,7 +49,7 @@
                     </tr>
                             
             <service-modal :indexSugestion="pickIndex" :sugestion="pickSugestion" @closeModal="closeModal"
-                v-show="serviceModal" @aproved="messageAproved" @showModal="changeShowModal" />     
+                v-show="serviceModal" @aproved="messageAproved(index)" @showModal="changeShowModal" />     
                 </tbody>
             </table>
 
@@ -102,7 +102,7 @@
         },
         
         changeShowModal(sugestion, index){
-
+          
            this.pickSugestion = sugestion
            this.pickIndex = index;
            this.serviceModal = !this.serviceModal
@@ -114,7 +114,9 @@
             this.serviceModal = false;
         },
 
-        messageAproved(){
+        messageAproved(index){
+
+            this.sugestionWithFilter.splice(index, 1);
 
                 this.aprove = !this.aprove;
                 
@@ -127,12 +129,7 @@
         disapproveSugestion(index){ 
 
            this.$http.post('http://localhost:3020/remove/sugestion/', this.index)
-           .then( function(res) {
-                let result = res.json();
-                return result;
-           }).catch(function(err){
-               return console.log(err);
-           });
+           .then(() => this.sugestionWithFilter.splice(index, 1), err => consolo.log(err));
      
              this.remove = true;
 
@@ -152,7 +149,6 @@
                 } else {
                     return this.sugestions;
                 }
-
         }
     }
     

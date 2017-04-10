@@ -50,7 +50,7 @@
             <slot name="footer">
               <button class="buttonClosed" @click="closeModal">  Fechar </button> 
                 
-              <button tipo="submit" class="buttonSave" @click="saveServices(index, services)" > Aprovar Sugestão </button>
+              <button tipo="submit" class="buttonSave" @click="saveServices(indexSugestion)" > Aprovar Sugestão </button>
               
             </slot>
                
@@ -118,32 +118,28 @@ export default{
 
             if(this.services.length > 0){
               
-           this.$http.post('http://localhost:3020/services/', this.services)
-            .then(() => this.services.refe = '', err => console.log(err));
+              this.$http.post('http://localhost:3020/services/', this.services)
+                .then(() => console.log("Serviços enviado com sucesso"), err => console.log(err));
 
-            this.$http.post('http://localhost:3020/remove/sugestion/', indexSugestion)
-            .then( function(res) {
-                  let result = res.json();
-                  return result;
-            }).catch(function(err){
-                return console.log(err);
-            }); 
-            
-            this.$emit('aproved');
-            this.$emit('showModal');
+                this.$http.post('http://localhost:3020/remove/sugestion/', indexSugestion)
+                .then(() => console.log("Sugestão removida com sucesso"), err => console.log(err));
+                
+                this.$emit('aproved');
+                this.$emit('showModal');
+                  
+                this.services = [];
 
-            this.services = [];
-            
+             return indexSugestion;
 
           } else {
 
-             if(this.validation == false){
-             this.aprovation = true;
-              }
-              
-              setTimeout(function (){
-                this.aprovation = false;
-              }.bind(this), 3000);
+              if(this.validation == false){
+              this.aprovation = true;
+                }
+                
+                setTimeout(function (){
+                  this.aprovation = false;
+                }.bind(this), 3000);
 
           }
 
