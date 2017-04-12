@@ -7,9 +7,6 @@ import { routes } from './routes';
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
-Vue.http.options.root = 'http://localhost:3020';
-
-
 const router = new VueRouter({ routes,
  mode: 'history' });
 
