@@ -80,7 +80,11 @@
         <activity
             android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".activities.SugetionActivity"></activity>
+        <activity
+            android:name=".activities.SugetionActivity"
+            android:noHistory="true">
+
+        </activity>
     </application>
 
 </manifest>

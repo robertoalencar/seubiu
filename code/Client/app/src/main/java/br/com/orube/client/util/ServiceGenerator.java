@@ -41,7 +41,7 @@ public class ServiceGenerator {
 
                     // Request customization: add request headers
                     Request.Builder requestBuilder = original.newBuilder()
-                            .header("authorization", authToken)
+                            .header("authorization", "JWT " + authToken)
                             .method(original.method(), original.body());
 
                     Request request = requestBuilder.build();
