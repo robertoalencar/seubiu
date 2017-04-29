@@ -152,21 +152,22 @@
                 }
         }
 
-    }
+    },
     
-   /* mounted: function(){
+     mounted: function(){
 
-            var user = new FormData();
-            user.append('email', 'teste@gmail.com');
-            user.append('password', 'asdfasdf');
+        let user = new FormData();
 
-            let url = 'http://seubiu.com.br/api/authenticate';
+        user.append("username", "teste@gmail.com");
+        user.append("password", "asdfasdf");
 
-            let header =  {'Content-type': 'application/x-www-form-urlencoded',
-                            'Access-Control-Allow-Origin':'http://seubiu.com.br',
-                            'Origin':'http://localhost:8081'};
+        this.$http.get('http://seubiu.com.br/api/professions',user , {
+            'Content-Type' : 'application/x-www-form-urlencoded',
+            'Authetication' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNDkxOTMxMzYyLCJleHAiOjE0OTIwMTc3NjJ9.qIyTkrzy-Jdyd5jMgCCzMKRuG8rdpGxTdZ927jbIU9A'
+        })
+        .then(() => console.log("Conexão realizada"), err => console.log(err));
 
-     }     */
+     }     
 
   }
 
