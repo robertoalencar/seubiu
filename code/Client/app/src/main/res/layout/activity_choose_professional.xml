@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="br.com.orube.client.activities.JobTypeActivity"
+    android:orientation="vertical"
+    android:id="@+id/layoutSugestion"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50px" />
+
+
+
+        <RadioGroup
+            android:id="@+id/radioAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/myedit"
+            android:layout_margin="15px">
+
+        </RadioGroup>
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnSolicitar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="15px"
+                android:background="@drawable/mybutton"
+                android:text="@string/salvar"
+                android:textColor="@color/colorOffWhite"
+                android:textStyle="bold" />
+
+            <Button
+               android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="15px"
+                android:background="@drawable/mybutton3"
+                android:pointerIcon="arrow"
+                android:textColor="@color/colorOffWhite"
+                android:textStyle="bold" />
+
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -16,11 +16,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 import br.com.orube.client.R;
+import br.com.orube.client.model.Address;
 import br.com.orube.client.model.AuthToken;
 import br.com.orube.client.model.Profession;
+import br.com.orube.client.model.User;
 import br.com.orube.client.util.ServiceGenerator;
 import br.com.orube.client.util.SeuBiuRequest;
 import br.com.orube.client.util.SeuBiuRest;
@@ -126,8 +129,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
                 if (response.isSuccessful()) {
-                    SeuBiuRequest.getInstance().setToken(response.body());
-                  //  sendDevice();
+                    SeuBiuRequest.getInstance().setAuthToken(response.body());
                     Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                     startActivityForResult(intent, REQUEST_SIGNUP);
                 } else {
@@ -147,27 +149,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void sendDevice() {
-        AuthToken token = SeuBiuRequest.getInstance().getToken();
 
-        SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class, token.getToken());
-        rest.sendDevices( token.getUserId().toString(), getImei(), "1").enqueue(new Callback<AuthToken>() {
-            @Override
-            public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
-                if(response.isSuccessful()){
-                    Log.d("REST", response.body() + " - " + response.message() );
-                }else{
-                    Log.d("REST", response.body() + " - " + response.message() );
-                }
-            }
 
-            @Override
-            public void onFailure(Call<AuthToken> call, Throwable t) {
-                Log.d("REST", t.getMessage() );
-            }
-        });
-
-    }
 
     private void showProgress(ProgressDialog progressDialog) {
         progressDialog.setIndeterminate(true);
@@ -254,8 +237,5 @@ public class LoginActivity extends AppCompatActivity {
         return valid;
     }
 
-    private String getImei() {
-        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        return mngr.getDeviceId();
-    }
+
 }

@@ -79,12 +79,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:noHistory="true" />
         <activity
             android:name=".activities.SugetionActivity"
-            android:noHistory="true">
-
-        </activity>
+            android:noHistory="true" />
+        <activity
+            android:name=".activities.AddressActivity"
+            android:noHistory="true" />
+        <activity android:name=".activities.ChooseProfessional"></activity>
     </application>
 
 </manifest>

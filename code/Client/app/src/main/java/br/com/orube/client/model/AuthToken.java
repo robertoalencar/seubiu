@@ -6,15 +6,15 @@ package br.com.orube.client.model;
 
 public class AuthToken {
 
-    private Long userId;
+    private User user;
     private String token;
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getToken() {

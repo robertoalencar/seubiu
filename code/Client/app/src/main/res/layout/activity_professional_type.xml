@@ -81,6 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="200px"
             android:layout_margin="15px"
+            android:padding="15px"
             android:background="@drawable/myedit"
             android:ems="3"
             android:gravity="top"

@@ -2,9 +2,11 @@ package br.com.orube.client.util;
 
 import java.util.List;
 
+import br.com.orube.client.model.Address;
 import br.com.orube.client.model.AuthToken;
 import br.com.orube.client.model.Profession;
 import br.com.orube.client.model.Service;
+import br.com.orube.client.model.User;
 
 /**
  * Created by arthur on 08/11/16.
@@ -18,15 +20,25 @@ public class SeuBiuRequest {
         return instance;
     }
 
+
+    private User user;
+
+    private String token;
+
+
     private Profession profession;
 
     private List<Profession> professionList;
 
     private List<Service> serviceList;
 
+    private List<Address> addressList;
+
+    private Address address;
+
     private Model[] serviceListSelected;
 
-    private AuthToken token;
+    private AuthToken authToken;
 
     public List<Profession> getProfessionList() {
         return professionList;
@@ -60,14 +72,31 @@ public class SeuBiuRequest {
         this.serviceListSelected = serviceListSelected;
     }
 
-    public static AuthToken getToken() {
-        return instance.token;
+    public User getUser() {
+        return user;
     }
 
-    public static void setToken(AuthToken token) {
-        instance.token = token;
+    public void setUser(User user) {
+        this.user = user;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public AuthToken getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(AuthToken authToken) {
+        this.authToken = authToken;
+        this.user = authToken.getUser();
+        this.token = authToken.getToken();
+    }
 
     public void setProfession(String selectedItem) {
 
@@ -78,8 +107,19 @@ public class SeuBiuRequest {
         }
     }
 
+    public Address getAddress() {
+        return address;
+    }
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
+    public List<Address> getAddressList() {
+        return addressList;
+    }
 
-
+    public void setAddressList(List<Address> addressList) {
+        this.addressList = addressList;
+    }
 }

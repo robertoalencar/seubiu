@@ -2,6 +2,7 @@ package br.com.orube.client.util;
 
 import java.util.List;
 
+import br.com.orube.client.model.Address;
 import br.com.orube.client.model.AuthToken;
 import br.com.orube.client.model.Profession;
 import br.com.orube.client.model.Service;
@@ -40,6 +41,8 @@ public interface SeuBiuRest {
                                 @Path("deviceTypeId") String deviceTypeId);
 
 
+    @GET("/api/users/{userId}/addresses")
+    Call<List<Address>> getAddresses(@Path("userId") String id);
 
 
 
@@ -53,7 +56,6 @@ public interface SeuBiuRest {
             router.route('/requests')
             router.route('/states')
             router.route('/states/:idState/cities')
-            router.route('/users/:userId/addresses')
             router.route('/users/:userId/addresses/:addressId')
             router.route('/users/:userId/devices')
             router.route('/users/:userId/devices/:deviceToken')
