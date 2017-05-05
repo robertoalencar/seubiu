@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="80px"
+    android:layout_width="80px">
+
+
+    <item android:drawable="@drawable/circle"/>
+
+</layer-list>

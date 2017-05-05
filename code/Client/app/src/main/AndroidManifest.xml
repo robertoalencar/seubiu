@@ -87,7 +87,8 @@
         <activity
             android:name=".activities.AddressActivity"
             android:noHistory="true" />
-        <activity android:name=".activities.ChooseProfessional"></activity>
+        <activity android:name=".activities.ChooseProfessional" />
+        <activity android:name=".activities.ProfessionalDetailActivity"></activity>
     </application>
 
 </manifest>
