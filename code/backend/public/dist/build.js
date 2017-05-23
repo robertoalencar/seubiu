@@ -18063,8 +18063,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             filter: '',
             users: [],
             approve: true,
-            pickUser: {},
-            people: { 'name': 'everton', 'cpf': '3222', 'rg': '2312312' }
+            pickUser: {}
         };
     },
 
@@ -18387,48 +18386,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -18451,7 +18408,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             certificates: '',
             numberWorkPermit: '',
             yearInProfession: '',
-            n: 2,
+            n: 1,
             professions: [],
             image: '',
             services: [],
@@ -18488,17 +18445,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         send() {
 
-            if (this.name != '' && this.cpf != '' && this.rg != '' && this.date != '' && this.selectedProfession != '' && this.certificates != '' && this.numberWorkPermit != '' && this.yearInProfession != '') {
+            /*
+            if(this.cpf != '' && this.rg != ''
+                && this.date != '' && this.professionSelecteds > 0 && this.certificates != ''
+                && this.numberWorkPermit != '' && this.yearInProfession != ''){ */
 
-                alert("Envie os dados: " + this.name + this.email + this.cpf + this.rg + this.date + this.selectedProfession + this.certificates + this.numberWorkPermit + this.yearInProfession);
+            alert("Envie os dados: " + this.user.name + this.user.email + this.cpf + this.rg + this.date + JSON.stringify(this.professionSelecteds) + JSON.stringify(this.selectedServices) + this.numberWorkPermit + this.yearInProfession);
+
+            /*
             } else {
-
-                this.messageFour = "Preenchar todos os campos antes de enviar";
-
-                setTimeout(function () {
-                    this.messageFour = '';
-                }.bind(this), 3000);
-            }
+                        this.messageFour =  "Preenchar todos os campos antes de enviar";
+            setTimeout(function () {
+               this.messageFour = '';
+            }.bind(this), 3000); */
         },
 
         clearDataPersonais() {
@@ -18555,23 +18514,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         active3() {
 
-            this.n = 3;
-
-            $('#active3').css("background-color", "#B22222");
-            $('#active3').css("color", "white");
-            $('#active1').css("background-color", "#A9A9A9");
-            $('#active1').css("color", "black");
-            $('#active2').css("background-color", "#A9A9A9");
-            $('#active2').css("color", "black");
-            $('#active4').css("background-color", "#A9A9A9");
-            $('#active4').css("color", "black");
-        },
-
-        active4() {
-
             if (this.name != '' && this.cpf != '' && this.rg != '' && this.date != '' && this.selectedProfession != '' && this.certificates != '' && this.numberWorkPermit != '' && this.yearInProfession != '') {
 
-                this.n = 4;
+                this.n = 3;
 
                 $('#active4').css("background-color", "#B22222");
                 $('#active4').css("color", "white");
@@ -18645,20 +18590,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }.bind(this), 3000);
                 }
             });
-        },
-
-        next4() {
-
-            this.n = this.n + 1;
-
-            $('#active4').css("background-color", "#B22222");
-            $('#active4').css("color", "white");
-            $('#active1').css("background-color", "#A9A9A9");
-            $('#active1').css("color", "black");
-            $('#active2').css("background-color", "#A9A9A9");
-            $('#active2').css("color", "black");
-            $('#active3').css("background-color", "#A9A9A9");
-            $('#active3').css("color", "black");
         },
 
         back() {
@@ -19186,7 +19117,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, ".container[data-v-1d5ec060]{margin-right:8%}.form-signin[data-v-1d5ec060]{max-width:100%;padding:15px;border-radius:20px}.form-signin .checkbox[data-v-1d5ec060],.form-signin .form-signin-heading[data-v-1d5ec060]{margin-bottom:10px}.form-signin .checkbox[data-v-1d5ec060]{font-weight:400}.form-signin .form-control[data-v-1d5ec060]{position:relactive;font-size:16px;height:auto;padding:10px;box-sizing:border-box}.form-signin .form-control[data-v-1d5ec060]:focus{z-index:2;border:2px solid red}.form-signin input[type=text][data-v-1d5ec060]{margin-bottom:-1px;border-radius:15px}.form-signin input[type=password][data-v-1d5ec060]{margin-bottom:10px;border-radius:15px}.account-wall[data-v-1d5ec060]{width:600px}.account-wall-results[data-v-1d5ec060],.account-wall[data-v-1d5ec060]{margin-top:5px;padding:40px 0 20px;background-color:#f7f7f7;box-shadow:2px 2px 2px rgba(0,0,0,.3);border-radius:20px}.account-wall-results[data-v-1d5ec060]{width:700px}.title[data-v-1d5ec060]{margin-bottom:5%;margin-left:33%;font-size:25px}.title2[data-v-1d5ec060]{margin-bottom:5%;margin-left:27%;font-size:25px}.title3[data-v-1d5ec060]{margin-bottom:5%;margin-left:15%;font-size:25px}.formFixed[data-v-1d5ec060]{float:auto;width:50%;margin-left:44%;border-radius:20px;background-color:#dcdcdc}.active1[data-v-1d5ec060]{float:left;background-color:#b22222;color:#fff;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;margin:10px;width:55px;line-height:50px}.active2[data-v-1d5ec060],.active3[data-v-1d5ec060]{margin:10px}.active2[data-v-1d5ec060],.active3[data-v-1d5ec060],.active4[data-v-1d5ec060]{float:left;color:#000;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;width:55px;line-height:50px;background-color:#a9a9a9}.active4[data-v-1d5ec060]{margin-left:200px;margin:10px}.buttonNext[data-v-1d5ec060]{margin-top:2%;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.dataPersonal[data-v-1d5ec060]{float:right;width:40%;margin-right:10%}.dataProfession[data-v-1d5ec060]{margin-left:2%;width:50%}.clear[data-v-1d5ec060]{margin-top:5%;background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.erroMessage[data-v-1d5ec060]{margin-bottom:1%;font-size:15px;margin:5% 20% 10% 10%}.erroMessage1[data-v-1d5ec060],.erroMessage[data-v-1d5ec060]{float:right;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;width:80%;text-align:center}.erroMessage1[data-v-1d5ec060]{margin-right:11%;font-size:17px;margin-left:10%;margin-bottom:2%}.erroMessage2[data-v-1d5ec060]{width:120%;font-size:17px;margin:2% 11% 4% 13%}.erroMessage2[data-v-1d5ec060],.erroMessage3[data-v-1d5ec060]{float:right;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;text-align:center}.erroMessage3[data-v-1d5ec060]{margin-right:25%;font-size:15px;margin-left:10%;margin-bottom:10%;font-size:17px}.forms-enter[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{opacity:0}.forms-enter-active[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{transition:opacity .4s}.errorValidate[data-v-1d5ec060]{margin-top:1%;margin-bottom:1%;color:red}.spanInput[data-v-1d5ec060]{color:#000;margin-left:1%;font-size:110%}.spanInput-enter[data-v-1d5ec060],.spanInput-leave-active[data-v-1d5ec060]{opacity:0}.spanInput-enter-active[data-v-1d5ec060],.spanInput-leave-active[data-v-1d5ec060]{transition:opacity .4s}.selectRegister[data-v-1d5ec060]{margin-bottom:3%}.selectServices[data-v-1d5ec060]{float:right;margin-right:5%}.spanCertificate[data-v-1d5ec060]{margin-bottom:1%}.showCertificates[data-v-1d5ec060]{margin-top:5%;margin-left:1%;margin-bottom:5%}.buttonCertificate[data-v-1d5ec060]{width:15%;float:right;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:6px;border-color:#000;border-style:solid}img[data-v-1d5ec060]{width:30%;margin:auto;display:block;margin-bottom:10px}", ""]);
+exports.push([module.i, ".container[data-v-1d5ec060]{margin-right:8%}.form-signin[data-v-1d5ec060]{max-width:100%;padding:15px;border-radius:20px}.form-signin .checkbox[data-v-1d5ec060],.form-signin .form-signin-heading[data-v-1d5ec060]{margin-bottom:10px}.form-signin .checkbox[data-v-1d5ec060]{font-weight:400}.form-signin .form-control[data-v-1d5ec060]{position:relactive;font-size:16px;height:auto;padding:10px;box-sizing:border-box}.form-signin .form-control[data-v-1d5ec060]:focus{z-index:2;border:2px solid red}.form-signin input[type=text][data-v-1d5ec060]{margin-bottom:-1px;border-radius:15px}.form-signin input[type=password][data-v-1d5ec060]{margin-bottom:10px;border-radius:15px}.account-wall[data-v-1d5ec060]{width:600px}.account-wall-results[data-v-1d5ec060],.account-wall[data-v-1d5ec060]{margin-top:5px;padding:40px 0 20px;background-color:#f7f7f7;box-shadow:2px 2px 2px rgba(0,0,0,.3);border-radius:20px}.account-wall-results[data-v-1d5ec060]{width:700px}.title[data-v-1d5ec060]{margin-bottom:5%;margin-left:33%;font-size:25px}.title2[data-v-1d5ec060]{margin-bottom:5%;margin-left:27%;font-size:25px}.title3[data-v-1d5ec060]{margin-bottom:5%;margin-left:15%;font-size:25px}.formFixed[data-v-1d5ec060]{float:auto;width:50%;margin-left:49%;border-radius:20px;background-color:#dcdcdc}.active1[data-v-1d5ec060]{float:left;background-color:#b22222;color:#fff;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;margin:10px;width:55px;line-height:50px}.active2[data-v-1d5ec060],.active3[data-v-1d5ec060]{margin:10px}.active2[data-v-1d5ec060],.active3[data-v-1d5ec060],.active4[data-v-1d5ec060]{float:left;color:#000;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;width:55px;line-height:50px;background-color:#a9a9a9}.active4[data-v-1d5ec060]{margin-left:200px;margin:10px}.buttonNext[data-v-1d5ec060]{margin-top:2%;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.dataPersonal[data-v-1d5ec060]{float:right;width:40%;margin-right:10%}.dataProfession[data-v-1d5ec060]{margin-left:2%;width:50%}.clear[data-v-1d5ec060]{margin-top:5%;background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.erroMessage[data-v-1d5ec060]{margin-bottom:1%;font-size:15px;margin:5% 20% 10% 10%}.erroMessage1[data-v-1d5ec060],.erroMessage[data-v-1d5ec060]{float:right;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;width:80%;text-align:center}.erroMessage1[data-v-1d5ec060]{margin-right:11%;font-size:17px;margin-left:10%;margin-bottom:2%}.erroMessage2[data-v-1d5ec060]{width:120%;font-size:17px;margin:2% 11% 4% 13%}.erroMessage2[data-v-1d5ec060],.erroMessage3[data-v-1d5ec060]{float:right;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;text-align:center}.erroMessage3[data-v-1d5ec060]{margin-right:25%;font-size:15px;margin-left:10%;margin-bottom:10%;font-size:17px}.forms-enter[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{opacity:0}.forms-enter-active[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{transition:opacity .4s}.errorValidate[data-v-1d5ec060]{margin-top:1%;margin-bottom:1%;color:red}.spanInput[data-v-1d5ec060]{color:#000;margin-left:1%;font-size:110%}.spanInput-enter[data-v-1d5ec060],.spanInput-leave-active[data-v-1d5ec060]{opacity:0}.spanInput-enter-active[data-v-1d5ec060],.spanInput-leave-active[data-v-1d5ec060]{transition:opacity .4s}.selectRegister[data-v-1d5ec060]{margin-bottom:3%}.selectServices[data-v-1d5ec060]{float:right;margin-right:5%}.spanCertificate[data-v-1d5ec060]{margin-bottom:1%}.showCertificates[data-v-1d5ec060]{margin-top:5%;margin-left:1%;margin-bottom:5%}.buttonCertificate[data-v-1d5ec060]{width:15%;float:right;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:6px;border-color:#000;border-style:solid}img[data-v-1d5ec060]{width:30%;margin:auto;display:block;margin-bottom:10px}", ""]);
 
 // exports
 
@@ -19457,15 +19388,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.active3
     }
-  }, [_vm._v(" 3 ")]), _vm._v(" "), _c('button', {
-    staticClass: "active4",
-    attrs: {
-      "id": "active4"
-    },
-    on: {
-      "click": _vm.active4
-    }
-  }, [_vm._v(" 4 ")])])]), _vm._v(" "), _c('transition', {
+  }, [_vm._v(" 3 ")])])]), _vm._v(" "), _c('transition', {
     attrs: {
       "name": "forms"
     }
@@ -19488,100 +19411,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "erroMessage1"
   }, [_vm._v("             \n                                         " + _vm._s(_vm.messageOne) + "\n                            ")]), _vm._v(" "), _c('transition', {
-    attrs: {
-      "name": "spanInput"
-    }
-  }, [_c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.name),
-      expression: "name"
-    }],
-    staticClass: "spanInput"
-  }, [_vm._v("Nome")])]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "validate",
-      rawName: "v-validate"
-    }, {
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.name),
-      expression: "name"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      "data-vv-as": "nome",
-      "data-vv-rules": "required",
-      "type": "text",
-      "name": "name",
-      "placeholder": "Nome Completo",
-      "autofocus": ""
-    },
-    domProps: {
-      "value": (_vm.name)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.name = $event.target.value
-      }
-    }
-  }), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.errors.has('name')),
-      expression: "errors.has('name')"
-    }],
-    staticClass: "errorValidate"
-  }, [_vm._v(" " + _vm._s(_vm.errors.first('name')) + " ")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('transition', {
-    attrs: {
-      "name": "spanInput"
-    }
-  }, [_c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.email),
-      expression: "email"
-    }],
-    staticClass: "spanInput"
-  }, [_vm._v("E-mail")])]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "validate",
-      rawName: "v-validate"
-    }, {
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.email),
-      expression: "email"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      "data-vv-rules": "required|regex:(\\w[.-]*)+@\\w+.com$",
-      "name": "email",
-      "type": "text",
-      "placeholder": "Email: exemplo@gmail.com"
-    },
-    domProps: {
-      "value": (_vm.email)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.email = $event.target.value
-      }
-    }
-  }), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.errors.has('email')),
-      expression: "errors.has('email')"
-    }],
-    staticClass: "errorValidate"
-  }, [_vm._v(" " + _vm._s(_vm.errors.first('email')) + " ")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('transition', {
     attrs: {
       "name": "spanInput"
     }
@@ -19796,7 +19625,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   })], 2)]), _vm._v(" "), _c('div', {
     staticClass: "col-md-12",
     staticStyle: {
-      "padding-top": "5px"
+      "padding-top": "10px"
     }
   }, [_c('label', [_vm._v("Serviços")]), _vm._v(" "), (_vm.services.length > 0) ? _c('select', {
     directives: [{
@@ -19829,59 +19658,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   })) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "col-md-12",
     staticStyle: {
-      "padding-top": "5px"
-    }
-  }, [_c('transition', {
-    attrs: {
-      "name": "spanInput"
-    }
-  }, [_c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.certificates),
-      expression: "certificates"
-    }],
-    staticClass: "spanInput"
-  }, [_vm._v("Certificados")])]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "validate",
-      rawName: "v-validate"
-    }, {
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.certificates),
-      expression: "certificates"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      "type": "text",
-      "data-vv-as": "certificados",
-      "data-vv-rules": "required",
-      "name": "certificates",
-      "placeholder": "Certificados"
-    },
-    domProps: {
-      "value": (_vm.certificates)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.certificates = $event.target.value
-      }
-    }
-  }), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.errors.has('certificates')),
-      expression: "errors.has('certificates')"
-    }],
-    staticClass: "errorValidate"
-  }, [_vm._v(" " + _vm._s(_vm.errors.first('certificates')) + " ")])], 1), _vm._v(" "), _c('div', {
-    staticClass: "col-md-12",
-    staticStyle: {
-      "padding-top": "5px"
+      "padding-top": "10px"
     }
   }, [_c('transition', {
     attrs: {
@@ -19933,7 +19710,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(" " + _vm._s(_vm.errors.first('numberWorkPermit')) + " ")])], 1), _vm._v(" "), _c('div', {
     staticClass: "col-md-12",
     staticStyle: {
-      "padding-top": "5px"
+      "padding-top": "10px"
     }
   }, [_c('transition', {
     attrs: {
@@ -20009,66 +19786,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "col-sm-6 col-md-4 col-md-offset-4"
   }, [_c('div', {
-    staticClass: "account-wall"
-  }, [_c('div', {
-    staticClass: "form-signin"
-  }, [_c('div', {
-    staticClass: "title2"
-  }, [_vm._v("\n                           Cadastros profissionais\n                        ")]), _vm._v(" "), _c('input', {
-    staticClass: "form-control",
-    attrs: {
-      "type": "text",
-      "placeholder": "Profissão",
-      "required": "",
-      "autofocus": ""
-    }
-  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('input', {
-    staticClass: "form-control",
-    attrs: {
-      "type": "text",
-      "placeholder": "Certificados",
-      "required": ""
-    }
-  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('input', {
-    staticClass: "form-control",
-    attrs: {
-      "type": "text",
-      "placeholder": "Cpf",
-      "required": ""
-    }
-  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('input', {
-    staticClass: "form-control",
-    attrs: {
-      "type": "text",
-      "placeholder": "Carteira de identidade(RG)",
-      "required": ""
-    }
-  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('div', {
-    staticClass: "buttons"
-  }, [_c('button', {
-    staticClass: "buttonNext",
-    on: {
-      "click": _vm.back
-    }
-  }, [_vm._v(" Voltar ")]), _vm._v(" "), _c('button', {
-    staticClass: "buttonNext",
-    on: {
-      "click": _vm.next4
-    }
-  }, [_vm._v(" Próximo ")]), _vm._v(" "), _c('button', {
-    staticClass: "clear",
-    on: {
-      "click": _vm.clearDataProfession
-    }
-  }, [_vm._v(" Limpar dados")])])])])])]) : _vm._e()]), _vm._v(" "), _c('transition', {
-    attrs: {
-      "name": "forms"
-    }
-  }, [(_vm.n === 4) ? _c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-sm-6 col-md-4 col-md-offset-4"
-  }, [_c('div', {
     staticClass: "account-wall-results"
   }, [_c('div', {
     staticClass: "form-signin"
@@ -20086,7 +19803,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "dataPersonal"
   }, [_c('strong', [_vm._v("Dados pesssoais:")]), _vm._v(" "), _c('br'), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Nome: ")]), _vm._v(_vm._s(_vm.user.name)), _c('br'), _vm._v(" "), _c('strong', [_vm._v("E-mail: ")]), _vm._v(_vm._s(_vm.user.email) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cpf: ")]), _vm._v(_vm._s(_vm.cpf) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Rg: ")]), _vm._v(_vm._s(_vm.rg) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Data: ")]), _vm._v(_vm._s(_vm.date) + " "), _c('br')]), _vm._v(" "), _c('div', {
     staticClass: "dataProfession"
-  }, [_c('strong', [_vm._v(" Dados Profissionais: ")]), _c('br'), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Profissão:")]), _vm._v("  " + _vm._s(_vm.selectedProfession)), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Certificados:")]), _vm._v(_vm._s(_vm.certificates) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Carteira de trabalho:")]), _vm._v(_vm._s(_vm.numberWorkPermit)), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Anos de Experiência:")]), _vm._v(" " + _vm._s(_vm.yearInProfession) + " "), _c('br')]), _vm._v(" "), _c('div', {
+  }, [_c('strong', [_vm._v(" Dados Profissionais: ")]), _c('br'), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Profissões selecionadas:")]), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.professionSelecteds), function(profession) {
+    return _c('li', [_vm._v(" " + _vm._s(profession.description) + " -  ")])
+  })), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Serviços selecionados:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.selectedServices), function(service) {
+    return _c('li', [_vm._v(" " + _vm._s(service.description) + " ")])
+  })), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Carteira de trabalho:")]), _vm._v(_vm._s(_vm.numberWorkPermit)), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Anos de Experiência:")]), _vm._v(" " + _vm._s(_vm.yearInProfession) + " "), _c('br')]), _vm._v(" "), _c('div', {
     staticClass: "buttons"
   }, [_c('form', {
     on: {
