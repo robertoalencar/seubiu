@@ -11,27 +11,59 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
+import java.util.List;
 
 import br.com.orube.client.R;
+import br.com.orube.client.model.Address;
+import br.com.orube.client.model.AuthToken;
+import br.com.orube.client.model.User;
+import br.com.orube.client.util.ServiceGenerator;
+import br.com.orube.client.util.SeuBiuRequest;
+import br.com.orube.client.util.SeuBiuRest;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DashBoardActivity extends AppCompatActivity
         implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
 
+    private static final String ANDROID_TYPE = "1";
     private ImageButton btnSolicitar;
     private ImageButton btnSolicitados;
     private ImageButton btnRealizados;
 
+    @Bind(R.id.emailAccount)
+    public TextView emailAccount;
+
+    @Bind(R.id.nameAccount)
+    public TextView nameAccount;
+
     private Context context = this;
+
+    private SeuBiuRequest seuBiuRequest = SeuBiuRequest.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        //ButterKnife.bind(this);
+
+        /*
+        User user = seuBiuRequest.getUser();
+        nameAccount.setText( user.getName() );
+        emailAccount.setText( user.getEmail() );
+        */
 
         btnSolicitar = (ImageButton)findViewById(R.id.btnSolicitar);
         btnSolicitados = (ImageButton)findViewById(R.id.btnSolicitados);
@@ -44,6 +76,10 @@ public class DashBoardActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+
+        getAddress();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -121,5 +157,60 @@ public class DashBoardActivity extends AppCompatActivity
         return true;
     }
 
+
+    private void getAddress() {
+
+        AuthToken authToken = SeuBiuRequest.getInstance().getAuthToken();
+
+        SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class, authToken.getToken() );
+        Call<List<Address>> service = rest.getAddresses( authToken.getUser().getId().toString() );
+
+        service.enqueue(new Callback<List<Address>>() {
+            @Override
+            public void onResponse(Call<List<Address>> call, Response<List<Address>> response) {
+                if(response.isSuccessful()){
+                    SeuBiuRequest.getInstance().setAddressList( response.body() );
+                }
+                Log.d("REST", response.body() + " - " + response.message() );
+            }
+
+            @Override
+            public void onFailure(Call<List<Address>> call, Throwable t) {
+                Log.d("REST", t.getMessage() );
+            }
+        });
+
+
+    }
+
+
+
+
+    private void sendDevice() {
+        AuthToken token = SeuBiuRequest.getInstance().getAuthToken();
+
+        SeuBiuRest rest = ServiceGenerator.createService(SeuBiuRest.class, token.getToken());
+        rest.sendDevices( token.getUser().getId().toString(), getImei(), ANDROID_TYPE).enqueue(new Callback<AuthToken>() {
+            @Override
+            public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
+                if(response.isSuccessful()){
+                    Log.d("REST", response.body() + " - " + response.message() );
+                }else{
+                    Log.d("REST", response.body() + " - " + response.message() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthToken> call, Throwable t) {
+                Log.d("REST", t.getMessage() );
+            }
+        });
+
+    }
+
+    private String getImei() {
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        return mngr.getDeviceId();
+    }
 
 }

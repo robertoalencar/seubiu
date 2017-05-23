@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="br.com.orube.client.activities.ProfessionalDetailActivity"
+    android:orientation="vertical"
+    android:id="@+id/layoutSugestion"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50px" />
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:src="@mipmap/usericon"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:orientation="vertical"
+                android:textAlignment="center">
+
+                <TextView
+                    android:id="@+id/txtNomes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textSize="8pt"
+                    android:layout_marginTop="5pt"/>
+
+                <TextView
+                    android:id="@+id/txtTrabalhos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="999"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="8pt"
+                    android:layout_marginTop="5pt"/>
+
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:isIndicator="true"
+                    android:rating="3.5"
+                    style="?attr/ratingBarStyleSmall"/>
+
+
+
+                <Button
+                    android:id="@+id/btnSolicitar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="20px"
+                    android:paddingLeft="50px"
+                    android:paddingRight="50px"
+                    android:background="@drawable/mybutton2"
+                    android:text="@string/solicitar"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
+                   />
+
+
+
+                </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vw_divider"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/recomendacoes"
+            android:textStyle="bold"
+            android:textSize="8pt"
+            android:padding="10px"/>
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/rcview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkBox1"
+            android:layout_width="wrap_content"
+            android:layout_height="100px"
+            android:text=""
+            android:layout_margin="5pt"
+            />
+
+        <ImageView
+
+            android:layout_margin="20px"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:src="@mipmap/logo"/>
+
+        <LinearLayout
+            android:layout_weight="5"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/txtNomes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textSize="8pt"
+                    android:layout_marginTop="5pt"/>
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:isIndicator="true"
+                android:rating="3.5"
+                style="?attr/ratingBarStyleSmall"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtTrabalhos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="999"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:textSize="8pt"
+            android:layout_marginTop="5pt"/>
+
+
+        <TextView
+            android:layout_margin="30px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">"
+            android:textColor="@color/colorPrimary"
+
+            android:textSize="8pt"
+            android:layout_marginTop="5pt"/>
+
+
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/vw_divider"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp" />
+
+
+</LinearLayout>

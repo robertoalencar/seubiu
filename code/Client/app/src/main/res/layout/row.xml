@@ -19,4 +19,5 @@
         android:text="TextView"
         android:textSize="8pt"
         android:layout_marginTop="5pt"/>
+
 </LinearLayout>

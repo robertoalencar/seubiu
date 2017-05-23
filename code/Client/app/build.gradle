@@ -10,6 +10,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,13 +21,6 @@ android {
     }
 }
 
-/*
-configurations.compile {
-    exclude module: 'spring-core'
-    exclude module: 'spring-web'
-    exclude module: 'commons-logging'
-}
-*/
 
 
 dependencies {
@@ -34,6 +28,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+
 
 
 
@@ -48,5 +44,11 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.2.1'
     compile 'com.google.android.gms:play-services-location:10.2.1'
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+
+    compile 'com.daimajia.easing:library:1.0.1@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.3@aar'
+    compile 'com.facebook.fresco:fresco:1.3.0'
+
     testCompile 'junit:junit:4.12'
 }

@@ -27,6 +27,7 @@
 
 
     <string name="sugestao">Sugestão:</string>
+    <string name="endereco">Endereços:</string>
 
     <string name="resumo">Faça um resumo do que você precisa:</string>
 
@@ -38,11 +39,13 @@
 
     <string name="enderecos_salvos">Endereços Salvos</string>
 
+    <string name="loren_ipsun">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
     <string name="salvar">Salvar</string>
     <string name="bem_vindo">Seja bem vindo!</string>
     <string name="solicitar">Solicitar</string>
     <string name="solicitados">Serviços Solicitados</string>
     <string name="realizados">Serviços Realizados</string>
+    <string name="recomendacoes">Recomendações</string>
     <string name="conta">Criar minha conta</string>
     <string name="login">Login</string>
     <string name="proximo">Próximo</string>

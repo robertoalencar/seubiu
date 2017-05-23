@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="br.com.orube.client.activities.ChooseProfessional"
+    android:orientation="vertical"
+    android:id="@+id/layoutSugestion"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50px" />
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcview"
+            android:scrollbars="vertical"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20px"
+            android:background="@drawable/myedit">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnSolicitar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="15px"
+                android:paddingLeft="50px"
+                android:paddingRight="50px"
+                android:background="@drawable/mybutton"
+                android:text="@string/solicitar"
+                android:textColor="@color/colorOffWhite"
+                android:textStyle="bold"
+                android:layout_weight="1"/>
+
+            <ImageButton
+               android:layout_width="200px"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="15px"
+                android:background="@drawable/mybutton2"
+                android:src="@drawable/ic_menu_slideshow"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:layout_weight="1"/>
+
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>
