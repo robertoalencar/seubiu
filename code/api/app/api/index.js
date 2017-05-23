@@ -12,7 +12,7 @@ var servicos = []
 
 api.remove = function(req, res){
     
-    let index = req.body;
+    var index = req.body;
 
     sugestions.splice(index, 1)
     
