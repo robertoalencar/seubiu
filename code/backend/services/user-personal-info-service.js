@@ -21,7 +21,7 @@ const getById = (userId) => {
             let userPersonalInfo = _.first(await(userPersonalInfoFind({'user_id': userId})));
 
             if (_.isNil(userPersonalInfo)) {
-                throw ServiceException(ERROR.UserPersonalInfo.USER_PERSONAL_INFO_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserPersonalInfo.USER_PERSONAL_INFO_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             return userPersonalInfo;

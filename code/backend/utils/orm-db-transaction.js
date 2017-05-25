@@ -14,7 +14,7 @@ const doInTransaction = async ((task, readOnly) => {
     let result;
 
     try {
-        debug('### New transaction ID [${transactionId}], mode [${transactionMode}]');
+        debug(`### New transaction ID [${transactionId}], mode [${transactionMode}]`);
 
         db = await (new Promise((resolve, reject) => {
 
@@ -25,7 +25,7 @@ const doInTransaction = async ((task, readOnly) => {
 
         }));
 
-        debug('### Start transaction ID [${transactionId}], connection ID [${db.poolId}]');
+        debug(`### Start transaction ID [${transactionId}], connection ID [${db.poolId}]`);
 
         transaction = await (new Promise((resolve, reject) => {
 
@@ -39,7 +39,7 @@ const doInTransaction = async ((task, readOnly) => {
         result = await (task(db));
 
         if (readOnly) {
-            debug('### Rollback transaction ID [${transactionId}], connection ID [${db.poolId}]');
+            debug(`### Rollback transaction ID [${transactionId}], connection ID [${db.poolId}]`);
             await (new Promise((resolve, reject) => {
 
                 transaction.rollback((err) => {
@@ -50,7 +50,7 @@ const doInTransaction = async ((task, readOnly) => {
             }));
 
         } else {
-            debug('### Commit transaction ID [${transactionId}], connection ID [${db.poolId}]');
+            debug(`### Commit transaction ID [${transactionId}], connection ID [${db.poolId}]`);
             await (new Promise((resolve, reject) => {
 
                 transaction.commit((err) => {
@@ -67,7 +67,7 @@ const doInTransaction = async ((task, readOnly) => {
     } catch(err) {
 
         if (transaction) {
-            debug('### Rollback transaction ID [${transactionId}]');
+            debug(`### Rollback transaction ID [${transactionId}]`);
             await (new Promise((resolve, reject) => {
 
                 transaction.rollback((err) => {
@@ -82,7 +82,7 @@ const doInTransaction = async ((task, readOnly) => {
         throw err;
 
     } finally {
-        debug('### Finish transaction ID [${transactionId}]');
+        debug(`### Finish transaction ID [${transactionId}]`);
         if (db) pool.release(db);
     }
 
