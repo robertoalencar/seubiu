@@ -11,7 +11,8 @@ new Vue({
   },
 
   methods: {
-    signup: function (event) {
+
+    signup() {
 
       var patches = {
             "patches": [
