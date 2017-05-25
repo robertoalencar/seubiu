@@ -116,7 +116,7 @@ const setCities = (userId, cityIds) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             const cityFind = Promise.promisify(db.models.City.find);
@@ -144,7 +144,7 @@ const getCities = (userId) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             const userProfileGetCities = Promise.promisify(userProfile.getCities);
@@ -173,7 +173,7 @@ const setProfessions = (userId, professionIds) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             const professionFind = Promise.promisify(db.models.Profession.find);
@@ -201,7 +201,7 @@ const getProfessions = (userId) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             const userProfileGetProfessions = Promise.promisify(userProfile.getProfessions);
@@ -230,7 +230,7 @@ const setServices = (userId, servicesIds) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             const servicesFind = Promise.promisify(db.models.Service.find);
@@ -258,7 +258,7 @@ const getServices = (userId) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             const userProfileGetServices = Promise.promisify(userProfile.getServices);
@@ -303,7 +303,7 @@ const updateDisplayImage = (userId, name, size, type, data, ip) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             await (new Promise((resolve, reject) => {
@@ -346,9 +346,9 @@ const getDisplayImage = (userId) => {
             let userProfile = _.first(await(userProfileFind({'user_id': userId})));
 
             if (_.isNil(userProfile)) {
-                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.USER_PROFILE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             } else if (userProfile.displayimage_id) {
-                throw ServiceException(ERROR.UserProfile.DISPLAY_IMAGE_NOT_FOUND, ERROR.Type.NOT_FOUND);
+                throw ServiceException(ERROR.UserProfile.DISPLAY_IMAGE_NOT_FOUND, ERROR.Types.NOT_FOUND);
             }
 
             const fileGet = Promise.promisify(db.models.File.get);

@@ -66,7 +66,8 @@ module.exports = {
     },
 
     Profession: {
-        PROFESSION_ID_IS_REQUIRED: 'PROFESSION_ID_IS_REQUIRED'
+        PROFESSION_ID_IS_REQUIRED: 'PROFESSION_ID_IS_REQUIRED',
+        PROFESSION_NOT_FOUND: 'PROFESSION_NOT_FOUND'
     },
 
     ProfessionSuggestion: {
@@ -91,7 +92,9 @@ module.exports = {
     },
 
     Service: {
-        SERVICES_IDS_ARE_REQUIRED: 'SERVICES_IDS_ARE_REQUIRED'
+        SERVICES_IDS_ARE_REQUIRED: 'SERVICES_IDS_ARE_REQUIRED',
+        DESCRIPTION_IS_REQUIRED: 'DESCRIPTION_IS_REQUIRED',
+        SERVICE_ALREADY_EXISTS: 'SERVICE_ALREADY_EXISTS'
     },
 
     Common: {

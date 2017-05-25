@@ -47,6 +47,18 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
                 routeUtil.handleException(res, err);
             });
 
+        })
+        .post(isAuthenticated, isAdmin, (req, res) => {
+
+            const professionId = req.params.id;
+            const description = req.body.description;
+
+            professionService.addServiceToProfession(professionId, description).then((success) => {
+                res.send(success);
+            }, (err) => {
+                routeUtil.handleException(res, err);
+            });
+
         });
 
 };

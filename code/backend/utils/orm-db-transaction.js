@@ -67,7 +67,7 @@ const doInTransaction = async ((task, readOnly) => {
     } catch(err) {
 
         if (transaction) {
-            debug(`### Rollback transaction ID [${transactionId}], connection ID []`);
+            debug(`### Rollback transaction ID [${transactionId}]`);
             await (new Promise((resolve, reject) => {
 
                 transaction.rollback((err) => {
@@ -82,7 +82,7 @@ const doInTransaction = async ((task, readOnly) => {
         throw err;
 
     } finally {
-        debug(`### Finish transaction ID [${transactionId}], connection ID []`);
+        debug(`### Finish transaction ID [${transactionId}]`);
         if (db) pool.release(db);
     }
 

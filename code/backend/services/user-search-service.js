@@ -9,7 +9,13 @@ const _searchByProfessionServicesAndCity = (professionId, servicesIds, cityId, d
     return new Promise((resolve, reject) => {
 
         let sql = `
-            SELECT DISTINCT u."id", u."name", upro."displayName", us."rating", us."score"
+            SELECT DISTINCT
+                u."id",
+                u."name",
+                upro."displayName",
+                (SELECT COUNT(r.id) FROM request r WHERE r.professional_id = u.id AND r.status_id > ?) AS "totalRequests",
+                us."rating",
+                us."score"
                 FROM
                     "user" AS u
                     INNER JOIN user_profile AS upro ON (u.id = upro.user_id)
@@ -21,12 +27,19 @@ const _searchByProfessionServicesAndCity = (professionId, servicesIds, cityId, d
                 WHERE
                     u.status_id = ? AND u."emailVerified" = ? AND
                     ( upp.profession_id = ? AND (ups.service_id IN ? OR upro."otherServices" = ? ) ) AND ( (ua.city_id = ? AND ua.main = ?) OR upc.city_id = ? )
-                ORDER BY us."rating" DESC, us."score" DESC
+                ORDER BY "totalRequests" DESC, us."rating" DESC, us."score" DESC
         `;
 
         const parameters = [
-            db.models.UserStatus.ACTIVE, true, professionId, servicesIds,
-            true, cityId, true, cityId
+            db.models.RequestStatus.ACTIVE,
+            db.models.UserStatus.ACTIVE,
+            true,
+            professionId,
+            servicesIds,
+            true,
+            cityId,
+            true,
+            cityId
         ];
 
         db.driver.execQuery(sql, parameters,
