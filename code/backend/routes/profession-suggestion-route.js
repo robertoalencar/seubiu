@@ -86,8 +86,8 @@ module.exports = (router, isAuthenticated, isAdmin, userHasAccess) => {
 
             const id = req.params.id;
 
-            professionSuggestionService.approve(id).then((success) => {
-                res.send(success);
+            professionSuggestionService.approve(id).then((newProfession) => {
+                res.send(newProfession);
             }, (err) => {
                 routeUtil.handleException(res, err);
             });
