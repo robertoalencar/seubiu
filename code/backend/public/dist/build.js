@@ -492,6 +492,12 @@ module.exports = Component.exports
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__.p + "login.png?69719618d47dbe9264b8df1b32d71bc6";
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {/*!
  * Vue.js v2.3.3
@@ -10172,12 +10178,6 @@ module.exports = Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "login.png?69719618d47dbe9264b8df1b32d71bc6";
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10293,7 +10293,7 @@ module.exports = g;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(62);
 
@@ -25133,15 +25133,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -25168,6 +25159,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         approveUser(user) {
             this.approve = false;
             this.pickUser = user;
+        },
+
+        closeRegister() {
+            this.approve = true;
         }
 
     },
@@ -25475,6 +25470,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -25507,6 +25503,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+
+        backListUsers() {
+            this.$emit('registerClose');
+        },
 
         listServices() {
 
@@ -25801,7 +25801,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   data() {
     return {
-
+      idProfession: '',
       services: [],
       newService: '',
       validationMessage: 'Por favor preencha este campo',
@@ -25846,16 +25846,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       if (this.services.length > 0) {
 
-        this.$http.post('http://localhost:3000/api/professionsuggestions/' + this.suggestion.id + '/approve', {}, { headers: { 'Authorization': this.$store.state.token } }).then(() => {
-          this.$http.post('http://localhost:3000/api/professions/' + this.suggestion.id + ' /services', { 'description': this.services }, { headers: { 'Authorization': this.$store.state.token } });
+        this.$http.post('http://localhost:3000/api/professionsuggestions/' + this.suggestion.id + '/approve', {}, { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(function (res) {
+
+          this.idProfession = res.id;
+
+          this.$http.post('http://localhost:3000/api/professions/' + this.idProfession + ' /services', { 'description': this.services }, { headers: { 'Authorization': this.$store.state.token } });
 
           alert("Sucesso");
         }, err => console.log(JSON.stringify(err)));
 
         this.$emit('aproved');
         this.$emit('showModal');
-
-        this.services = [];
 
         return this.indexSugestion;
       } else {
@@ -26135,7 +26136,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__App_vue__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__App_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__App_vue__);
@@ -26303,7 +26304,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, ".title[data-v-d924a6a0]{height:100px;width:84%;float:right;background-color:#fff;margin-left:10%;border-radius:10px 0 0 10px}.spanTitle[data-v-d924a6a0]{font-size:160%;font-weight:700}.spaceSpan[data-v-d924a6a0]{float:left;margin-top:3%;margin-left:2.5%}.body[data-v-d924a6a0]{margin-top:2%;float:right;width:84%;height:100%;background-color:#fff;border-radius:10px 0}.media[data-v-d924a6a0]{margin:20px 0;padding:30px}.dp[data-v-d924a6a0]{border:10px solid #eee;transition:all .2s ease-in-out}.listTable[data-v-d924a6a0]{width:100%;text-align:center}.imgUser[data-v-d924a6a0]{width:100px;height:100px;float:left}.approveButton[data-v-d924a6a0]{background-color:#a9a9a9;color:#000}.approveButton[data-v-d924a6a0],.buttonDisapprove[data-v-d924a6a0]{border-radius:12px;margin-left:5px;padding:8px;border:3px solid #000}.buttonDisapprove[data-v-d924a6a0]{background-color:#b22222;color:#fff}.inputFilter[data-v-d924a6a0]{float:right;width:10%;margin-right:20%;margin-top:2.5%}.inputFilterCss[data-v-d924a6a0]{border-radius:8px;padding:8px;border:solid}.inputFilterCss[data-v-d924a6a0]:focus{z-index:2;border:solid red}", ""]);
+exports.push([module.i, ".title[data-v-d924a6a0]{height:100px;width:84%;float:right;background-color:#fff;margin-left:10%;border-radius:10px 0 0 10px}.spanTitle[data-v-d924a6a0]{font-size:160%;font-weight:700}.spaceSpan[data-v-d924a6a0]{float:left;margin-top:3%;margin-left:2.5%}.body[data-v-d924a6a0]{margin-top:2%;float:right;width:84%;height:100%;background-color:#fff;border-radius:10px 0}.media[data-v-d924a6a0]{margin:20px 0;padding:30px}.dp[data-v-d924a6a0]{border:10px solid #eee;transition:all .2s ease-in-out}.listTable[data-v-d924a6a0]{width:100%;text-align:center}.imgUser[data-v-d924a6a0]{width:100px;height:100px;float:left}.approveButton[data-v-d924a6a0]{background-color:#a9a9a9;color:#000}.approveButton[data-v-d924a6a0],.buttonDisapprove[data-v-d924a6a0]{border-radius:12px;margin-left:5px;padding:8px;border:3px solid #000}.buttonDisapprove[data-v-d924a6a0]{background-color:#b22222;color:#fff}.inputFilter[data-v-d924a6a0]{float:right;width:10%;margin-right:20%;margin-top:2.5%}.inputFilterCss[data-v-d924a6a0]{border-radius:8px;padding:8px;border:solid}.inputFilterCss[data-v-d924a6a0]:focus{z-index:2;border:solid red}.links[data-v-d924a6a0]{color:#000;font-size:30px;padding:10px}", ""]);
 
 // exports
 
@@ -26631,7 +26632,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.clearDataPersonais
     }
-  }, [_vm._v(" Limpar dados")])])])])])]) : _vm._e()]), _vm._v(" "), _c('transition', {
+  }, [_vm._v(" Limpar dados")]), _vm._v(" "), _c('button', {
+    staticClass: "clear",
+    on: {
+      "click": _vm.backListUsers
+    }
+  }, [_vm._v("Voltar")])])])])])]) : _vm._e()]), _vm._v(" "), _c('transition', {
     attrs: {
       "name": "forms"
     }
@@ -26854,7 +26860,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "titleDatas"
   }, [_vm._v(" Dados Profissionais: ")]), _c('br'), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Profissões selecionadas:")]), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.professionSelecteds), function(profession) {
     return _c('li', [_vm._v(" " + _vm._s(profession.description) + " ")])
-  })), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Serviços selecionados:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.selectedServices), function(service) {
+  })), _vm._v(" "), _c('strong', [_vm._v("Serviços selecionados:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.selectedServices), function(service) {
     return _c('li', [_vm._v(" " + _vm._s(service.description) + " ")])
   })), _vm._v(" "), _c('strong', [_vm._v("Carteira de trabalho:")]), _vm._v(" " + _vm._s(_vm.numberWorkPermit) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Anos de Experiência:")]), _vm._v(" " + _vm._s(_vm.yearInProfession) + " "), _c('br')]), _vm._v(" "), _c('div', {
     staticClass: "buttons"
@@ -26899,7 +26905,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('img', {
     staticClass: "imageSideBar",
     attrs: {
-      "src": __webpack_require__(6)
+      "src": __webpack_require__(5)
     }
   })]), _vm._v(" "), _vm._m(0)], 1), _vm._v(" "), _c('div', {
     staticClass: "sidebar-menu"
@@ -27092,7 +27098,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', [_c('img', {
     staticClass: "imageLogin",
     attrs: {
-      "src": __webpack_require__(6)
+      "src": __webpack_require__(5)
     }
   })])
 }]}
@@ -27291,7 +27297,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 
 /***/ }),
 /* 50 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [(_vm.approve) ? _c('div', [_c('div', {
@@ -27317,15 +27323,56 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "list": _vm.usersWithFilter,
       "per": 1
     }
-  }, _vm._l((_vm.paginated('users')), function(user) {
-    return _c('li', [_vm._v("\n               " + _vm._s(user) + "\n            ")])
-  })), _vm._v(" "), _c('paginate-links', {
+  }, [_c('div', {
+    staticClass: "card-body no-padding"
+  }, [_c('table', {
+    staticClass: "datatable table table-striped primary",
+    attrs: {
+      "cellspacing": "0",
+      "width": "100%"
+    }
+  }, [_c('thead', [_c('tr', {
+    staticClass: "trCollor"
+  }, [_c('th', [_vm._v("Usuário")]), _vm._v(" "), _c('th', [_vm._v("Status")])])]), _vm._v(" "), _vm._l((_vm.paginated('users')), function(user) {
+    return _c('tbody', [_c('tr', [_c('td', [_c('img', {
+      staticClass: "media-object dp img-circle imgUser",
+      attrs: {
+        "src": __webpack_require__(5)
+      }
+    }), _vm._v(" "), _c('h4', {
+      staticClass: "media-heading"
+    }, [_vm._v(" " + _vm._s(user.name) + " " + _vm._s(user.surname) + " ")]), _vm._v(" "), _c('h5', [_vm._v(_vm._s(user.email) + " - " + _vm._s(user.phone) + " ")]), _vm._v(" "), _c('hr', {
+      staticStyle: {
+        "margin": "8px auto"
+      }
+    })]), _vm._v(" "), _c('td', [_c('button', {
+      staticClass: "approveButton",
+      on: {
+        "click": function($event) {
+          _vm.approveUser(user)
+        }
+      }
+    }, [_vm._v("Aprovar Profissional")]), _vm._v(" "), _c('button', {
+      staticClass: "buttonDisapprove"
+    }, [_vm._v(" Reprovar Profissional ")])])])])
+  })], 2)])]), _vm._v(" "), _c('paginate-links', {
+    staticClass: "links",
     attrs: {
       "for": "users",
       "async": true,
-      "show-step-links": true
+      "simple": {
+        next: 'Next »',
+        prev: '« Back'
+      }
     }
-  })], 1)]) : _vm._e()])
+  })], 1)]) : _c('register-professional', {
+    attrs: {
+      "user": _vm.pickUser
+    },
+    on: {
+      "registerClose": _vm.closeRegister
+    }
+  })], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "spaceSpan"
