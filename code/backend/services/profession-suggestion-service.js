@@ -204,13 +204,11 @@ const approve = function(id) {
             }));
 
             const professionCreate = Promise.promisify(db.models.Profession.create);
-            let newProfession = await (professionCreate(
+            return professionCreate(
             {
                 'description': professionSuggestion.profession,
                 'active': true
-            }));
-
-            return professionSuggestion;
+            });
         }
 
     });
