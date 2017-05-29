@@ -50,21 +50,36 @@ const generateEmailVerification = (userId, locale = 'pt-br') => {
 
     const EMAIL_VERIFICATION_TEMPLATE = {
         'pt-br': `
-                    Conta no Seu Biu
-                    Verifique o seu endereço de e-email
-
-                    Para finalizar o cadastro da sua conta no Seu Biu, nós precisamos ter certeza que esse e-mail é seu.
-                    Clique no link <a href='${linkToVerify}'>${linkToVerify}</a>ou acesse-o usando um navegador de internet.
-
-                    Se você não não solicitou esse cadastro apenas ignore esse email.
-
-                    Obrigado.`
+                    <html>
+                        <div><span><b>Verifique o seu endereço de e-email:</b></span></div>
+                        <br/>
+                        <div>
+                            <span>Para finalizar o cadastro da sua conta no Seu Biu, nós precisamos ter certeza que esse e-mail é seu.</span>
+                            <br/>
+                            <span>Clique no link <a href='${linkToVerify}'>${linkToVerify}</a> ou acesse-o usando um navegador de internet.</span>
+                        </div>
+                        <br/>
+                        <div><span>Se você não não solicitou esse cadastro apenas ignore esse email.</span></div>
+                        <br/>
+                        <div><span>Obrigado.</span></div>
+                    </html>
+                `
     };
 
     return EMAIL_VERIFICATION_TEMPLATE[locale];
 };
 
+const getEmailValidationSubject = (locale = 'pt-br') => {
+
+    const EMAIL_VERIFICATION_SUBJECT = {
+        'pt-br': 'Conta no Seu Biu'
+    };
+
+    return EMAIL_VERIFICATION_SUBJECT[locale];
+};
+
 module.exports = {
     verifyToken: verifyToken,
-    generateEmailVerification: generateEmailVerification
+    generateEmailVerification: generateEmailVerification,
+    getEmailValidationSubject: getEmailValidationSubject
 };
