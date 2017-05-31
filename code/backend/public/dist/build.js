@@ -27322,12 +27322,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     })], 1)
   })], 2)]), _vm._v(" "), _c('div', {
     staticClass: "buttonsOfPage"
-  }, [(this.countPage < this.suggestion.length) ? _c('button', {
+  }, [_c('button', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (this.countPage != this.suggestion.length),
+      expression: "this.countPage != this.suggestion.length"
+    }],
     staticClass: "buttonListService",
     on: {
       "click": _vm.goNextPage
     }
-  }, [_vm._v("Próxima")]) : _vm._e(), _vm._v(" "), (this.countPage > 1) ? _c('button', {
+  }, [_vm._v("Próxima")]), _vm._v(" "), (this.countPage > 1) ? _c('button', {
     staticClass: "buttonListService",
     on: {
       "click": _vm.goBackPage
@@ -27368,7 +27374,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "name": "users",
       "list": _vm.usersWithFilter,
-      "per": 1
+      "per": 3
     }
   }, [_c('div', {
     staticClass: "card-body no-padding"
@@ -27404,17 +27410,29 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v(" Reprovar Profissional ")])])])])
   })], 2)])]), _vm._v(" "), _c('div', {
     staticClass: "buttonsOfPage"
-  }, [(this.countPage != this.users.length) ? _c('button', {
+  }, [_c('button', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (this.countPage != this.users.length),
+      expression: "this.countPage != this.users.length"
+    }],
     staticClass: "approveButton",
     on: {
       "click": _vm.goNextPage
     }
-  }, [_vm._v("Próxima")]) : _vm._e(), _vm._v(" "), (this.countPage > 1) ? _c('button', {
+  }, [_vm._v("Próxima")]), _vm._v(" "), _c('button', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (this.countPage > 1),
+      expression: "this.countPage > 1"
+    }],
     staticClass: "approveButton",
     on: {
       "click": _vm.goBackPage
     }
-  }, [_vm._v("  Voltar ")]) : _vm._e()])], 1)]) : _c('register-professional', {
+  }, [_vm._v("  Voltar ")])])], 1)]) : _c('register-professional', {
     attrs: {
       "user": _vm.pickUser
     },
