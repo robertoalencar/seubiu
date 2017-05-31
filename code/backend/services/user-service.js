@@ -41,8 +41,7 @@ const getByEmailAndPassword = (email, password) => {
         if (!_.isEmpty(errors)) {
             throw ServiceException(errors);
         } else {
-            //TODO: Add this filter when the email verification was implemented: , 'emailVerified': true
-            return _.first(await (getByFilter({'password': md5(password), 'email': email}, db)));
+            return _.first(await (getByFilter({'password': md5(password), 'email': email, 'emailVerified': true}, db)));
         }
 
     });

@@ -207,6 +207,8 @@ then
     echo "SESSION_SECRET=7Cr02c0Q00281fxDAr1OuC25nBK6E8j7" >> $ENV_FILE
     echo "SERVER_ADDRESS=localhost" >> $ENV_FILE
     echo "SERVER_PORT=3000" >> $ENV_FILE
+    echo "SMTP_USER=seubiu.contato@gmail.com" >> $ENV_FILE
+    echo "SMTP_PASS=seubiu2017" >> $ENV_FILE
 fi
 
 cd $APP_DIR
