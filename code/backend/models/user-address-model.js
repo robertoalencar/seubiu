@@ -15,8 +15,8 @@ module.exports = (orm, db) => {
     });
 
     UserAddress.hasOne('user', db.models.User, { reverse: 'addresses', required: true } );
-    UserAddress.hasOne('city', db.models.City, { required: true } );
-    UserAddress.hasOne('state', db.models.State, { required: true } );
-    UserAddress.hasOne('country', db.models.Country, { required: true } );
+    UserAddress.hasOne('city', db.models.City, { autoFetch: true, required: true } );
+    UserAddress.hasOne('state', db.models.State, { autoFetch: true, required: true } );
+    UserAddress.hasOne('country', db.models.Country, { autoFetch: true, required: true } );
 
 };

@@ -17,7 +17,8 @@ const pool = new Pool({
         protocol: process.env.DB_PROTOCOL,
         user:     process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
-        port:     process.env.DB_PORT
+        port:     process.env.DB_PORT,
+        query:    { debug: (process.env.DB_DEBUG ? process.env.DB_DEBUG : false) }
       };
 
       orm.connect(opts, (err, db) => {
@@ -40,7 +41,7 @@ const pool = new Pool({
 
         db.settings.set('instance.returnAllErrors', true);
         db.settings.set('instance.cache', false);
-        db.settings.set('connection.debug', (process.env.DB_DEBUG ? Boolean(process.env.DB_DEBUG) : false));
+        db.settings.set('connection.debug', (process.env.DB_DEBUG ? process.env.DB_DEBUG : false));
 
         require('../models/')(orm, db);
 

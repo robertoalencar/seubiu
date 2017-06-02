@@ -14,7 +14,7 @@ const createSchema = async (() => {
       user:     process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       port:     process.env.DB_PORT,
-      query:    { debug: (process.env.DB_DEBUG ? Boolean(process.env.DB_DEBUG) : false) }
+      query:    { debug: (process.env.DB_DEBUG ? process.env.DB_DEBUG : false) }
     };
 
     const db = await (new Promise(function (resolve, reject) {

@@ -8,7 +8,7 @@ const options = {
         exclude: [],
         include: [200]
     },
-    enabled: (process.env.API_CACHE ? Boolean(process.env.API_CACHE) : false)
+    enabled: (process.env.API_CACHE ? process.env.API_CACHE : false)
 };
 
 const cacheWithRedis = apicache.options(options).middleware;
