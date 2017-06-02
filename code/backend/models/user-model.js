@@ -6,8 +6,8 @@ module.exports = (orm, db) => {
         surname         : { type: "text", size: 125, required: true, mapsTo: 'surname' },
         phone           : { type: 'text', size: 30, required: true, unique: true,  mapsTo: 'phone' },
         email           : { type: 'text', size: 255, required: true, unique: true,  mapsTo: 'email' },
-        emailVerified   : { type: 'boolean', defaultValue: false, mapsTo: 'emailVerified' },
-        password        : { type: 'text', size: 50, required: true, mapsTo: 'password' },
+        emailVerified   : { type: 'boolean', defaultValue: false, enumerable: false, mapsTo: 'emailVerified' },
+        password        : { type: 'text', size: 50, required: true, enumerable: false, mapsTo: 'password' },
         admin           : { type: 'boolean', defaultValue: false, mapsTo: 'admin' }
     }, {
         collection: 'user',
