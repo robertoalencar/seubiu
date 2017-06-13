@@ -25607,7 +25607,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             filter: '',
             users: [],
-            approve: false,
+            approve: true,
             pickUser: {},
             paginate: ['users'],
             countPage: 1,
@@ -26053,6 +26053,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -26068,14 +26086,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //tags de utilidades para visualização de componentes.
             cnpjInput: false, cpfInput: true, tag: '', n: 1,
             //Mensagens de exibição para usuário: 
-            messageOne: '', messageTwo: '', messageThree: '', messageFour: '', cepIncorrect: '',
+            messageOne: '', messageTwo: '', messageThree: '', messageFour: '', serviceAllMessage: 'Faz todos os serviços.',
+            serviceNotAllMessage: 'Faz os serviços selecionados, incluindo a opção outros.',
             //atributos dos dados pessoais: 
             cpf: '', cnpj: '', rg: '', org: '', date: '',
             //atributos do endereço du profissional: 
             cep: '', logradouro: '', bairro: '', uf: '', localidade: '', states: [], complement: '', number: '',
             stateSelected: '', cities: [], citieSelected: [],
             //atributos dos dados profissionais: 
-            professions: [], professionSelecteds: [], selectedServices: '', services: [],
+            professions: [], professionSelecteds: [], selectedServices: '', services: [], allServices: false,
             //objetos utilizados no componente:                
             professionService: new __WEBPACK_IMPORTED_MODULE_0__services_ProfessionService__["a" /* default */](this.$http, this.$store.state.token), util: new __WEBPACK_IMPORTED_MODULE_1__util_Util__["a" /* default */]()
         };
@@ -26170,7 +26189,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         send() {
 
-            alert("Envie os dados: " + this.user.name + this.user.email + this.cpfCpnj + this.rg + this.date + JSON.stringify(this.professionSelecteds) + JSON.stringify(this.selectedServices) + this.numberWorkPermit + this.yearInProfession);
+            if (this.cpf != '') {
+                alert("Dados Pessaais -> " + this.user.name + this.user.email + this.cpf + this.rg + this.org + this.date);
+            } else {
+                alert("Dados Pessaais -> " + this.user.name + this.user.email + this.cnpj + this.rg + this.org + this.date);
+            }
+
+            alert("Dados do endereço -> " + this.cep + this.logadroudo + this.bairro + this.uf + this.localidade + this.stateSelected.description + JSON.stringify(this.citieSelected));
+
+            if (this.allServices == true) {
+
+                alert("dados profissionais -> " + JSON.stringify(this.professionSelecteds) + this.allServices);
+            } else {
+                alert("dados profissionais -> " + JSON.stringify(this.professionSelecteds) + JSON.stringify(this.selectedServices));
+            }
         },
 
         clearDataPersonais() {
@@ -26275,7 +26307,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         next4() {
 
-            if (this.professionSelecteds != '' && this.selectedServices != '') {
+            if (this.professionSelecteds != '' && (this.selectedServices != '' || this.allServices == true)) {
+
+                if (this.allServices == true) {
+                    this.selectedServices = [];
+                }
 
                 this.n = 4;
                 this.util.changeCssFour();
@@ -28239,8 +28275,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "col-md-12 form-signin"
   }, [_c('div', {
-    staticClass: "title2"
-  }, [_vm._v("    \n                           Dados profissionais\n                        "), _c('div', {
+    staticClass: "title2",
+    staticStyle: {
+      "padding-left": "18px"
+    }
+  }, [_vm._v("    \n                           Seleção de profissão e serviços\n                        "), _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -28248,7 +28287,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "messageThree"
     }],
     staticClass: "erroMessage2"
-  }, [_vm._v("     \n                                         " + _vm._s(_vm.messageThree) + "\n                        ")])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("     \n                                         " + _vm._s(_vm.messageThree) + "\n                        ")])]), _vm._v(" "), _c('br'), _vm._v(" "), _c('div', {
     staticClass: "col-md-12"
   }, [_c('label', [_vm._v("Profissão")]), _vm._v(" "), _c('label', {
     staticClass: "starRed"
@@ -28288,6 +28327,63 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   })], 2)]), _vm._v(" "), _c('div', {
     staticClass: "col-md-12",
     staticStyle: {
+      "padding-top": "15px"
+    }
+  }, [_c('label', [_vm._v("Se você é capaz de realizar todos os serviços das profissões que selecionou,\n                        marque o checkbox abaixo ")]), _c('br'), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.allServices),
+      expression: "allServices"
+    }],
+    attrs: {
+      "type": "checkbox",
+      "id": "checkbox"
+    },
+    domProps: {
+      "checked": Array.isArray(_vm.allServices) ? _vm._i(_vm.allServices, null) > -1 : (_vm.allServices)
+    },
+    on: {
+      "__c": function($event) {
+        var $$a = _vm.allServices,
+          $$el = $event.target,
+          $$c = $$el.checked ? (true) : (false);
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$c) {
+            $$i < 0 && (_vm.allServices = $$a.concat($$v))
+          } else {
+            $$i > -1 && (_vm.allServices = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+          }
+        } else {
+          _vm.allServices = $$c
+        }
+      }
+    }
+  }), _vm._v(" "), _c('label', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.allServices),
+      expression: "allServices"
+    }],
+    attrs: {
+      "for": "checkbox"
+    }
+  }, [_vm._v(_vm._s(_vm.serviceAllMessage))]), _vm._v(" "), _c('label', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.allServices),
+      expression: "!allServices"
+    }],
+    attrs: {
+      "for": "checkbox"
+    }
+  }, [_vm._v(_vm._s(_vm.serviceNotAllMessage))])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
       "padding-top": "10px"
     }
   }, [_c('label', [_vm._v("Serviços")]), _vm._v(" "), _c('label', {
@@ -28298,6 +28394,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       rawName: "v-model",
       value: (_vm.selectedServices),
       expression: "selectedServices"
+    }, {
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.allServices),
+      expression: "!allServices"
     }],
     staticClass: "form-control",
     attrs: {
@@ -28325,8 +28426,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": service
       }
     }, [_vm._v(" " + _vm._s(service.description) + " ")])
-  })], 2)]), _vm._v(" "), _c('div', {
-    staticClass: "buttonsOneForm"
+  })], 2), _vm._v(" "), _c('select', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.allServices),
+      expression: "allServices"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "disabled": ""
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "padding-left": "25px"
+    }
   }, [_c('button', {
     staticClass: "buttonNext",
     on: {
@@ -28337,12 +28451,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.back
     }
-  }, [_vm._v(" Voltar ")]), _vm._v(" "), _c('button', {
-    staticClass: "clear",
-    on: {
-      "click": _vm.clearDataProfession
-    }
-  }, [_vm._v(" Limpar dados")])])])])]) : _vm._e()]), _vm._v(" "), _c('transition', {
+  }, [_vm._v(" Voltar ")])])])])]) : _vm._e()]), _vm._v(" "), _c('transition', {
     attrs: {
       "name": "forms"
     }
@@ -28374,15 +28483,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "dataProfession"
   }, [_c('label', {
     staticClass: "titleDatas"
-  }, [_vm._v("Endereço de atuação / Profissões e Serviços:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Estado de atuação:")]), _vm._v(" " + _vm._s(_vm.state) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cidades de atuação :")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.citieSelected), function(city) {
+  }, [_vm._v("Endereço de atuação / Profissões e Serviços:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Estado de atuação:")]), _vm._v(" " + _vm._s(_vm.stateSelected.description) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cidades de atuação :")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.citieSelected), function(city) {
     return _c('li', [_vm._v(" " + _vm._s(city.description) + " ")])
   })), _vm._v(" "), _c('strong', [_vm._v("Profissões selecionadas:")]), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.professionSelecteds), function(profession) {
     return _c('li', [_vm._v(" " + _vm._s(profession.description) + " ")])
-  })), _vm._v(" "), _c('strong', [_vm._v("Serviços selecionados:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.selectedServices), function(service) {
+  })), _vm._v(" "), _c('strong', [_vm._v("Serviços selecionados:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.allServices),
+      expression: "allServices"
+    }]
+  }, [_vm._v(_vm._s(_vm.serviceAllMessage))]), _vm._v(" "), _c('ul', _vm._l((_vm.selectedServices), function(service) {
     return _c('li', [_vm._v(" " + _vm._s(service.description) + " ")])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "listForm"
-  }, [_c('form', {
+  }, [_c('button', {
+    staticClass: "buttonNext",
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v(" Voltar ")]), _vm._v(" "), _c('form', {
     on: {
       "submit": function($event) {
         $event.preventDefault();
@@ -28390,11 +28511,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_c('button', {
-    staticClass: "buttonNext",
-    on: {
-      "click": _vm.back
-    }
-  }, [_vm._v(" Voltar ")]), _vm._v(" "), _c('button', {
     staticClass: "clear",
     attrs: {
       "type": "submit"
