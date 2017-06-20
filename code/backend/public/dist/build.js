@@ -26084,14 +26084,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -26106,7 +26098,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function () {
         return {
             //tags de utilidades para visualização de componentes.
-            cnpjInput: false, cpfInput: true, tag: '', n: 1,
+            cnpjInput: false, cpfInput: true, tag: '', n: 3,
             //Mensagens de exibição para usuário: 
             messageOne: '', messageTwo: '', messageThree: '', messageFour: '', serviceAllMessage: 'Faz todos os serviços.',
             serviceNotAllMessage: 'Faz os serviços selecionados, incluindo a opção outros.',
@@ -26116,7 +26108,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             cep: '', logradouro: '', bairro: '', uf: '', localidade: '', states: [], complement: '', number: '',
             stateSelected: '', cities: [], citieSelected: [],
             //atributos dos dados profissionais: 
-            professions: [], professionSelecteds: [], selectedServices: '', services: [], allServices: false,
+            professions: [], professionSelected: {}, professionSelecteds: [], selectedServices: '', services: [], allServices: false,
             options: [],
             //objetos utilizados no componente:                
             professionService: new __WEBPACK_IMPORTED_MODULE_0__services_ProfessionService__["a" /* default */](this.$http, this.$store.state.token), util: new __WEBPACK_IMPORTED_MODULE_1__util_Util__["a" /* default */]()
@@ -26185,37 +26177,59 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$emit('registerClose');
         },
 
+        removeService() {
+
+            this.professionSelecteds.forEach(profession => {
+
+                var professionClosed = profession;
+                var index;
+
+                for (var i = 0; i < this.options.length; i++) {
+
+                    if (this.options[i].id === professionClosed.id) {
+                        index = i;
+                    } else {
+                        console.log('não encontrado');
+                    }
+                }
+
+                this.options.splice(index, 1);
+
+                /*
+                  function checkObject(obj) {
+                        return professionClosed.id == obj.id;
+                 }
+                     var lookfind = this.options.find(checkObject);
+                
+                    alert(JSON.stringify(lookfind)); */
+            });
+        },
+
         listServices() {
 
-            this.services = [];
+            this.professionSelecteds.forEach(profession => {
 
-            //Verifico se as profissões são maiores que 0
-            if (this.professionSelecteds.length > 0) {
+                this.professionService.listServicesTheProfession(profession.id).then(result => {
 
-                // se for eu faço iteração nela
-                this.professionSelecteds.forEach(profession => {
+                    function checkObj(obj) {
+                        return profession.id == obj.id;
+                    }
 
-                    //aqui eu faço a requisição e cada serviços eu adiciono em um array
-                    this.professionService.listServicesTheProfession(profession.id).then(result => {
+                    var result = this.options.find(checkObj);
+
+                    if (result == undefined) {
+
+                        alert('CHEGOU aqui');
 
                         this.options.push({ id: profession.id,
                             profession: profession.description,
                             services: result
                         });
-
-                        alert(JSON.stringify(this.options));
+                    } else {
+                        alert('CHEGOU aqui 22');
                     }
-
-                    /*
-                        if(result.length > 0){
-                            result.forEach(( service )  => {
-                                this.services.push( service )
-                            });
-                        }} */, err => console.log(err));
-                });
-            } else {
-                this.services = [];
-            }
+                }, err => console.log(err));
+            });
         },
 
         listCities() {
@@ -28354,7 +28368,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "options": _vm.professions
     },
     on: {
-      "select": _vm.listServices,
+      "remove": _vm.removeService,
+      "input": _vm.listServices,
       "tag": _vm.addProfessions
     },
     model: {
@@ -28364,9 +28379,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "professionSelecteds"
     }
-  })], 1), _vm._v(" "), _vm._l((_vm.professionSelecteds), function(profession) {
-    return _c('label', [_vm._v(" " + _vm._s(profession.description) + " ")])
-  }), _vm._v(" "), _c('div', {
+  })], 1), _vm._v(" "), _c('div', {
     staticClass: "col-md-12",
     staticStyle: {
       "padding-top": "15px"
@@ -28436,9 +28449,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "multiple": true,
       "group-values": "services",
       "group-label": "profession",
-      "placeholder": "Type to search",
       "track-by": "description",
-      "label": "description"
+      "label": "description",
+      "placeholder": "Selecione os Serviços"
     },
     model: {
       value: (_vm.selectedServices),
@@ -28474,7 +28487,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.back
     }
-  }, [_vm._v(" Voltar ")])])], 2)])]) : _vm._e()]), _vm._v(" "), _c('transition', {
+  }, [_vm._v(" Voltar ")])])])])]) : _vm._e()]), _vm._v(" "), _c('transition', {
     attrs: {
       "name": "forms"
     }
@@ -28890,7 +28903,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "inputFilterCss",
     attrs: {
       "type": "search",
-      "placeholder": "Busque pela profissão."
+      "placeholder": "Busque pela profissão"
     },
     on: {
       "input": function($event) {
@@ -28988,7 +29001,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "inputFilterCss",
     attrs: {
       "type": "search",
-      "placeholder": "Busque pelo Nome."
+      "placeholder": "Busque pelo Nome"
     },
     on: {
       "input": function($event) {
