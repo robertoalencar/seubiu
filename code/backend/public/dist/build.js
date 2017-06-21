@@ -10765,7 +10765,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
 const store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     state: {
         token: '',
-        status: true
+        status: true,
+        user: {}
     }
 
 });
@@ -26084,6 +26085,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -26098,10 +26104,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function () {
         return {
             //tags de utilidades para visualização de componentes.
-            cnpjInput: false, cpfInput: true, tag: '', n: 3,
+            cnpjInput: false, cpfInput: true, tag: '', n: 1,
             //Mensagens de exibição para usuário: 
             messageOne: '', messageTwo: '', messageThree: '', messageFour: '', serviceAllMessage: 'Faz todos os serviços.',
             serviceNotAllMessage: 'Faz os serviços selecionados, incluindo a opção outros.',
+            selectMsg: 'Clique para selecionar', removeMsg: 'Clique para remover',
             //atributos dos dados pessoais: 
             cpf: '', cnpj: '', rg: '', org: '', date: '',
             //atributos do endereço du profissional: 
@@ -26193,16 +26200,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
                 }
 
+                this.selectedServices = [];
                 this.options.splice(index, 1);
-
-                /*
-                  function checkObject(obj) {
-                        return professionClosed.id == obj.id;
-                 }
-                     var lookfind = this.options.find(checkObject);
-                
-                    alert(JSON.stringify(lookfind)); */
             });
+        },
+
+        removeCities() {
+
+            this.cities = [];
+            this.citieSelected = [];
         },
 
         listServices() {
@@ -26215,18 +26221,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         return profession.id == obj.id;
                     }
 
-                    var result = this.options.find(checkObj);
+                    var verify = this.options.find(checkObj);
 
-                    if (result == undefined) {
-
-                        alert('CHEGOU aqui');
+                    if (verify == undefined) {
 
                         this.options.push({ id: profession.id,
                             profession: profession.description,
                             services: result
                         });
-                    } else {
-                        alert('CHEGOU aqui 22');
                     }
                 }, err => console.log(err));
             });
@@ -26978,7 +26980,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, ".form1[data-v-1d5ec060]{margin-left:2%;width:40%;float:left}.form2[data-v-1d5ec060]{margin-left:10%;width:40%;float:left;margin-top:2.5%}.container[data-v-1d5ec060]{margin-left:4%}.buttonsOneForm[data-v-1d5ec060]{float:right;width:50%;margin-right:3%;margin-top:3%}.form-control[data-v-1d5ec060]{border-radius:10px}.form-control[data-v-1d5ec060]:focus{z-index:2;border:2px solid red}.starRed[data-v-1d5ec060]{color:red;font-style:bold}.account-wall[data-v-1d5ec060]{float:right;width:900px;height:100%}.account-wall-results[data-v-1d5ec060],.account-wall[data-v-1d5ec060]{margin-top:5px;padding:40px 0 20px;background-color:#f7f7f7;box-shadow:2px 2px 2px rgba(0,0,0,.3);border-radius:20px}.account-wall-results[data-v-1d5ec060]{width:700px}.title[data-v-1d5ec060]{margin-bottom:2%;margin-left:37%;font-size:25px}.title2[data-v-1d5ec060]{margin-bottom:5%;margin-left:27%;font-size:25px}.title3[data-v-1d5ec060]{margin-bottom:5%;margin-left:25%;font-size:25px}.formFixed[data-v-1d5ec060]{float:auto;width:50%;margin-left:42%;border-radius:20px;background-color:#dcdcdc}.active1[data-v-1d5ec060]{background-color:#b22222;color:#fff}.active1[data-v-1d5ec060],.active2[data-v-1d5ec060]{float:left;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;margin:10px;width:55px;line-height:50px}.active2[data-v-1d5ec060]{color:#000;background-color:#a9a9a9}.buttonNext[data-v-1d5ec060]{margin-top:2%;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.dataPersonal[data-v-1d5ec060]{float:left;width:30%;margin-left:3%}.dataAdress[data-v-1d5ec060]{float:left}.dataProfession[data-v-1d5ec060]{float:right;margin-left:2%;width:30%}.clear[data-v-1d5ec060]{margin-top:5%;background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.erroMessage[data-v-1d5ec060]{float:right;margin-bottom:1%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;width:80%;font-size:15px;margin:5% 20% 10% 10%;text-align:center}.erroMessage1[data-v-1d5ec060]{margin-left:28%;margin-bottom:2%;width:40%}.erroMessage1[data-v-1d5ec060],.erroMessage2[data-v-1d5ec060]{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:17px;text-align:center}.erroMessage2[data-v-1d5ec060]{float:right;width:120%;margin:2% 11% 4% 13%}.erroMessage3[data-v-1d5ec060]{float:right;margin-right:25%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:15px;margin-left:10%;margin-bottom:10%;text-align:center;font-size:17px}.forms-enter[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{opacity:0}.forms-enter-active[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{transition:opacity .4s}.errorValidate[data-v-1d5ec060]{margin-top:1%;margin-bottom:1%;color:red}.titleDatas[data-v-1d5ec060]{font-size:20px}.listForm[data-v-1d5ec060]{float:left;width:100%;margin-left:2%}", ""]);
+exports.push([module.i, ".form1[data-v-1d5ec060]{margin-left:2%;width:40%;float:left}.form2[data-v-1d5ec060]{margin-left:10%;width:40%;float:left;margin-top:2.5%}.container[data-v-1d5ec060]{margin-left:4%}.buttonsOneForm[data-v-1d5ec060]{float:right;width:50%;margin-right:3%;margin-top:3%}.form-control[data-v-1d5ec060]{border-radius:10px}.form-control[data-v-1d5ec060]:focus{z-index:2;border:2px solid red}.starRed[data-v-1d5ec060]{color:red;font-style:bold}.account-wall[data-v-1d5ec060]{float:right;width:1000px;height:100%}.account-wall-results[data-v-1d5ec060],.account-wall[data-v-1d5ec060]{margin-top:5px;padding:40px 0 20px;background-color:#f7f7f7;box-shadow:2px 2px 2px rgba(0,0,0,.3);border-radius:20px}.account-wall-results[data-v-1d5ec060]{width:700px}.title[data-v-1d5ec060]{margin-bottom:2%;margin-left:37%;font-size:25px}.title2[data-v-1d5ec060]{margin-bottom:5%;margin-left:27%;font-size:25px}.title3[data-v-1d5ec060]{margin-bottom:5%;margin-left:25%;font-size:25px}.formFixed[data-v-1d5ec060]{float:auto;width:50%;margin-left:42%;border-radius:20px;background-color:#dcdcdc}.active1[data-v-1d5ec060]{background-color:#b22222;color:#fff}.active1[data-v-1d5ec060],.active2[data-v-1d5ec060]{float:left;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;margin:10px;width:55px;line-height:50px}.active2[data-v-1d5ec060]{color:#000;background-color:#a9a9a9}.buttonNext[data-v-1d5ec060]{margin-top:2%;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.dataPersonal[data-v-1d5ec060]{float:left;width:30%;margin-left:3%}.dataAdress[data-v-1d5ec060]{float:left}.dataProfession[data-v-1d5ec060]{float:right;margin-left:2%;width:30%}.clear[data-v-1d5ec060]{margin-top:5%;background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.erroMessage[data-v-1d5ec060]{float:right;margin-bottom:1%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;width:80%;font-size:15px;margin:5% 20% 10% 10%;text-align:center}.erroMessage1[data-v-1d5ec060]{margin-left:28%;margin-bottom:2%;width:40%}.erroMessage1[data-v-1d5ec060],.erroMessage2[data-v-1d5ec060]{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:17px;text-align:center}.erroMessage2[data-v-1d5ec060]{float:right;width:120%;margin:2% 11% 4% 13%}.erroMessage3[data-v-1d5ec060]{float:right;margin-right:25%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:15px;margin-left:10%;margin-bottom:10%;text-align:center;font-size:17px}.forms-enter[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{opacity:0}.forms-enter-active[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{transition:opacity .4s}.errorValidate[data-v-1d5ec060]{margin-top:1%;margin-bottom:1%;color:red}.titleDatas[data-v-1d5ec060]{font-size:20px}.listForm[data-v-1d5ec060]{margin-top:5%;float:left;width:100%;margin-left:2%}", ""]);
 
 // exports
 
@@ -28240,74 +28242,52 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "col-md-12"
   }, [_c('label', [_vm._v("Estado onde vai atuar")]), _vm._v(" "), _c('label', {
     staticClass: "starRed"
-  }, [_vm._v(" * ")]), _vm._v(" "), _c('select', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.stateSelected),
-      expression: "stateSelected"
-    }],
-    staticClass: "form-control",
-    on: {
-      "change": [function($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
-          return o.selected
-        }).map(function(o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val
-        });
-        _vm.stateSelected = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-      }, _vm.listCities]
-    }
-  }, [_c('option', {
+  }, [_vm._v(" * ")]), _vm._v(" "), _c('multiselect', {
     attrs: {
-      "disabled": "",
-      "value": ""
+      "placeholder": "Selecione o Estado",
+      "selectLabel": _vm.selectMsg,
+      "deselectLabel": _vm.removeMsg,
+      "label": "description",
+      "track-by": "description",
+      "options": _vm.states
+    },
+    on: {
+      "remove": _vm.removeCities,
+      "input": _vm.listCities
+    },
+    model: {
+      value: (_vm.stateSelected),
+      callback: function($$v) {
+        _vm.stateSelected = $$v
+      },
+      expression: "stateSelected"
     }
-  }, [_vm._v("Por favor, selecione seu estado")]), _vm._v(" "), _vm._l((_vm.states), function(state) {
-    return _c('option', {
-      domProps: {
-        "value": state
-      }
-    }, [_vm._v(" " + _vm._s(state.description) + " ")])
-  })], 2)]), _vm._v(" "), _c('div', {
+  }, [_c('span', {
+    slot: "noResult"
+  }, [_vm._v("Estado não encontrado")])])], 1), _vm._v(" "), _c('div', {
     staticClass: "col-md-12"
   }, [_c('label', [_vm._v("Cidade, onde irá atuar")]), _vm._v(" "), _c('label', {
     staticClass: "starRed"
-  }, [_vm._v(" * ")]), _vm._v(" "), _c('select', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.citieSelected),
-      expression: "citieSelected"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v(" * ")]), _vm._v(" "), _c('multiselect', {
     attrs: {
-      "multiple": ""
+      "multiple": true,
+      "placeholder": "Selecione as Cidades",
+      "selectLabel": _vm.selectMsg,
+      "deselectLabel": _vm.removeMsg,
+      "label": "description",
+      "track-by": "description",
+      "options": _vm.cities
     },
-    on: {
-      "change": function($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
-          return o.selected
-        }).map(function(o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val
-        });
-        _vm.citieSelected = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-      }
+    model: {
+      value: (_vm.citieSelected),
+      callback: function($$v) {
+        _vm.citieSelected = $$v
+      },
+      expression: "citieSelected"
     }
-  }, [_c('option', {
-    attrs: {
-      "disabled": "",
-      "value": ""
-    }
-  }, [_vm._v("Por favor, selecione sua cidade")]), _vm._v(" "), _vm._l((_vm.cities), function(city) {
-    return _c('option', {
-      domProps: {
-        "value": city
-      }
-    }, [_vm._v(" " + _vm._s(city.description) + " ")])
-  })], 2)])]), _vm._v(" "), _c('div', {
+  }, [_c('span', {
+    slot: "noResult"
+  }, [_vm._v("Cidade não encontrada")])])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "buttonsOneForm",
     staticStyle: {
       "padding-left": "55px"
@@ -28361,7 +28341,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(" * ")]), _vm._v(" "), _c('multiselect', {
     attrs: {
       "placeholder": "Selecione as profissões",
-      "SelectedLabel": _vm.op,
+      "selectLabel": _vm.selectMsg,
+      "deselectLabel": _vm.removeMsg,
       "label": "description",
       "track-by": "description",
       "multiple": true,
@@ -28379,7 +28360,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "professionSelecteds"
     }
-  })], 1), _vm._v(" "), _c('div', {
+  }, [_c('span', {
+    slot: "noResult"
+  }, [_vm._v("Profissão não encontrada")])])], 1), _vm._v(" "), _c('div', {
     staticClass: "col-md-12",
     staticStyle: {
       "padding-top": "15px"
@@ -28444,9 +28427,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('label', [_vm._v("Serviços")]), _vm._v(" "), _c('label', {
     staticClass: "starRed"
   }, [_vm._v(" * ")]), _vm._v(" "), _c('multiselect', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.allServices),
+      expression: "!allServices"
+    }],
     attrs: {
       "options": _vm.options,
       "multiple": true,
+      "selectLabel": _vm.selectMsg,
+      "deselectLabel": _vm.removeMsg,
       "group-values": "services",
       "group-label": "profession",
       "track-by": "description",
@@ -28462,7 +28453,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', {
     slot: "noResult"
-  }, [_vm._v("Serviço não encontrado.")])]), _vm._v(" "), _c('select', {
+  }, [_vm._v("Serviço não encontrado")])]), _vm._v(" "), _c('select', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -28534,12 +28525,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('li', [_vm._v(" " + _vm._s(service.description) + " ")])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "listForm"
+  }, [_c('div', {
+    staticStyle: {
+      "float": "left",
+      "padding-top": "2px"
+    }
   }, [_c('button', {
     staticClass: "buttonNext",
     on: {
       "click": _vm.back
     }
-  }, [_vm._v(" Voltar ")]), _vm._v(" "), _c('form', {
+  }, [_vm._v(" Voltar ")])]), _vm._v(" "), _c('div', {
+    staticStyle: {
+      "float": "left"
+    }
+  }, [_c('form', {
     on: {
       "submit": function($event) {
         $event.preventDefault();
@@ -28551,7 +28551,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "type": "submit"
     }
-  }, [_vm._v(" Enviar ")])])])])]) : _vm._e()])], 1)
+  }, [_vm._v(" Enviar ")])])])])])]) : _vm._e()])], 1)
 },staticRenderFns: []}
 
 /***/ }),
