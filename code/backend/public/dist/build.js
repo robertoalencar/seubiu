@@ -25522,9 +25522,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     callEmit() {
       this.$emit('callLogout');
     }
-  },
-
-  props: ['nameAdmin']
+  }
 
 });
 
@@ -25537,8 +25535,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__register_RegisterProfessional_vue__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__register_RegisterProfessional_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__register_RegisterProfessional_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_UserService__ = __webpack_require__(10);
-//
-//
 //
 //
 //
@@ -25762,7 +25758,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                 this.userService.loginUser(user).then(res => {
 
-                    this.$store.state.token = this.jwt + res.token;
+                    this.$store.state.user = res;
+
+                    this.$store.state.token = this.jwt + this.$store.state.user.token;
 
                     this.$store.state.status = false;
                 }, err => {
@@ -26090,6 +26088,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -26110,12 +26115,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             serviceNotAllMessage: 'Faz os serviços selecionados, incluindo a opção outros.',
             selectMsg: 'Clique para selecionar', removeMsg: 'Clique para remover',
             //atributos dos dados pessoais: 
-            cpf: '', cnpj: '', rg: '', org: '', date: '',
+            userId: '', cpf: '', cnpj: '', rg: '', org: '', date: '',
             //atributos do endereço du profissional: 
             cep: '', logradouro: '', bairro: '', uf: '', localidade: '', states: [], complement: '', number: '',
-            stateSelected: '', cities: [], citieSelected: [],
+            stateSelected: {}, cities: [], citySelected: {}, reference: '',
             //atributos dos dados profissionais: 
-            professions: [], professionSelected: {}, professionSelecteds: [], selectedServices: '', services: [], allServices: false,
+            professions: [], professionSelecteds: [], selectedServices: '', services: [], allServices: false,
             options: [],
             //objetos utilizados no componente:                
             professionService: new __WEBPACK_IMPORTED_MODULE_0__services_ProfessionService__["a" /* default */](this.$http, this.$store.state.token), util: new __WEBPACK_IMPORTED_MODULE_1__util_Util__["a" /* default */]()
@@ -26127,27 +26132,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.loadProfessions();
         this.loadStates();
     },
-
     components: {
         MaskedInput: __WEBPACK_IMPORTED_MODULE_2_vue_masked_input__["a" /* default */], Multiselect: __WEBPACK_IMPORTED_MODULE_3_vue_multiselect___default.a
     },
 
     watch: {
+
         cep: function () {
 
-            if (this.cep != '') {
+            var regCep = /\d{5}\-\d{3}/g;
 
-                this.professionService.findAdresscComplete(this.cep).then(result => {
+            if (regCep.test(this.cep === true)) {
 
-                    var auxResult = result;
-
-                    this.logradouro = auxResult.logradouro;this.bairro = auxResult.bairro;
-                    this.localidade = auxResult.localidade;this.uf = auxResult.uf;
-                }, err => console.log(err));
+                alert("TRUE");
             } else {
-                this.logradouro = '';this.bairro = '';this.localidade = '';this.uf = '';
+
+                alert("FALSE");
             }
         }
+
+        /*{
+                        this.professionService.findAdresscComplete(this.cep)
+                       .then(result => {
+                           
+                           var auxResult = result;
+                            this.logradouro = auxResult.logradouro;  this.bairro = auxResult.bairro;
+                           this.localidade = auxResult.localidade;  this.uf = auxResult.uf;
+                           
+               }, 
+                                   
+               err => console.log(err));
+               
+                   } else {
+                        this.logradouro = ''; this.bairro = ''; this.localidade = ''; this.uf = '';
+                    }  
+               } */
     },
 
     methods: {
@@ -26244,20 +26263,59 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         send() {
 
-            if (this.cpf != '') {
-                alert("Dados Pessaais -> " + this.user.name + this.user.email + this.cpf + this.rg + this.org + this.date);
-            } else {
-                alert("Dados Pessaais -> " + this.user.name + this.user.email + this.cnpj + this.rg + this.org + this.date);
-            }
+            var patchesPersonal = {
 
-            alert("Dados do endereço -> " + this.cep + this.logradouro + this.bairro + this.uf + this.localidade + this.stateSelected.description + JSON.stringify(this.citieSelected));
+                "patches": [{ "op": "replace", "path": "/birthDate", "value": this.date }, { "op": "replace", "path": "/rg", "value": this.rg }, { "op": "replace", "path": "/rgOrgIssuer", "value": this.org }, { "op": "replace", "path": "/cpf", "value": this.cpf }]
+            };
 
-            if (this.allServices == true) {
+            this.$http.put('users/' + this.user.id + '/personalinfo', patchesPersonal, { headers: { 'Authorization': this.$store.state.token } }).then(result => {
 
-                alert("dados profissionais -> " + JSON.stringify(this.professionSelecteds) + this.allServices);
-            } else {
-                alert("dados profissionais -> " + JSON.stringify(this.professionSelecteds) + JSON.stringify(this.selectedServices));
-            }
+                console.log(JSON.stringify(result));
+            }, err => {
+                console.log(err);
+            });
+
+            var userAdress = {
+                'description': 'end',
+                'main': Boolean(true),
+                'zipCode': this.cep,
+                'address': this.logradouro,
+                'number': this.number,
+                'complement': this.complement,
+                'district': this.bairro,
+                'reference': this.reference,
+                'userId': this.user.id,
+                'cityId': this.citySelected.id,
+                'stateId': this.stateSelected.id,
+                'countryId': this.stateSelected.country_id
+            };
+
+            this.$http.post('users/' + this.user.id + '/addresses', userAdress, { headers: { 'Authorization': this.$store.state.token } }).then(result => {
+
+                alert("Sucesso");
+                console.log(JSON.stringify(result));
+            }, err => {
+                alert("falhou");
+                console.log(err);
+            });
+
+            /* var patchesAdress = {
+                 
+                 "patches": [
+                   { "op": "replace", "path": "/description", "value": 'end' },
+                   { "op": "replace", "path": "/main", "value": true },
+                   { "op": "replace", "path": "/zipCode", "value": this.cep },
+                   { "op": "replace", "path": "/address", "value": this.logradouro },
+                   { "op": "replace", "path": "/number", "value": this.number },
+                   { "op": "replace", "path": "/complement", "value": this.complement },
+                   { "op": "replace", "path": "/district", "value": this.bairro },
+                   { "op": "replace", "path": "/reference", "value": this.reference },     
+                   { "op": "replace", "path": "/user_id", "value": this.user.id },
+                   { "op": "replace", "path": "/city_id", "value": this.citySelected.id },
+                   { "op": "replace", "path": "/state_id", "value": this.stateSelected.id },
+                   { "op": "replace", "path": "/country_id", "value": '1' }
+                 ]
+               } */
         },
 
         clearDataPersonais() {
@@ -27933,28 +27991,28 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('label', [_vm._v("Data de Nascimento")]), _vm._v(" "), _c('label', {
     staticClass: "starRed"
-  }, [_vm._v(" * ")]), _vm._v(" "), _c('masked-input', {
+  }, [_vm._v(" * ")]), _vm._v(" "), _c('input', {
     directives: [{
-      name: "validate",
-      rawName: "v-validate"
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.date),
+      expression: "date"
     }],
     staticClass: "form-control",
     attrs: {
-      "maxlength": "10",
-      "mask": "11/11/1111",
-      "data-vv-rules": "required",
       "name": "date",
-      "type": "text",
-      "placeholder": "__/__/_____"
+      "type": "date"
     },
-    model: {
-      value: (_vm.date),
-      callback: function($$v) {
-        _vm.date = $$v
-      },
-      expression: "date"
+    domProps: {
+      "value": (_vm.date)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.date = $event.target.value
+      }
     }
-  })], 1)]), _vm._v(" "), _c('div', {
+  })])]), _vm._v(" "), _c('div', {
     staticClass: "form2"
   }, [_c('div', {
     staticClass: "col-md-12"
@@ -28200,7 +28258,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "name": "Número",
       "type": "text",
-      "placeholder": ""
+      "placeholder": "Número"
     },
     domProps: {
       "value": (_vm.number)
@@ -28227,7 +28285,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "name": "complement",
       "type": "text",
-      "placeholder": ""
+      "placeholder": "Complemento"
     },
     domProps: {
       "value": (_vm.complement)
@@ -28236,6 +28294,33 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.complement = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Referência")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.reference),
+      expression: "reference"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "reference",
+      "type": "text",
+      "placeholder": "Referência"
+    },
+    domProps: {
+      "value": (_vm.reference)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.reference = $event.target.value
       }
     }
   })]), _vm._v(" "), _c('div', {
@@ -28270,7 +28355,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "starRed"
   }, [_vm._v(" * ")]), _vm._v(" "), _c('multiselect', {
     attrs: {
-      "multiple": true,
+      "multiple": false,
       "placeholder": "Selecione as Cidades",
       "selectLabel": _vm.selectMsg,
       "deselectLabel": _vm.removeMsg,
@@ -28279,18 +28364,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "options": _vm.cities
     },
     model: {
-      value: (_vm.citieSelected),
+      value: (_vm.citySelected),
       callback: function($$v) {
-        _vm.citieSelected = $$v
+        _vm.citySelected = $$v
       },
-      expression: "citieSelected"
+      expression: "citySelected"
     }
   }, [_c('span', {
     slot: "noResult"
   }, [_vm._v("Cidade não encontrada")])])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "buttonsOneForm",
     staticStyle: {
-      "padding-left": "55px"
+      "padding-left": "20px"
     }
   }, [_c('button', {
     staticClass: "buttonNext",
@@ -28510,9 +28595,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "dataProfession"
   }, [_c('label', {
     staticClass: "titleDatas"
-  }, [_vm._v("Endereço de atuação / Profissões e Serviços:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Estado de atuação:")]), _vm._v(" " + _vm._s(_vm.stateSelected.description) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cidades de atuação :")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.citieSelected), function(city) {
-    return _c('li', [_vm._v(" " + _vm._s(city.description) + " ")])
-  })), _vm._v(" "), _c('strong', [_vm._v("Profissões selecionadas:")]), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.professionSelecteds), function(profession) {
+  }, [_vm._v("Endereço de atuação / Profissões e Serviços:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Estado de atuação:")]), _vm._v(" " + _vm._s(_vm.stateSelected.description) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cidades de atuação : ")]), _vm._v(" \n\n                             " + _vm._s(_vm.citySelected.description) + "  "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Profissões selecionadas:")]), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.professionSelecteds), function(profession) {
     return _c('li', [_vm._v(" " + _vm._s(profession.description) + " ")])
   })), _vm._v(" "), _c('strong', [_vm._v("Serviços selecionados:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
     directives: [{
@@ -28659,7 +28742,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("\n        Logout\n    ")]), _vm._v(" "), _c('div', {
     staticClass: "nameAdmin"
-  }, [_vm._v("\n        Bem vindo " + _vm._s(_vm.nameAdmin) + "\n    ")]), _vm._v(" "), _vm._m(0)])
+  }, [_vm._v("\n        Bem vindo " + _vm._s(this.$store.state.user.user.name) + "\n    ")]), _vm._v(" "), _vm._m(0)])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [_c('img', {
     staticClass: "imageHome",
@@ -28757,9 +28840,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "rotas": _vm.routes
     }
   }), _vm._v(" "), _c('router-view', {
-    attrs: {
-      "nameAdmin": _vm.email
-    },
     on: {
       "callLogout": _vm.logout
     }
@@ -29046,9 +29126,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.approveUser(user)
         }
       }
-    }, [_vm._v("Aprovar Profissional")]), _vm._v(" "), _c('button', {
-      staticClass: "buttonDisapprove"
-    }, [_vm._v(" Reprovar Profissional ")])])])])
+    }, [_vm._v("Aprovar Profissional")])])])])
   })], 2)])]), _vm._v(" "), _c('div', {
     staticClass: "buttonsOfPage"
   }, [_c('button', {
