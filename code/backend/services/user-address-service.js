@@ -96,7 +96,7 @@ const create = (userId, addr) => {
             errors.push(ERROR.UserAddress.DESCRIPTION_IS_REQUIRED);
         }
 
-        if (_.isEmpty(addr.main)) {
+        if (_.isNil(addr.main)) {
            errors.push(ERROR.UserAddress.MAIN_IS_REQUIRED);
         }
 
