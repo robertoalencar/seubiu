@@ -26140,33 +26140,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         cep: function () {
 
-            var regCep = /\d{5}\-\d{3}/g;
+            let reg = /\d{5}\-\d{3}/g;
 
-            if (regCep.test(this.cep === true)) {
+            let testCep = reg.test(this.cep);
 
-                alert("TRUE");
+            if (testCep === true) {
+
+                this.professionService.findAdresscComplete(this.cep).then(result => {
+
+                    var auxResult = result;
+
+                    this.logradouro = auxResult.logradouro;this.bairro = auxResult.bairro;
+                    this.localidade = auxResult.localidade;this.uf = auxResult.uf;
+                }, err => console.log(err));
             } else {
-
-                alert("FALSE");
+                this.logradouro = '';this.bairro = '';this.localidade = '';this.uf = '';
             }
         }
-
-        /*{
-                        this.professionService.findAdresscComplete(this.cep)
-                       .then(result => {
-                           
-                           var auxResult = result;
-                            this.logradouro = auxResult.logradouro;  this.bairro = auxResult.bairro;
-                           this.localidade = auxResult.localidade;  this.uf = auxResult.uf;
-                           
-               }, 
-                                   
-               err => console.log(err));
-               
-                   } else {
-                        this.logradouro = ''; this.bairro = ''; this.localidade = ''; this.uf = '';
-                    }  
-               } */
     },
 
     methods: {
@@ -26277,7 +26267,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var userAdress = {
                 'description': 'end',
-                'main': Boolean(true),
+                'main': true,
                 'zipCode': this.cep,
                 'address': this.logradouro,
                 'number': this.number,
@@ -26383,7 +26373,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         next2() {
 
-            if (this.cpf != '' && this.rg != '' && this.date != '' && this.org != '') {
+            let test = false;
+
+            alert(test);
+
+            test = this.util.validateWithCpf(this.cpf, this.rg, this.date);
+
+            alert(test);
+
+            if (test == true && this.org != '') {
 
                 this.cnpj = '';
                 this.n = 2;
@@ -26948,6 +26946,33 @@ new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 
 "use strict";
 class Util {
+
+    setTrue() {
+        return true;
+    }
+
+    validateWithCpf(cpf, rg, date) {
+
+        let regCpf = /\d{3}\.\d{3}\.\d{3}\-\d{2}/g;
+
+        let testCpf = regCpf.test(this.cpf);
+
+        let regRg = /\d\.\d{3}\.\d{3}/g;
+
+        let testRg = regRg.test(this.rg);
+
+        let regDate = /\d{2}\/\d{2}\/\d{4}/g;
+
+        let testDate = regDate.test(this.date);
+
+        if (testCpf === true && testRg == true && testDate == true) {
+
+            return true;
+        } else {
+
+            return false;
+        }
+    }
 
     changeCssOne() {
 
