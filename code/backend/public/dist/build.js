@@ -26095,6 +26095,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -26109,7 +26113,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function () {
         return {
             //tags de utilidades para visualização de componentes.
-            cnpjInput: false, cpfInput: true, tag: '', n: 1,
+            cnpjInput: false, cpfInput: true, tag: '', n: 1, testWithCpf: false, testWithCnpj: false, testAdressDates: false,
             //Mensagens de exibição para usuário: 
             messageOne: '', messageTwo: '', messageThree: '', messageFour: '', serviceAllMessage: 'Faz todos os serviços.',
             serviceNotAllMessage: 'Faz os serviços selecionados, incluindo a opção outros.',
@@ -26322,7 +26326,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         active2() {
 
-            if ((this.cpf != '' || this.cnpj != '') && this.rg != '' && this.date != '' && this.org) {
+            this.testWithCpf = this.util.validateWithCpf(this.cpf, this.rg, this.date);
+            this.testWithCnpj = this.util.validateWithCnpj(this.cnpj, this.rg, this.date);
+
+            if ((this.testWithCpf || this.testWithCnp) && this.org) {
 
                 this.n = 2;
                 this.util.changeCssTwo();
@@ -26338,7 +26345,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         active3() {
 
-            if ((this.cpf != '' || this.cnpj != '') && this.rg != '' && this.date != '' && this.org && this.cep != '' && this.number != '' && this.stateSelected != '' && this.citieSelected != '') {
+            this.testWithCpf = this.util.validateWithCpf(this.cpf, this.rg, this.date);
+            this.testWithCnpj = this.util.validateWithCnpj(this.cnpj, this.rg, this.date);
+            this.testAdressDates = this.util.validateAdress(this.cep, this.number, this.stateSelected, this.citieSelected);
+
+            if ((this.testWithCpf || this.testWithCnp) && this.org && this.testAdressDates) {
 
                 this.n = 3;
                 this.util.changeCssThree();
@@ -26355,7 +26366,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         active4() {
 
-            if ((this.cpf != '' || this.cnpj != '') && this.rg != '' && this.date != '' && this.org && this.cep != '' && this.number != '' && this.stateSelected != '' && this.citieSelected != '' && this.professionSelecteds && this.selectedServices) {
+            this.testWithCpf = this.util.validateWithCpf(this.cpf, this.rg, this.date);
+            this.testWithCnpj = this.util.validateWithCnpj(this.cnpj, this.rg, this.date);
+            this.testAdressDates = this.util.validateAdress(this.cep, this.number, this.stateSelected, this.citieSelected);
+
+            if ((this.testWithCpf || this.testWithCnp) && this.org && this.testAdressDates && this.professionSelecteds && this.selectedServices) {
 
                 this.n = 4;
                 this.util.changeCssFour();
@@ -26373,20 +26388,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         next2() {
 
-            let test = false;
+            let testWithCpf, testWithCnpj;
 
-            alert(test);
+            testWithCpf = this.util.validateWithCpf(this.cpf, this.rg, this.date);
+            testWithCnpj = this.util.validateWithCnpj(this.cnpj, this.rg, this.date);
 
-            test = this.util.validateWithCpf(this.cpf, this.rg, this.date);
-
-            alert(test);
-
-            if (test == true && this.org != '') {
+            if (testWithCpf && this.org != '') {
 
                 this.cnpj = '';
                 this.n = 2;
                 this.util.changeCssTwo();
-            } else if (this.cnpj != '' && this.rg != '' && this.date != '' && this.org != '') {
+            } else if (testWithCnpj && this.org != '') {
 
                 this.cpf = '';
                 this.n = 2;
@@ -26403,7 +26415,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         next3() {
 
-            if (this.cep != '' && this.number != '' && this.stateSelected != '' && this.citieSelected != '') {
+            this.testAdressDates = this.util.validateAdress(this.cep, this.number, this.stateSelected, this.citieSelected);
+
+            if (this.testAdressDates) {
 
                 this.n = 3;
                 this.util.changeCssThree();
@@ -26947,25 +26961,56 @@ new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 "use strict";
 class Util {
 
-    setTrue() {
-        return true;
+    validateAdress(cep, number, stateSelected, citieSelected) {
+
+        let regCep = /\d{5}\-\d{3}/g;
+        let testCep = regCep.test(cep);
+
+        if (testCep && number != '' && stateSelected != '' && citieSelected != '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    validateWithCnpj(cnpj, rg, date) {
+
+        let regCnpj = /\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}/g;
+
+        let testCnpj = regCnpj.test(cnpj);
+
+        let regRg = /\d\.\d{3}\.\d{3}/g;
+
+        let testRg = regRg.test(rg);
+
+        let regDate = /\d{4}\-\d{2}\-\d{2}/g;
+
+        let testDate = regDate.test(date);
+
+        if (testCnpj && testRg && testDate) {
+
+            return true;
+        } else {
+
+            return false;
+        }
     }
 
     validateWithCpf(cpf, rg, date) {
 
         let regCpf = /\d{3}\.\d{3}\.\d{3}\-\d{2}/g;
 
-        let testCpf = regCpf.test(this.cpf);
+        let testCpf = regCpf.test(cpf);
 
         let regRg = /\d\.\d{3}\.\d{3}/g;
 
-        let testRg = regRg.test(this.rg);
+        let testRg = regRg.test(rg);
 
-        let regDate = /\d{2}\/\d{2}\/\d{4}/g;
+        let regDate = /\d{4}\-\d{2}\-\d{2}/g;
 
-        let testDate = regDate.test(this.date);
+        let testDate = regDate.test(date);
 
-        if (testCpf === true && testRg == true && testDate == true) {
+        if (testCpf && testRg && testDate) {
 
             return true;
         } else {
@@ -27063,7 +27108,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, ".form1[data-v-1d5ec060]{margin-left:2%;width:40%;float:left}.form2[data-v-1d5ec060]{margin-left:10%;width:40%;float:left;margin-top:2.5%}.container[data-v-1d5ec060]{margin-left:4%}.buttonsOneForm[data-v-1d5ec060]{float:right;width:50%;margin-right:3%;margin-top:3%}.form-control[data-v-1d5ec060]{border-radius:10px}.form-control[data-v-1d5ec060]:focus{z-index:2;border:2px solid red}.starRed[data-v-1d5ec060]{color:red;font-style:bold}.account-wall[data-v-1d5ec060]{float:right;width:1000px;height:100%}.account-wall-results[data-v-1d5ec060],.account-wall[data-v-1d5ec060]{margin-top:5px;padding:40px 0 20px;background-color:#f7f7f7;box-shadow:2px 2px 2px rgba(0,0,0,.3);border-radius:20px}.account-wall-results[data-v-1d5ec060]{width:700px}.title[data-v-1d5ec060]{margin-bottom:2%;margin-left:37%;font-size:25px}.title2[data-v-1d5ec060]{margin-bottom:5%;margin-left:27%;font-size:25px}.title3[data-v-1d5ec060]{margin-bottom:5%;margin-left:25%;font-size:25px}.formFixed[data-v-1d5ec060]{float:auto;width:50%;margin-left:42%;border-radius:20px;background-color:#dcdcdc}.active1[data-v-1d5ec060]{background-color:#b22222;color:#fff}.active1[data-v-1d5ec060],.active2[data-v-1d5ec060]{float:left;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;margin:10px;width:55px;line-height:50px}.active2[data-v-1d5ec060]{color:#000;background-color:#a9a9a9}.buttonNext[data-v-1d5ec060]{margin-top:2%;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.dataPersonal[data-v-1d5ec060]{float:left;width:30%;margin-left:3%}.dataAdress[data-v-1d5ec060]{float:left}.dataProfession[data-v-1d5ec060]{float:right;margin-left:2%;width:30%}.clear[data-v-1d5ec060]{margin-top:5%;background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.erroMessage[data-v-1d5ec060]{float:right;margin-bottom:1%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;width:80%;font-size:15px;margin:5% 20% 10% 10%;text-align:center}.erroMessage1[data-v-1d5ec060]{margin-left:28%;margin-bottom:2%;width:40%}.erroMessage1[data-v-1d5ec060],.erroMessage2[data-v-1d5ec060]{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:17px;text-align:center}.erroMessage2[data-v-1d5ec060]{float:right;width:120%;margin:2% 11% 4% 13%}.erroMessage3[data-v-1d5ec060]{float:right;margin-right:25%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:15px;margin-left:10%;margin-bottom:10%;text-align:center;font-size:17px}.forms-enter[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{opacity:0}.forms-enter-active[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{transition:opacity .4s}.errorValidate[data-v-1d5ec060]{margin-top:1%;margin-bottom:1%;color:red}.titleDatas[data-v-1d5ec060]{font-size:20px}.listForm[data-v-1d5ec060]{margin-top:5%;float:left;width:100%;margin-left:2%}", ""]);
+exports.push([module.i, ".form1[data-v-1d5ec060]{margin-left:2%;width:40%;float:left}.form2[data-v-1d5ec060]{margin-left:10%;width:40%;float:left;margin-top:2.5%}.container[data-v-1d5ec060]{margin-left:4%}.buttonsOneForm[data-v-1d5ec060]{float:right;width:50%;margin-right:3%;margin-top:3%}.form-control[data-v-1d5ec060]{border-radius:10px}.form-control[data-v-1d5ec060]:focus{z-index:2;border:2px solid red}.starRed[data-v-1d5ec060]{color:red;font-style:bold}.account-wall[data-v-1d5ec060]{float:right;width:1000px;height:100%}.account-wall-results[data-v-1d5ec060],.account-wall[data-v-1d5ec060]{margin-top:5px;padding:40px 0 20px;background-color:#f7f7f7;box-shadow:2px 2px 2px rgba(0,0,0,.3);border-radius:20px}.account-wall-results[data-v-1d5ec060]{width:700px}.title[data-v-1d5ec060]{margin-bottom:2%;margin-left:37%;font-size:25px}.title2[data-v-1d5ec060]{margin-bottom:5%;margin-left:27%;font-size:25px}.title3[data-v-1d5ec060]{margin-bottom:5%;margin-left:25%;font-size:25px}.formFixed[data-v-1d5ec060]{float:auto;width:50%;margin-left:39%;border-radius:20px;background-color:#dcdcdc}.active1[data-v-1d5ec060]{background-color:#b22222;color:#fff}.active1[data-v-1d5ec060],.active2[data-v-1d5ec060]{float:left;font-size:20px;border:3px solid #000;border-radius:50%;text-align:center;margin:10px;width:55px;line-height:50px}.active2[data-v-1d5ec060]{color:#000;background-color:#a9a9a9}.buttonNext[data-v-1d5ec060]{margin-top:2%;background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.dataPersonal[data-v-1d5ec060]{float:left;width:30%;margin-left:3%}.dataAdress[data-v-1d5ec060]{float:left}.dataProfession[data-v-1d5ec060]{float:right;margin-left:2%;width:30%}.clear[data-v-1d5ec060]{margin-top:5%;background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:10px;border:3px solid #000}.erroMessage[data-v-1d5ec060]{float:right;margin-bottom:1%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;width:80%;font-size:15px;margin:5% 20% 10% 10%;text-align:center}.erroMessage1[data-v-1d5ec060]{margin-left:28%;margin-bottom:2%;width:40%}.erroMessage1[data-v-1d5ec060],.erroMessage2[data-v-1d5ec060]{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:17px;text-align:center}.erroMessage2[data-v-1d5ec060]{float:right;width:120%;margin:2% 11% 4% 13%}.erroMessage3[data-v-1d5ec060]{float:right;margin-right:25%;background-color:#b22222;color:#fff;border-radius:5px;padding:5px;font-size:15px;margin-left:10%;margin-bottom:10%;text-align:center;font-size:17px}.forms-enter[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{opacity:0}.forms-enter-active[data-v-1d5ec060],.forms-leave-active[data-v-1d5ec060]{transition:opacity .4s}.errorValidate[data-v-1d5ec060]{margin-top:1%;margin-bottom:1%;color:red}.titleDatas[data-v-1d5ec060]{font-size:20px}.listForm[data-v-1d5ec060]{margin-top:5%;float:left;width:100%;margin-left:2%}", ""]);
 
 // exports
 
@@ -28026,7 +28071,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-control",
     attrs: {
       "name": "date",
-      "type": "date"
+      "type": "date",
+      "placeholder": "__/__/____"
     },
     domProps: {
       "value": (_vm.date)
@@ -28282,7 +28328,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-control",
     attrs: {
       "name": "Número",
-      "type": "text",
+      "type": "number",
       "placeholder": "Número"
     },
     domProps: {
@@ -28292,6 +28338,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.number = $event.target.value
+      },
+      "blur": function($event) {
+        _vm.$forceUpdate()
       }
     }
   })]), _vm._v(" "), _c('div', {

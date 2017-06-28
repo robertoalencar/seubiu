@@ -8,6 +8,7 @@ module.exports = (orm, db) => {
         address    : { type: 'text', size: 200, required: true, mapsTo: 'address' },
         number     : { type: 'number', required: true, mapsTo: 'number' },
         complement : { type: 'text', size: 255, mapsTo: 'complement' }, 
+ 	district   : { type: 'text', size: 100, required: true, mapsTo: 'district' },
         reference  : { type: 'text', size: 255, mapsTo: 'reference' }
     }, {
         collection: 'user_address'
