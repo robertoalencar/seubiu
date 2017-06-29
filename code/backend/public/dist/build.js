@@ -25627,6 +25627,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         approveUser(user) {
             this.approve = false;
             this.pickUser = user;
+
+            var patcherProfile = {
+
+                "patches": [{ "op": "replace", "path": "/displayName", "value": 'Everton' }, { "op": "replace", "path": "/about", "value": 'Desenvolvedor' }, { "op": "replace", "path": "/otherServices", "value": true }]
+            };
+
+            this.$http.put('users/' + this.pickUser.id + '/profile', patcherProfile, { headers: { 'Authorization': this.$store.state.token } }).then(result => {
+
+                console.log('profileUpdate');
+            }, err => {
+
+                console.log('falhaNoProfile', +err);
+            });
         },
 
         closeRegister() {
@@ -26099,6 +26112,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -26122,9 +26137,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             userId: '', cpf: '', cnpj: '', rg: '', org: '', date: '',
             //atributos do endereço du profissional: 
             cep: '', logradouro: '', bairro: '', uf: '', localidade: '', states: [], complement: '', number: '',
-            stateSelected: {}, cities: [], citySelected: {}, reference: '',
+            stateSelected: {}, cities: [], citySelected: {}, reference: '', description: '',
             //atributos dos dados profissionais: 
-            professions: [], professionSelecteds: [], selectedServices: '', services: [], allServices: false,
+            professions: [], professionSelecteds: [], selectedServices: '', services: [], allServices: false, serviceSelected: {}, professionSelected: {},
             options: [],
             //objetos utilizados no componente:                
             professionService: new __WEBPACK_IMPORTED_MODULE_0__services_ProfessionService__["a" /* default */](this.$http, this.$store.state.token), util: new __WEBPACK_IMPORTED_MODULE_1__util_Util__["a" /* default */]()
@@ -26270,7 +26285,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
 
             var userAdress = {
-                'description': 'end',
+                'description': this.description,
                 'main': true,
                 'zipCode': this.cep,
                 'address': this.logradouro,
@@ -26285,31 +26300,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
 
             this.$http.post('users/' + this.user.id + '/addresses', userAdress, { headers: { 'Authorization': this.$store.state.token } }).then(result => {
-
-                alert("Sucesso");
                 console.log(JSON.stringify(result));
             }, err => {
-                alert("falhou");
                 console.log(err);
             });
 
-            /* var patchesAdress = {
-                 
-                 "patches": [
-                   { "op": "replace", "path": "/description", "value": 'end' },
-                   { "op": "replace", "path": "/main", "value": true },
-                   { "op": "replace", "path": "/zipCode", "value": this.cep },
-                   { "op": "replace", "path": "/address", "value": this.logradouro },
-                   { "op": "replace", "path": "/number", "value": this.number },
-                   { "op": "replace", "path": "/complement", "value": this.complement },
-                   { "op": "replace", "path": "/district", "value": this.bairro },
-                   { "op": "replace", "path": "/reference", "value": this.reference },     
-                   { "op": "replace", "path": "/user_id", "value": this.user.id },
-                   { "op": "replace", "path": "/city_id", "value": this.citySelected.id },
-                   { "op": "replace", "path": "/state_id", "value": this.stateSelected.id },
-                   { "op": "replace", "path": "/country_id", "value": '1' }
-                 ]
-               } */
+            var userIdWithProf = { 'userId': this.user.id, 'professionIds': professionSelected.id };
+
+            this.$http.post('users/' + this.user.id + '/profile/professions', userIdWithProf, { headers: { 'Authorization': this.$store.state.token } }).then(result => {
+
+                alert("Sucesso profissão");
+                console.log(JSON.stringify(result));
+            }, err => {
+                alert("Falhou profissão");
+                console.log(err);
+            });
+
+            var userIdWithServ = { 'userId': this.user.id, 'servicesIds': serviceSelected.id };
+
+            this.$http.post('users/' + this.user.id + '/profile/services', userIdWithServ, { headers: { 'Authorization': this.$store.state.token } }).then(result => {
+
+                alert("Sucesso Serviço");
+                console.log(JSON.stringify(result));
+            }, err => {
+                alert("Falhou serviço");
+                console.log(err);
+            });
         },
 
         clearDataPersonais() {
@@ -26347,7 +26363,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.testWithCpf = this.util.validateWithCpf(this.cpf, this.rg, this.date);
             this.testWithCnpj = this.util.validateWithCnpj(this.cnpj, this.rg, this.date);
-            this.testAdressDates = this.util.validateAdress(this.cep, this.number, this.stateSelected, this.citieSelected);
+            this.testAdressDates = this.util.validateAdress(this.description, this.cep, this.number, this.stateSelected, this.citieSelected);
 
             if ((this.testWithCpf || this.testWithCnp) && this.org && this.testAdressDates) {
 
@@ -26368,7 +26384,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.testWithCpf = this.util.validateWithCpf(this.cpf, this.rg, this.date);
             this.testWithCnpj = this.util.validateWithCnpj(this.cnpj, this.rg, this.date);
-            this.testAdressDates = this.util.validateAdress(this.cep, this.number, this.stateSelected, this.citieSelected);
+            this.testAdressDates = this.util.validateAdress(this.description, this.cep, this.number, this.stateSelected, this.citieSelected);
 
             if ((this.testWithCpf || this.testWithCnp) && this.org && this.testAdressDates && this.professionSelecteds && this.selectedServices) {
 
@@ -26415,7 +26431,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         next3() {
 
-            this.testAdressDates = this.util.validateAdress(this.cep, this.number, this.stateSelected, this.citieSelected);
+            this.testAdressDates = this.util.validateAdress(this.description, this.cep, this.number, this.stateSelected, this.citieSelected);
 
             if (this.testAdressDates) {
 
@@ -26432,7 +26448,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         next4() {
 
-            if (this.professionSelecteds != '' && (this.selectedServices != '' || this.allServices == true)) {
+            if (this.professionSelected != '' && (this.selectedServices != '' || this.allServices == true)) {
 
                 if (this.allServices == true) {
                     this.selectedServices = [];
@@ -26961,12 +26977,12 @@ new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 "use strict";
 class Util {
 
-    validateAdress(cep, number, stateSelected, citieSelected) {
+    validateAdress(description, cep, number, stateSelected, citieSelected) {
 
         let regCep = /\d{5}\-\d{3}/g;
         let testCep = regCep.test(cep);
 
-        if (testCep && number != '' && stateSelected != '' && citieSelected != '') {
+        if (testCep && number != '' && stateSelected != '' && citieSelected != '' && description != '') {
             return true;
         } else {
             return false;
@@ -28309,6 +28325,35 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.localidade = $event.target.value
       }
     }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Descrição")]), _vm._v(" "), _c('label', {
+    staticClass: "starRed"
+  }, [_vm._v(" * ")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.description),
+      expression: "description"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "description",
+      "type": "text",
+      "placeholder": "Descrição do endereço"
+    },
+    domProps: {
+      "value": (_vm.description)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.description = $event.target.value
+      }
+    }
   })])]), _vm._v(" "), _c('div', {
     staticClass: "form2"
   }, [_c('div', {
@@ -28327,7 +28372,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "form-control",
     attrs: {
-      "name": "Número",
+      "name": "numero",
       "type": "number",
       "placeholder": "Número"
     },
@@ -28449,7 +28494,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("Cidade não encontrada")])])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "buttonsOneForm",
     staticStyle: {
-      "padding-left": "20px"
+      "padding-left": "55px"
     }
   }, [_c('button', {
     staticClass: "buttonNext",
@@ -28504,7 +28549,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "deselectLabel": _vm.removeMsg,
       "label": "description",
       "track-by": "description",
-      "multiple": true,
+      "multiple": false,
       "options": _vm.professions
     },
     on: {
@@ -28513,11 +28558,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "tag": _vm.addProfessions
     },
     model: {
-      value: (_vm.professionSelecteds),
+      value: (_vm.professionSelected),
       callback: function($$v) {
-        _vm.professionSelecteds = $$v
+        _vm.professionSelected = $$v
       },
-      expression: "professionSelecteds"
+      expression: "professionSelected"
     }
   }, [_c('span', {
     slot: "noResult"
@@ -28594,7 +28639,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     attrs: {
       "options": _vm.options,
-      "multiple": true,
+      "multiple": false,
       "selectLabel": _vm.selectMsg,
       "deselectLabel": _vm.removeMsg,
       "group-values": "services",
@@ -28604,11 +28649,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "placeholder": "Selecione os Serviços"
     },
     model: {
-      value: (_vm.selectedServices),
+      value: (_vm.selectedService),
       callback: function($$v) {
-        _vm.selectedServices = $$v
+        _vm.selectedService = $$v
       },
-      expression: "selectedServices"
+      expression: "selectedService"
     }
   }, [_c('span', {
     slot: "noResult"
@@ -28665,7 +28710,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "dataAdress"
   }, [_c('label', {
     staticClass: "titleDatas"
-  }, [_vm._v("Endereço do Profissional:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cep: ")]), _vm._v(_vm._s(_vm.cep)), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Logradouro: ")]), _vm._v(_vm._s(_vm.logradouro) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Bairro: ")]), _vm._v(_vm._s(_vm.bairro) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Estado: ")]), _vm._v(_vm._s(_vm.uf) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cidade: ")]), _vm._v(_vm._s(_vm.localidade) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Número: ")]), _vm._v(_vm._s(_vm.number) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Compelmento: ")]), _vm._v(" " + _vm._s(_vm.complement) + " "), _c('br')]), _vm._v(" "), _c('div', {
+  }, [_vm._v("Endereço do Profissional:")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cep: ")]), _vm._v(_vm._s(_vm.cep)), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Logradouro: ")]), _vm._v(_vm._s(_vm.logradouro) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Bairro: ")]), _vm._v(_vm._s(_vm.bairro) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Estado: ")]), _vm._v(_vm._s(_vm.uf) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Cidade: ")]), _vm._v(_vm._s(_vm.localidade) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Descrição: ")]), _vm._v(_vm._s(_vm.description) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Número: ")]), _vm._v(_vm._s(_vm.number) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Compelmento: ")]), _vm._v(" " + _vm._s(_vm.complement) + " "), _c('br')]), _vm._v(" "), _c('div', {
     staticClass: "dataProfession"
   }, [_c('label', {
     staticClass: "titleDatas"
