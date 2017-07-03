@@ -25609,7 +25609,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             filter: '',
             users: [],
             approve: true,
-            pickUser: {},
+            pickUser: '',
             paginate: ['users'],
             countPage: 1,
             userService: new __WEBPACK_IMPORTED_MODULE_1__services_UserService__["a" /* default */](this.$http, this.$store.state.token)
@@ -26716,6 +26716,80 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -26724,54 +26798,76 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   data() {
     return {
-
+      status: true,
       //Dados pessoais 
       cpf: '', cnpj: '', rg: '', org: '', date: '',
       //dados do endereço
-      cep: '', logradouro: '', bairro: '', uf: '', localidade: '', state: '', complement: '', number: '',
+      cep: '', logradouro: '', bairro: '', localidade: '', city: '', state: '', complement: '', number: '',
       country: '', reference: '', description: ''
     };
   },
 
   methods: {
 
+    changeStatus() {
+      this.status = !this.status;
+    },
+
     closeModal() {
       this.$emit('closeModal');
+
+      this.cpf = '';this.rg = '';this.org = '';this.date = '';
+      this.cep = '';this.logradouro = '';this.bairro = '';this.localidade = '';this.city = '';
+      this.state = '';this.complement = '';this.number = '';this.country = '';this.reference = '';
+      this.description = '';
+    },
+
+    loadDatas() {
+
+      this.$http.get('users/' + this.computedUser + '/personalinfo', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
+
+        let auxPersonal = result;
+
+        this.cpf = auxPersonal.cpf;
+        this.rg = auxPersonal.rg;
+        this.org = auxPersonal.rgOrgIssuer;
+
+        var auxDate = auxPersonal.birthDate;
+
+        var year = auxDate.slice(0, 4);
+        var month = auxDate.slice(5, 7);
+        var day = auxDate.slice(8, 10);
+
+        this.date = day + "/" + month + "/" + year;
+      }, err => console.log(err));
+
+      this.$http.get('users/' + this.computedUser + '/addresses', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
+
+        let auxAddress = result;
+
+        this.description = auxAddress[1].description;
+        this.cep = auxAddress[1].zipCode;
+        this.logradouro = auxAddress[1].address;
+        this.bairro = auxAddress[1].district;
+        this.localidade = auxAddress[1].city.description;
+        this.state = auxAddress[1].state.description;
+        this.complement = auxAddress[1].complement;
+        this.number = auxAddress[1].number;
+        this.country = auxAddress[1].country.description;
+      }, err => console.log(err));
     }
 
   },
 
-  created() {
+  computed: {
 
-    alert(JSON.stringify(user.id));
+    computedUser() {
+      if (this.user != null) {
+        return this.user.id;
+      }
+    }
 
-    this.$http.get('users/' + this.user.id + '/personalinfo', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
-
-      let auxPersonal = result;
-
-      this.cpf = auxPersonal.cpf;
-      this.cnpj = auxPersonal.rg;
-      this.org = auxPersonal.rgOrgIssuer;
-      this.date = auxPersonal.birthDate;
-    }, err => console.log(err));
-
-    this.$http.get('users/' + this.userId + '/addresses', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
-
-      let auxAddress = result;
-
-      this.description = auxAddress.description;
-      this.cep = auxAddress.zipCode;
-      this.logradouro = auxAddress.address;
-      this.bairro = auxAddress.district;
-      this.uf = auxAddress.state.description;
-      this.localidade = auxAddress.city.description;
-      this.state = auxAddress.state.description;
-      this.complement = auxAddress.complement;
-      this.number = auxAddress.number;
-      this.country = auxAddress.country.description;
-    }, err => console.log(err));
   }
-
 });
 
 /***/ }),
@@ -27347,7 +27443,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, ".tittleService{font-size:20px;font-weight:700}.modal-mask{position:fixed;z-index:9998;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.15);display:table;transition:opacity .3s ease}.modal-wrapper{display:table-cell;vertical-align:middle}.modal-container{width:670px;margin:0 auto;padding:20px 30px;background-color:#fff;border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.33);transition:all .3s ease;font-family:Helvetica,Arial,sans-serif}.modal-header h3{margin-top:0;color:#555}.modal-body{margin:0}.modal-default-button{float:right}.modal-enter,.modal-leave-active{opacity:0}.modal-enter .modal-container,.modal-leave-active .modal-container{-webkit-transform:scale(1.1);transform:scale(1.1)}.inputService{width:50%;height:30px;border:2px solid red;border-radius:4px}.buttonRemoveService{background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.validationMessage{margin-top:1%;margin-bottom:1%;width:40%}.aprovationMessage,.validationMessage{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;text-align:center}.aprovationMessage{margin-left:10%;margin-bottom:5%;width:70%}.buttonAdd{background-color:#a9a9a9;color:#000}.buttonAdd,.buttonApprove{border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.buttonApprove{background-color:#b22222;color:#fff}", ""]);
+exports.push([module.i, ".form1{margin-left:2%;width:30%;float:left}.form2,.form3{margin-left:10%;width:30%;float:left}.tittleService{font-size:20px;font-weight:700}.modal-mask{margin-left:5%;position:fixed;z-index:9998;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.15);display:table;transition:opacity .3s ease}.modal-wrapper{display:table-cell;vertical-align:middle}.modal-container{width:1000px;margin:0 auto;padding:20px 30px;background-color:#fff;border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.33);transition:all .3s ease;font-family:Helvetica,Arial,sans-serif}.modal-header h3{margin-top:0;color:#555}.modal-body{margin:0}.modal-default-button{float:right}.modal-enter,.modal-leave-active{opacity:0}.modal-enter .modal-container,.modal-leave-active .modal-container{-webkit-transform:scale(1.1);transform:scale(1.1)}.inputService{width:50%;height:30px;border:2px solid red;border-radius:4px}.buttonRemoveService{background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.validationMessage{margin-top:1%;margin-bottom:1%;width:40%}.aprovationMessage,.validationMessage{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;text-align:center}.aprovationMessage{margin-left:10%;margin-bottom:5%;width:70%}.buttonAdd{background-color:#a9a9a9;color:#000}.buttonAdd,.buttonApprove{border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.buttonApprove{background-color:#b22222;color:#fff}", ""]);
 
 // exports
 
@@ -29258,11 +29354,375 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-container"
   }, [_c('div', {
     staticClass: "modal-header"
-  }, [_vm._t("header", [_vm._v("\n          \n             " + _vm._s(_vm.user) + "\n          \n          ")])], 2), _vm._v(" "), _c('div', {
+  }, [_vm._t("header", [_vm._v("\n        \n          " + _vm._s(_vm.user.name) + "\n          \n          "), _c('button', {
+    on: {
+      "click": _vm.loadDatas
+    }
+  }, [_vm._v(" Clique ")])])], 2), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
-  }, [_vm._t("body", [_vm._v("\n          \n          " + _vm._s(_vm.cpf) + " " + _vm._s(_vm.cnpj) + " " + _vm._s(_vm.rg) + " " + _vm._s(_vm.date) + " " + _vm._s(_vm.org) + "\n\n          " + _vm._s(_vm.cep) + " " + _vm._s(_vm.logradouro) + " " + _vm._s(_vm.bairro) + " " + _vm._s(_vm.uf) + "  " + _vm._s(_vm.localidade) + " " + _vm._s(_vm.state) + " " + _vm._s(_vm.complement) + " " + _vm._s(_vm.number) + "\n          " + _vm._s(_vm.country) + " " + _vm._s(_vm.reference) + " " + _vm._s(_vm.description) + "\n\n          ")])], 2), _vm._v(" "), _c('div', {
+  }, [_vm._t("body", [_c('div', {
+    staticClass: "form1"
+  }, [_c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "16px"
+    }
+  }, [_c('label', [_vm._v("CPF")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.cpf),
+      expression: "cpf"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "cpf",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.cpf)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.cpf = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("RG ")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.rg),
+      expression: "rg"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "rg",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.rg)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.rg = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Data nascimento")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.date),
+      expression: "date"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "date",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.date)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.date = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Orgão")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.org),
+      expression: "org"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "org",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.org)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.org = $event.target.value
+      }
+    }
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "form2"
+  }, [_c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "16px"
+    }
+  }, [_c('label', [_vm._v("CEP")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.cep),
+      expression: "cep"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "cep",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.cep)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.cep = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Rua ")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.logradouro),
+      expression: "logradouro"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "logradouro",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.logradouro)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.logradouro = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v(" Bairro ")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.bairro),
+      expression: "bairro"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "bairro",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.bairro)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.bairro = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Cidade")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.localidade),
+      expression: "localidade"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "localidade",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.localidade)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.localidade = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Estado")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.state),
+      expression: "state"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "state",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.state)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.state = $event.target.value
+      }
+    }
+  })])])])], 2), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  }, [_vm._t("footer", [_c('button', {
+  }, [_vm._t("footer", [_c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Número")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.number),
+      expression: "number"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "number",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.number)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.number = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Descrição")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.description),
+      expression: "description"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "description",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.description)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.description = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Complemento")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.complement),
+      expression: "complement"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "complement",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.complement)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.complement = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Brasil")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.country),
+      expression: "country"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "country",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.country)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.country = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('button', {
+    staticClass: "buttonAdd",
+    on: {
+      "click": _vm.changeStatus
+    }
+  }, [_vm._v(" Alterar Dados ")]), _vm._v(" "), _c('button', {
     staticClass: "buttonAdd",
     on: {
       "click": _vm.closeModal
