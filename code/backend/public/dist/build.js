@@ -25738,6 +25738,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data() {
         return {
+            name: 'xxxx', number: 1,
             userModal: false,
             filter: '',
             users: [],
@@ -25775,7 +25776,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var patcherProfile = {
 
-                "patches": [{ "op": "replace", "path": "/displayName", "value": 'Everton' }, { "op": "replace", "path": "/about", "value": 'Desenvolvedor' }, { "op": "replace", "path": "/otherServices", "value": true }]
+                "patches": [{ "op": "replace", "path": "/displayName", "value": 'Everton wwaaa' }, { "op": "replace", "path": "/about", "value": 'Desenvolvedor' }, { "op": "replace", "path": "/otherServices", "value": true }]
             };
 
             this.$http.put('users/' + this.pickUser.id + '/profile', patcherProfile, { headers: { 'Authorization': this.$store.state.token } }).then(result => {
@@ -26269,7 +26270,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -26284,7 +26284,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function () {
         return {
             //tags de utilidades para visualização de componentes.
-            cnpjInput: false, cpfInput: true, tag: '', n: 1, testWithCpf: false, testWithCnpj: false, testAdressDates: false,
+            cnpjInput: false, cpfInput: true, tag: 'One', n: 1, testWithCpf: false, testWithCnpj: false, testAdressDates: false,
             //Mensagens de exibição para usuário: 
             messageOne: '', messageTwo: '', messageThree: '', messageFour: '', serviceAllMessage: 'Faz todos os serviços.',
             serviceNotAllMessage: 'Faz os serviços selecionados, incluindo a opção outros.',
@@ -26369,7 +26369,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         removeCities() {
-
             this.cities = [];
             this.citieSelected = [];
         },
@@ -26779,7 +26778,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
           this.services.forEach(result => {
 
-            this.professionService.approveService(idProfession, result);
+            this.professionService.approveService(this.idProfession, result);
           });
         }, err => console.log(err));
 
@@ -26976,6 +26975,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -26997,8 +27007,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       //Dados pessoais 
       cpf: '', cnpj: '', rg: '', org: '', date: '',
       //dados do endereço
-      cep: '', logradouro: '', bairro: '', localidade: '', city: '', state: '', complement: '', number: '',
-      country: '', reference: '', description: '',
+      cep: '', logradouro: '', bairro: '', localidade: '', state: '', complement: '', number: '',
+      country: '', reference: '', description: '', cities: [], states: [], stateSelected: '', citySelected: '',
       //dados do serviço e profissão
       services: '', professions: '', professionSelected: ''
 
@@ -27010,6 +27020,52 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
+
+    changeDatas() {
+
+      /*
+      let userPersonalDates = {
+        "patches": [
+          { "op": "replace", "path": "/birthDate", "value": this.date },
+          { "op": "replace", "path": "/rg", "value": this.rg },
+          { "op": "replace", "path": "/rgOrgIssuer", "value": this.org },
+          { "op": "replace", "path": "/cpf", "value": this.cpf }
+        ]
+      }
+       alert(userPersonalDates);
+      let userAdress = { 
+        'description' : this.description,
+        'main' : true, 
+        'zipCode' : this.cep,
+        'address' : this.logradouro,
+        'number' : this.number,
+        'complement' : this.complement,
+        'district' : this.bairro,
+        'reference' : this.reference,
+        'userId' : this.user.id,
+        'cityId' : this.citySelected.id,
+        'stateId': this.stateSelected.id,
+        'countryId' : this.stateSelected.country_id
+      } */
+
+    },
+
+    removeCities() {
+      this.cities = [];
+      this.citieSelected = [];
+    },
+
+    loadStates() {
+      this.professionService.listStates().then(result => this.states = result, err => console.log(err));
+    },
+
+    listCities() {
+
+      if (this.stateSelected != '') {
+
+        this.professionService.listTheCity(this.stateSelected.id).then(result => this.cities = result, err => console.log(err));
+      }
+    },
 
     loadProfessions() {
 
@@ -27039,62 +27095,66 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.cpf = '';this.rg = '';this.org = '';this.date = '';
       this.cep = '';this.logradouro = '';this.bairro = '';this.localidade = '';this.city = '';
       this.state = '';this.complement = '';this.number = '';this.country = '';this.reference = '';
-      this.description = '';this.profession = '';this.services = '';
+      this.description = '';this.profession = '';this.services = '';this.cities = '';this.states = '';
     },
 
     loadDatas() {
 
-      this.loadProfessions();
+      if (this.status = !false) {
 
-      this.$http.get('users/' + this.computedUser + '/personalinfo', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
+        this.loadProfessions();
+        this.loadStates();
 
-        let auxPersonal = result;
+        this.$http.get('users/' + this.computedUser + '/personalinfo', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
 
-        this.cpf = auxPersonal.cpf;
-        this.rg = auxPersonal.rg;
-        this.org = auxPersonal.rgOrgIssuer;
+          let auxPersonal = result;
 
-        var auxDate = auxPersonal.birthDate;
+          this.cpf = auxPersonal.cpf;
+          this.rg = auxPersonal.rg;
+          this.org = auxPersonal.rgOrgIssuer;
 
-        var year = auxDate.slice(0, 4);
-        var month = auxDate.slice(5, 7);
-        var day = auxDate.slice(8, 10);
+          var auxDate = auxPersonal.birthDate;
 
-        this.date = day + "/" + month + "/" + year;
-      }, err => console.log(err));
+          var year = auxDate.slice(0, 4);
+          var month = auxDate.slice(5, 7);
+          var day = auxDate.slice(8, 10);
 
-      this.$http.get('users/' + this.computedUser + '/addresses', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
+          this.date = day + "/" + month + "/" + year;
+        }, err => console.log(err));
 
-        let auxAddress = result;
+        this.$http.get('users/' + this.computedUser + '/addresses', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
 
-        this.description = auxAddress[1].description;
-        this.cep = auxAddress[1].zipCode;
-        this.logradouro = auxAddress[1].address;
-        this.bairro = auxAddress[1].district;
-        this.localidade = auxAddress[1].city.description;
-        this.state = auxAddress[1].state.description;
-        this.complement = auxAddress[1].complement;
-        this.number = auxAddress[1].number;
-        this.country = auxAddress[1].country.description;
-      }, err => console.log(err));
+          let auxAddress = result;
 
-      this.$http.get('users/' + this.computedUser + '/profile/services', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
+          this.description = auxAddress[1].description;
+          this.cep = auxAddress[1].zipCode;
+          this.logradouro = auxAddress[1].address;
+          this.bairro = auxAddress[1].district;
+          this.localidade = auxAddress[1].city.description;
+          this.state = auxAddress[1].state.description;
+          this.complement = auxAddress[1].complement;
+          this.number = auxAddress[1].number;
+          this.country = auxAddress[1].country.description;
+        }, err => console.log(err));
 
-        let auxService = result;
+        this.$http.get('users/' + this.computedUser + '/profile/services', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
 
-        auxService.forEach(service => {
-          this.services = service.description;
-        });
-      }, err => console.log(err));
+          let auxService = result;
 
-      this.$http.get('users/' + this.computedUser + '/profile/professions', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
+          auxService.forEach(service => {
+            this.services = service.description;
+          });
+        }, err => console.log(err));
 
-        let auxProfession = result;
+        this.$http.get('users/' + this.computedUser + '/profile/professions', { headers: { 'Authorization': this.$store.state.token } }).then(res => res.json()).then(result => {
 
-        auxProfession.forEach(profession => {
-          this.profession = profession.description;
-        });
-      }, err => console.log(err));
+          let auxProfession = result;
+
+          auxProfession.forEach(profession => {
+            this.profession = profession.description;
+          });
+        }, err => console.log(err));
+      }
     }
 
   },
@@ -27575,7 +27635,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, ".form1,.form2{width:25%;float:left}.tittleService{font-size:20px;font-weight:700}.modal-mask{margin-left:7%;position:fixed;z-index:9998;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.15);display:table;transition:opacity .3s ease}.modal-wrapper{display:table-cell;vertical-align:middle}.modal-container{width:1150px;margin:0 auto;padding:20px 30px;background-color:#fff;border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.33);transition:all .3s ease;font-family:Helvetica,Arial,sans-serif}.modal-header h3{margin-top:0;color:#555}.modal-default-button{float:right}.modal-enter,.modal-leave-active{opacity:0}.modal-enter .modal-container,.modal-leave-active .modal-container{-webkit-transform:scale(1.1);transform:scale(1.1)}.inputService{width:50%;height:30px;border:2px solid red;border-radius:4px}.buttonRemoveService{background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.validationMessage{margin-top:1%;margin-bottom:1%;width:40%}.aprovationMessage,.validationMessage{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;text-align:center}.aprovationMessage{margin-left:10%;margin-bottom:5%;width:70%}.buttonAdd{background-color:#a9a9a9;color:#000}.buttonAdd,.buttonApprove{border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.buttonApprove{background-color:#b22222;color:#fff}.spanTitle{font-size:160%;font-weight:700}.spaceSpan{float:left;margin-top:3%;margin-left:2.5%}.buttonAlter{padding-top:200px;margin-left:5%}.buttonClose{float:right;margin-top:80%;font-size:15px}", ""]);
+exports.push([module.i, "fieldset[disabled] .multiselect{pointer-events:none}.multiselect__spinner{position:absolute;right:1px;top:1px;width:48px;height:35px;background:#fff;display:block}.multiselect__spinner:after,.multiselect__spinner:before{position:absolute;content:\"\";top:50%;left:50%;margin:-8px 0 0 -8px;width:16px;height:16px;border-radius:100%;border-color:#41b883 transparent transparent;border-style:solid;border-width:2px;box-shadow:0 0 0 1px transparent}.multiselect__spinner:before{animation:a 2.4s cubic-bezier(.41,.26,.2,.62);animation-iteration-count:infinite}.multiselect__spinner:after{animation:a 2.4s cubic-bezier(.51,.09,.21,.8);animation-iteration-count:infinite}.multiselect__loading-enter-active,.multiselect__loading-leave-active{transition:opacity .4s ease-in-out;opacity:1}.multiselect__loading-enter,.multiselect__loading-leave-active{opacity:0}.multiselect,.multiselect__input,.multiselect__single{font-family:inherit;font-size:14px;-ms-touch-action:manipulation;touch-action:manipulation}.multiselect{box-sizing:content-box;display:block;position:relative;width:100%;min-height:40px;text-align:left;color:#35495e}.multiselect *{box-sizing:border-box}.multiselect:focus{outline:none}.multiselect--disabled{opacity:.6}.multiselect--active{z-index:1}.multiselect--active .multiselect__current,.multiselect--active .multiselect__input,.multiselect--active .multiselect__tags{border-bottom-left-radius:0;border-bottom-right-radius:0}.multiselect--active .multiselect__select{transform:rotate(180deg)}.multiselect--above.multiselect--active .multiselect__current,.multiselect--above.multiselect--active .multiselect__input,.multiselect--above.multiselect--active .multiselect__tags{border-top-left-radius:0;border-top-right-radius:0}.multiselect__input,.multiselect__single{position:relative;display:inline-block;min-height:20px;line-height:20px;border:none;border-radius:5px;background:#fff;padding:1px 0 0 5px;width:100%;transition:border .1s ease;box-sizing:border-box;margin-bottom:8px}.multiselect__tag~.multiselect__input,.multiselect__tag~.multiselect__single{width:auto}.multiselect__input:hover,.multiselect__single:hover{border-color:#cfcfcf}.multiselect__input:focus,.multiselect__single:focus{border-color:#a8a8a8;outline:none}.multiselect__single{padding-left:6px;margin-bottom:8px}.multiselect__tags{min-height:40px;display:block;padding:8px 40px 0 8px;border-radius:5px;border:1px solid #e8e8e8;background:#fff}.multiselect__tag{position:relative;display:inline-block;padding:4px 26px 4px 10px;border-radius:5px;margin-right:10px;color:#fff;line-height:1;background:#41b883;margin-bottom:8px;white-space:nowrap}.multiselect__tag-icon{cursor:pointer;margin-left:7px;position:absolute;right:0;top:0;bottom:0;font-weight:700;font-style:normal;width:22px;text-align:center;line-height:22px;transition:all .2s ease;border-radius:5px}.multiselect__tag-icon:after{content:\"\\D7\";color:#266d4d;font-size:14px}.multiselect__tag-icon:focus,.multiselect__tag-icon:hover{background:#369a6e}.multiselect__tag-icon:focus:after,.multiselect__tag-icon:hover:after{color:#fff}.multiselect__current{min-height:40px;overflow:hidden;padding:8px 12px 0;padding-right:30px;white-space:nowrap;border-radius:5px;border:1px solid #e8e8e8}.multiselect__current,.multiselect__select{line-height:16px;box-sizing:border-box;display:block;margin:0;text-decoration:none;cursor:pointer}.multiselect__select{position:absolute;width:40px;height:38px;right:1px;top:1px;padding:4px 8px;text-align:center;transition:transform .2s ease}.multiselect__select:before{position:relative;right:0;top:65%;color:#999;margin-top:4px;border-style:solid;border-width:5px 5px 0;border-color:#999 transparent transparent;content:\"\"}.multiselect__placeholder{color:#adadad;display:inline-block;margin-bottom:10px;padding-top:2px}.multiselect--active .multiselect__placeholder{display:none}.multiselect__content{position:absolute;list-style:none;display:block;background:#fff;width:100%;max-height:240px;overflow:auto;padding:0;margin:0;border:1px solid #e8e8e8;border-top:none;border-bottom-left-radius:5px;border-bottom-right-radius:5px;z-index:1}.multiselect--above .multiselect__content{bottom:100%;border-bottom-left-radius:0;border-bottom-right-radius:0;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom:none;border-top:1px solid #e8e8e8}.multiselect__content::webkit-scrollbar{display:none}.multiselect__element{display:block}.multiselect__option{display:block;padding:12px;min-height:40px;line-height:16px;text-decoration:none;text-transform:none;vertical-align:middle;position:relative;cursor:pointer;white-space:nowrap}.multiselect__option:after{top:0;right:0;position:absolute;line-height:40px;padding-right:12px;padding-left:20px}.multiselect__option--highlight{background:#41b883;outline:none;color:#fff}.multiselect__option--highlight:after{content:attr(data-select);background:#41b883;color:#fff}.multiselect__option--selected{background:#f3f3f3;color:#35495e;font-weight:700}.multiselect__option--selected:after{content:attr(data-selected);color:silver}.multiselect__option--selected.multiselect__option--highlight{background:#ff6a6a;color:#fff}.multiselect__option--selected.multiselect__option--highlight:after{background:#ff6a6a;content:attr(data-deselect);color:#fff}.multiselect--disabled{background:#ededed;pointer-events:none}.multiselect--disabled .multiselect__current,.multiselect--disabled .multiselect__select,.multiselect__option--disabled{background:#ededed;color:#a6a6a6}.multiselect__option--disabled{cursor:text;pointer-events:none}.multiselect__option--disabled.multiselect__option--highlight{background:#dedede!important}.multiselect-enter-active,.multiselect-leave-active{transition:all .15s ease}.multiselect-enter,.multiselect-leave-active{opacity:0}@keyframes a{0%{transform:rotate(0)}to{transform:rotate(2turn)}}", ""]);
 
 // exports
 
@@ -27589,7 +27649,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "fieldset[disabled] .multiselect{pointer-events:none}.multiselect__spinner{position:absolute;right:1px;top:1px;width:48px;height:35px;background:#fff;display:block}.multiselect__spinner:after,.multiselect__spinner:before{position:absolute;content:\"\";top:50%;left:50%;margin:-8px 0 0 -8px;width:16px;height:16px;border-radius:100%;border-color:#41b883 transparent transparent;border-style:solid;border-width:2px;box-shadow:0 0 0 1px transparent}.multiselect__spinner:before{animation:a 2.4s cubic-bezier(.41,.26,.2,.62);animation-iteration-count:infinite}.multiselect__spinner:after{animation:a 2.4s cubic-bezier(.51,.09,.21,.8);animation-iteration-count:infinite}.multiselect__loading-enter-active,.multiselect__loading-leave-active{transition:opacity .4s ease-in-out;opacity:1}.multiselect__loading-enter,.multiselect__loading-leave-active{opacity:0}.multiselect,.multiselect__input,.multiselect__single{font-family:inherit;font-size:14px;-ms-touch-action:manipulation;touch-action:manipulation}.multiselect{box-sizing:content-box;display:block;position:relative;width:100%;min-height:40px;text-align:left;color:#35495e}.multiselect *{box-sizing:border-box}.multiselect:focus{outline:none}.multiselect--disabled{opacity:.6}.multiselect--active{z-index:1}.multiselect--active .multiselect__current,.multiselect--active .multiselect__input,.multiselect--active .multiselect__tags{border-bottom-left-radius:0;border-bottom-right-radius:0}.multiselect--active .multiselect__select{transform:rotate(180deg)}.multiselect--above.multiselect--active .multiselect__current,.multiselect--above.multiselect--active .multiselect__input,.multiselect--above.multiselect--active .multiselect__tags{border-top-left-radius:0;border-top-right-radius:0}.multiselect__input,.multiselect__single{position:relative;display:inline-block;min-height:20px;line-height:20px;border:none;border-radius:5px;background:#fff;padding:1px 0 0 5px;width:100%;transition:border .1s ease;box-sizing:border-box;margin-bottom:8px}.multiselect__tag~.multiselect__input,.multiselect__tag~.multiselect__single{width:auto}.multiselect__input:hover,.multiselect__single:hover{border-color:#cfcfcf}.multiselect__input:focus,.multiselect__single:focus{border-color:#a8a8a8;outline:none}.multiselect__single{padding-left:6px;margin-bottom:8px}.multiselect__tags{min-height:40px;display:block;padding:8px 40px 0 8px;border-radius:5px;border:1px solid #e8e8e8;background:#fff}.multiselect__tag{position:relative;display:inline-block;padding:4px 26px 4px 10px;border-radius:5px;margin-right:10px;color:#fff;line-height:1;background:#41b883;margin-bottom:8px;white-space:nowrap}.multiselect__tag-icon{cursor:pointer;margin-left:7px;position:absolute;right:0;top:0;bottom:0;font-weight:700;font-style:normal;width:22px;text-align:center;line-height:22px;transition:all .2s ease;border-radius:5px}.multiselect__tag-icon:after{content:\"\\D7\";color:#266d4d;font-size:14px}.multiselect__tag-icon:focus,.multiselect__tag-icon:hover{background:#369a6e}.multiselect__tag-icon:focus:after,.multiselect__tag-icon:hover:after{color:#fff}.multiselect__current{min-height:40px;overflow:hidden;padding:8px 12px 0;padding-right:30px;white-space:nowrap;border-radius:5px;border:1px solid #e8e8e8}.multiselect__current,.multiselect__select{line-height:16px;box-sizing:border-box;display:block;margin:0;text-decoration:none;cursor:pointer}.multiselect__select{position:absolute;width:40px;height:38px;right:1px;top:1px;padding:4px 8px;text-align:center;transition:transform .2s ease}.multiselect__select:before{position:relative;right:0;top:65%;color:#999;margin-top:4px;border-style:solid;border-width:5px 5px 0;border-color:#999 transparent transparent;content:\"\"}.multiselect__placeholder{color:#adadad;display:inline-block;margin-bottom:10px;padding-top:2px}.multiselect--active .multiselect__placeholder{display:none}.multiselect__content{position:absolute;list-style:none;display:block;background:#fff;width:100%;max-height:240px;overflow:auto;padding:0;margin:0;border:1px solid #e8e8e8;border-top:none;border-bottom-left-radius:5px;border-bottom-right-radius:5px;z-index:1}.multiselect--above .multiselect__content{bottom:100%;border-bottom-left-radius:0;border-bottom-right-radius:0;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom:none;border-top:1px solid #e8e8e8}.multiselect__content::webkit-scrollbar{display:none}.multiselect__element{display:block}.multiselect__option{display:block;padding:12px;min-height:40px;line-height:16px;text-decoration:none;text-transform:none;vertical-align:middle;position:relative;cursor:pointer;white-space:nowrap}.multiselect__option:after{top:0;right:0;position:absolute;line-height:40px;padding-right:12px;padding-left:20px}.multiselect__option--highlight{background:#41b883;outline:none;color:#fff}.multiselect__option--highlight:after{content:attr(data-select);background:#41b883;color:#fff}.multiselect__option--selected{background:#f3f3f3;color:#35495e;font-weight:700}.multiselect__option--selected:after{content:attr(data-selected);color:silver}.multiselect__option--selected.multiselect__option--highlight{background:#ff6a6a;color:#fff}.multiselect__option--selected.multiselect__option--highlight:after{background:#ff6a6a;content:attr(data-deselect);color:#fff}.multiselect--disabled{background:#ededed;pointer-events:none}.multiselect--disabled .multiselect__current,.multiselect--disabled .multiselect__select,.multiselect__option--disabled{background:#ededed;color:#a6a6a6}.multiselect__option--disabled{cursor:text;pointer-events:none}.multiselect__option--disabled.multiselect__option--highlight{background:#dedede!important}.multiselect-enter-active,.multiselect-leave-active{transition:all .15s ease}.multiselect-enter,.multiselect-leave-active{opacity:0}@keyframes a{0%{transform:rotate(0)}to{transform:rotate(2turn)}}", ""]);
+exports.push([module.i, ".form1[data-v-51c58ce1],.form2[data-v-51c58ce1]{width:25%;float:left}.tittleService[data-v-51c58ce1]{font-size:20px;font-weight:700}.modal-mask[data-v-51c58ce1]{margin-left:7%;position:fixed;z-index:9998;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.15);display:table;transition:opacity .3s ease}.modal-wrapper[data-v-51c58ce1]{display:table-cell;vertical-align:middle}.modal-container[data-v-51c58ce1]{width:1150px;margin:0 auto;padding:20px 30px;background-color:#fff;border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.33);transition:all .3s ease;font-family:Helvetica,Arial,sans-serif}.modal-header h3[data-v-51c58ce1]{margin-top:0;color:#555}.modal-default-button[data-v-51c58ce1]{float:right}.modal-enter[data-v-51c58ce1],.modal-leave-active[data-v-51c58ce1]{opacity:0}.modal-enter .modal-container[data-v-51c58ce1],.modal-leave-active .modal-container[data-v-51c58ce1]{-webkit-transform:scale(1.1);transform:scale(1.1)}.inputService[data-v-51c58ce1]{width:50%;height:30px;border:2px solid red;border-radius:4px}.buttonRemoveService[data-v-51c58ce1]{background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.validationMessage[data-v-51c58ce1]{margin-top:1%;margin-bottom:1%;width:40%}.aprovationMessage[data-v-51c58ce1],.validationMessage[data-v-51c58ce1]{background-color:#b22222;color:#fff;border-radius:5px;padding:5px;text-align:center}.aprovationMessage[data-v-51c58ce1]{margin-left:10%;margin-bottom:5%;width:70%}.buttonAdd[data-v-51c58ce1]{background-color:#a9a9a9;color:#000}.buttonAdd[data-v-51c58ce1],.buttonApprove[data-v-51c58ce1]{border-radius:12px;margin-left:5px;padding:5px;border-color:#000;border-style:solid}.buttonApprove[data-v-51c58ce1]{background-color:#b22222;color:#fff}.spanTitle[data-v-51c58ce1]{font-size:160%;font-weight:700}.spaceSpan[data-v-51c58ce1]{float:left;margin-top:3%;margin-left:2.5%}.buttonAlter[data-v-51c58ce1]{padding-top:200px;margin-left:5%}.buttonClose[data-v-51c58ce1]{float:right;margin-top:80%;font-size:15px}", ""]);
 
 // exports
 
@@ -27603,7 +27663,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, ".tableCss[data-v-c1b2abce]{margin-left:200px;background:#e6e6fa}.title[data-v-c1b2abce]{height:100px;width:98.5%;float:right;background-color:#fff;margin-left:10%;border-radius:10px 0 0 10px}.spaceSpan[data-v-c1b2abce]{margin-left:2%;margin-top:2%;width:25%}.messageReprove[data-v-c1b2abce]{float:left;margin-left:16%;margin-top:.5%;background-color:#696969;color:#fff;border-radius:12px;padding:10px;width:30%;text-align:center}.inputFilter[data-v-c1b2abce]{float:right;width:10%;margin-right:20%;margin-top:2.5%}.body[data-v-c1b2abce]{margin-top:2%;float:right;width:98.5%;height:100%;background-color:#fff;border-radius:10px 0 0 10px}.titleTable[data-v-c1b2abce]{float:left;font-size:20px;font-weight:700;background:#b22222;color:#fff;padding:10px;font-size:15px;border-radius:12px;border-color:#000;border-style:solid}.buttonDisapprove[data-v-c1b2abce]{background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:8px;border:3px solid #000}.buttonListService[data-v-c1b2abce]{background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:8px;border:3px solid #000}td[data-v-c1b2abce]{color:#000;font-style:weight}.inputFilterCss[data-v-c1b2abce]{border-radius:8px;padding:8px;border:solid}.inputFilterCss[data-v-c1b2abce]:focus{z-index:2;border:solid red}.buttonsOfPage[data-v-c1b2abce]{margin-top:1%;margin-bottom:1%;margin-left:3%}", ""]);
+exports.push([module.i, ".tableCss[data-v-c1b2abce]{margin-left:200px;background:#e6e6fa}.title[data-v-c1b2abce]{height:100px;width:98.5%;float:right;background-color:#fff;margin-left:10%;border-radius:10px 0 0 10px}.spaceSpan[data-v-c1b2abce]{margin-left:2%;margin-top:2%;width:25%}.messageReprove[data-v-c1b2abce]{float:left;margin-left:12%;margin-top:.5%;background-color:#696969;color:#fff;border-radius:12px;padding:10px;width:30%;text-align:center}.inputFilter[data-v-c1b2abce]{float:right;width:10%;margin-right:20%;margin-top:1.5%}.body[data-v-c1b2abce]{margin-top:2%;float:right;width:98.5%;height:100%;background-color:#fff;border-radius:10px 0 0 10px}.titleTable[data-v-c1b2abce]{float:left;font-size:20px;font-weight:700;background:#b22222;color:#fff;padding:10px;font-size:15px;border-radius:12px;border-color:#000;border-style:solid}.buttonDisapprove[data-v-c1b2abce]{background-color:#b22222;color:#fff;border-radius:12px;margin-left:5px;padding:8px;border:3px solid #000}.buttonListService[data-v-c1b2abce]{background-color:#a9a9a9;color:#000;border-radius:12px;margin-left:5px;padding:8px;border:3px solid #000}td[data-v-c1b2abce]{color:#000;font-style:weight}.inputFilterCss[data-v-c1b2abce]{border-radius:8px;padding:8px;border:solid}.inputFilterCss[data-v-c1b2abce]:focus{z-index:2;border:solid red}.buttonsOfPage[data-v-c1b2abce]{margin-top:1%;margin-bottom:1%;margin-left:3%}", ""]);
 
 // exports
 
@@ -28226,8 +28286,8 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 function injectStyle (ssrContext) {
-  __webpack_require__(74)
   __webpack_require__(73)
+  __webpack_require__(74)
 }
 var Component = __webpack_require__(2)(
   /* script */
@@ -28237,7 +28297,7 @@ var Component = __webpack_require__(2)(
   /* styles */
   injectStyle,
   /* scopeId */
-  null,
+  "data-v-51c58ce1",
   /* moduleIdentifier (server only) */
   null
 )
@@ -28380,15 +28440,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     attrs: {
       "type": "radio",
+      "value": "One",
       "id": "one"
     },
     domProps: {
-      "checked": _vm._q(_vm.tag, null)
+      "checked": _vm._q(_vm.tag, "One")
     },
     on: {
       "click": _vm.changeCpf,
       "__c": function($event) {
-        _vm.tag = null
+        _vm.tag = "One"
       }
     }
   }), _vm._v(" "), _c('label', {
@@ -28405,15 +28466,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "type": "radio",
       "id": "two",
-      "value": "cnpj"
+      "value": "Two"
     },
     domProps: {
-      "checked": _vm._q(_vm.tag, "cnpj")
+      "checked": _vm._q(_vm.tag, "Two")
     },
     on: {
       "click": _vm.changeCnpj,
       "__c": function($event) {
-        _vm.tag = "cnpj"
+        _vm.tag = "Two"
       }
     }
   }), _vm._v(" "), _c('label', {
@@ -29068,9 +29129,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', {
     slot: "noResult"
-  }, [_vm._v("Profissão não encontrada")])]), _vm._v(" "), _c('span', {
-    slot: "noResult"
-  }, [_vm._v("Serviço não encontrado")]), _vm._v(" "), _c('select', {
+  }, [_vm._v("Serviço não encontrado")])]), _vm._v(" "), _c('select', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -29749,43 +29808,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       "padding-top": "10px"
     }
-  }, [_c('label', [_vm._v("Cidade")]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.localidade),
-      expression: "localidade"
-    }],
-    staticClass: "form-control",
-    staticStyle: {
-      "border-radius": "10px"
-    },
-    attrs: {
-      "name": "localidade",
-      "type": "text",
-      "disabled": _vm.status
-    },
-    domProps: {
-      "value": (_vm.localidade)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.localidade = $event.target.value
-      }
-    }
-  })])]), _vm._v(" "), _c('div', {
-    staticClass: "form2",
-    staticStyle: {
-      "padding-top": "5px"
-    }
-  }, [_c('div', {
-    staticClass: "col-md-12",
-    staticStyle: {
-      "padding-top": "10px"
-    }
   }, [_c('label', [_vm._v("Estado")]), _vm._v(" "), _c('input', {
     directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.status),
+      expression: "status"
+    }, {
       name: "model",
       rawName: "v-model",
       value: (_vm.state),
@@ -29809,7 +29838,100 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.state = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('multiselect', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.status),
+      expression: "!status"
+    }],
+    attrs: {
+      "placeholder": "Selecione o Estado",
+      "selectLabel": _vm.selectMsg,
+      "deselectLabel": _vm.removeMsg,
+      "label": "description",
+      "track-by": "description",
+      "options": _vm.states
+    },
+    on: {
+      "remove": _vm.removeCities,
+      "input": _vm.listCities
+    },
+    model: {
+      value: (_vm.stateSelected),
+      callback: function($$v) {
+        _vm.stateSelected = $$v
+      },
+      expression: "stateSelected"
+    }
+  }, [_c('span', {
+    slot: "noResult"
+  }, [_vm._v("Estado não encontrado")])])], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form2",
+    staticStyle: {
+      "padding-top": "5px"
+    }
+  }, [_c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "padding-top": "10px"
+    }
+  }, [_c('label', [_vm._v("Cidade")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.status),
+      expression: "status"
+    }, {
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.localidade),
+      expression: "localidade"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      "border-radius": "10px"
+    },
+    attrs: {
+      "name": "localidade",
+      "type": "text",
+      "disabled": _vm.status
+    },
+    domProps: {
+      "value": (_vm.localidade)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.localidade = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('multiselect', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.status),
+      expression: "!status"
+    }],
+    attrs: {
+      "multiple": false,
+      "placeholder": "Selecione as Cidades",
+      "selectLabel": _vm.selectMsg,
+      "deselectLabel": _vm.removeMsg,
+      "label": "description",
+      "track-by": "description",
+      "options": _vm.cities
+    },
+    model: {
+      value: (_vm.citySelected),
+      callback: function($$v) {
+        _vm.citySelected = $$v
+      },
+      expression: "citySelected"
+    }
+  }, [_c('span', {
+    slot: "noResult"
+  }, [_vm._v("Cidade não encontrada")])])], 1), _vm._v(" "), _c('div', {
     staticClass: "col-md-12",
     staticStyle: {
       "padding-top": "10px"
@@ -30069,7 +30191,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(" Alterar Dados ")]), _vm._v(" "), _c('button', {
     staticClass: "buttonAdd",
     on: {
-      "click": _vm.changeStatus
+      "click": _vm.changeDatas
     }
   }, [_vm._v(" Enviar Dados ")])]), _vm._v(" "), _c('div', {
     staticClass: "buttonClose"
@@ -30475,7 +30597,7 @@ var content = __webpack_require__(42);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("85834d42", content, true);
+var update = __webpack_require__(1)("e3b0c01c", content, true);
 
 /***/ }),
 /* 74 */
@@ -30488,7 +30610,7 @@ var content = __webpack_require__(43);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("e3b0c01c", content, true);
+var update = __webpack_require__(1)("4cdf6aa4", content, true);
 
 /***/ }),
 /* 75 */
